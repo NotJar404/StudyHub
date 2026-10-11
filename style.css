@@ -122,15 +122,17 @@ button.x{min-width:40px}
 .tw{overflow-x:auto}
 .stage .mem{max-width:100%;gap:12px}
 .stage .mc{height:96px;font-size:40px}
+/* ==addded code== */
+.dd.open .dl{opacity:1;visibility:visible;transform:none}
+/* ==================== */
 @media(max-width:760px){
 .hero{padding:5vh 5vw 3vh}.hero.split{grid-template-columns:1fr}
 main,.page-section{padding-left:5vw;padding-right:5vw}
-.nav{flex-wrap:wrap;gap:8px;padding:10px 5vw}
-.menu{order:3;width:100%;margin:0;overflow-x:auto;white-space:nowrap;gap:18px;padding-bottom:4px}
-#theme{margin-left:auto}
-.dd{display:contents}.dd>a{display:none}
-.dl{position:static;opacity:1;visibility:visible;transform:none;display:flex;gap:18px;background:none;border:0;padding:0;min-width:0}
-.dl a{padding:6px 0;white-space:nowrap}
+/* ==Remove and Replaced code== */
+.nav{flex-wrap:nowrap;gap:8px;padding:10px 5vw}
+.menu{gap:16px;margin:0 8px 0 auto}
+.dl{min-width:170px}
+/* ==================== */
 .tool{grid-template-columns:1fr;gap:22px;padding:3vh 5vw 40px}
 .stage{position:static;min-height:0;padding:18px}
 .sched{grid-template-columns:repeat(2,1fr)}
@@ -138,4 +140,8 @@ main,.page-section{padding-left:5vw;padding-right:5vw}
 .flip{height:440px}
 .stage .mc,.mc{height:68px;font-size:30px}
 .mem{max-width:100%}
+/* added code */
+.btn{margin:0 8px 10px 0;padding:12px 18px;font-size:15px}
+.btn.ghost{margin-left:0;margin-right:0}
+/* ==================== */
 }

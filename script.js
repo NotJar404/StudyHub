@@ -161,3 +161,25 @@ if($('#moods')){
     card.scrollIntoView({behavior:still?'auto':'smooth',block:'center'});
   });
 }
+
+// ======= ADDED CODE ======
+document.querySelectorAll('.dd > a').forEach(function (a) {
+  a.addEventListener('click', function (e) {
+    if (window.innerWidth <= 760) {
+      e.preventDefault();
+      var dd = a.parentElement;
+      document.querySelectorAll('.dd.open').forEach(function (o) {
+        if (o !== dd) o.classList.remove('open');
+      });
+      dd.classList.toggle('open');
+    }
+  });
+});
+
+document.addEventListener('click', function (e) {
+  if (!e.target.closest('.dd')) {
+    document.querySelectorAll('.dd.open').forEach(function (o) {
+      o.classList.remove('open');
+    });
+  }
+});
