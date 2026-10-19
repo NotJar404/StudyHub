@@ -322,7 +322,7 @@
     else msg('');
     files=(k==='img'&&kind==='img')?files.concat(use):use;kind=k;target=null;
     if(files.length>20)files.length=20;
-    $('#fc-out-title').textContent='Result';emptyOut();bar(0);drawFiles();
+    $('#fc-out-title').textContent='04 · Your result';emptyOut();bar(0);drawFiles();
   };
   $('#fc-file').onchange=e=>{setFiles(e.target.files);e.target.value=''};
   const dz=$('#fc-dz');

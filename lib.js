@@ -144,11 +144,27 @@ const Lib=(()=>{
     return worker;
   };
   // psm 6 = one block of text (good for tables), psm 4 = columns of varying size
-  const ocr=async(canvas,{psm=6,onProgress}={})=>{
+  // Turns whatever the reader returns into plain lists of words and lines with their positions.
+  const shape=d=>{
+    const W=w=>({t:String(w.text||'').trim(),c:w.confidence==null?null:w.confidence,x0:w.bbox.x0,y0:w.bbox.y0,x1:w.bbox.x1,y1:w.bbox.y1});
+    let lines=d.lines;
+    if(!lines&&d.blocks){lines=[];d.blocks.forEach(b=>(b.paragraphs||[]).forEach(p=>(p.lines||[]).forEach(l=>lines.push(l))))}
+    let words=d.words;
+    if(!words&&lines){words=[];lines.forEach(l=>(l.words||[]).forEach(w=>words.push(w)))}
+    const out={text:d.text||'',words:null,lines:null};
+    try{
+      if(words)out.words=words.filter(w=>w&&w.bbox).map(W);
+      if(lines)out.lines=lines.filter(l=>l&&l.bbox).map(l=>({t:String(l.text||'').replace(/\s+/g,' ').trim(),words:(l.words||[]).filter(w=>w&&w.bbox).map(W)}));
+    }catch(e){out.words=out.lines=null}
+    return out;
+  };
+  // psm 6 = one block of text (good for tables), 7 = a single line, 11 = scattered words.
+  // full:true also returns where each word is. whitelist limits which characters can be read.
+  const ocr=async(canvas,{psm=6,onProgress,whitelist='',full=false}={})=>{
     const w=await getWorker();hold.cb=m=>{if(onProgress&&m&&m.status==='recognizing text')onProgress(m.progress||0)};
-    await w.setParameters({tessedit_pageseg_mode:String(psm),preserve_interword_spaces:'1'});
-    const r=await w.recognize(canvas);
-    return r.data.text||'';
+    await w.setParameters({tessedit_pageseg_mode:String(psm),preserve_interword_spaces:'1',tessedit_char_whitelist:whitelist});
+    const r=await w.recognize(canvas,{},{text:true,blocks:true,tsv:false,hocr:false});
+    return full?shape(r.data):(r.data.text||'');
   };
 
   const fmtSize=b=>b<1024?b+' B':b<1048576?(b/1024).toFixed(0)+' KB':(b/1048576).toFixed(1)+' MB';

@@ -81,7 +81,7 @@ if($('#g-cats')){
     const es=parseFloat($('#ex-s').value),et=parseFloat($('#ex-t').value);
     parts.push({n:'Exam',s:es>=0?es:0,t:et>0?et:0,w:parseFloat($('#ex-w').value)||0});
     let fin=0,wt=0,csP=0,csW=0;const miss=[];
-    const rows=parts.map((p,k)=>{const pct=p.t?p.s/p.t*100:0,pts=pct*p.w/100;if(!p.t)miss.push(p.n);fin+=pts;wt+=p.w;if(k<3){csP+=pts;csW+=p.w}return '<tr><td>'+p.n+'</td><td>'+(p.t?p.s+' ÷ '+p.t+' × 100':'no items')+'</td><td>'+pct.toFixed(1)+'%</td><td>'+p.w+'%</td><td>'+pts.toFixed(2)+'</td></tr>'}).join('');
+    const rows=parts.map((p,k)=>{const pct=p.t?p.s/p.t*100:0,pts=pct*p.w/100;if(!p.t)miss.push(p.n);fin+=pts;wt+=p.w;if(k<3){csP+=pts;csW+=p.w}return '<tr><td data-l="Category"><b>'+p.n+'</b></td><td data-l="Computation">'+(p.t?p.s+' ÷ '+p.t+' × 100':'no items')+'</td><td data-l="Percent">'+pct.toFixed(1)+'%</td><td data-l="Weight">'+p.w+'%</td><td data-l="Points">'+pts.toFixed(2)+'</td></tr>'}).join('');
     const exP=parts[3].t?parts[3].s/parts[3].t*parts[3].w:0,exW=parts[3].w;
     fin=Math.round(fin*10)/10;const g=toGrade(fin),none=miss.length===parts.length;
     $('#ring').style.setProperty('--p',none?0:Math.min(fin,100));
@@ -93,7 +93,7 @@ if($('#g-cats')){
     $('#t-cs').textContent=csP.toFixed(1)+' / '+csW;$('#b-cs').style.width=(csW?Math.min(csP/csW*100,100):0)+'%';
     $('#t-ex').textContent=exP.toFixed(1)+' / '+exW;$('#b-ex').style.width=(exW?Math.min(exP/exW*100,100):0)+'%';
     $('#g-note').textContent=(!none&&miss.length?'Missing: '+miss.join(', ')+'. ':'')+(wt!==100?'Weights add up to '+wt+'%, not 100%. ':'')+'This is an estimate for planning. Always confirm official grades with your instructor.';
-    $('#g-steps').innerHTML=rows+'<tr><td colspan="4"><b>Total points</b></td><td><b>'+fin.toFixed(1)+'</b></td></tr>';
+    $('#g-steps').innerHTML=rows+'<tr class="sum"><td colspan="4"><b>Total points</b></td><td data-l="Total"><b>'+fin.toFixed(1)+'</b></td></tr>';
   };
   $('.tool-card-split').addEventListener('input',calc);
   $('#g-reset').onclick=()=>{$$('#g-cats .r3 input,#ex-s,#ex-t').forEach(i=>i.value='');calc()};

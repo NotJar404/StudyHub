@@ -92,10 +92,10 @@ button.x{min-height:2.75rem;min-width:2.75rem;padding:0;background:none;border:0
 .go{display:flex;align-items:center;justify-content:space-between;margin-top:auto;font-weight:700;color:var(--accent-color)}
 /* ===== TEAM: FLIP CARDS ===== */
 .team{display:grid;grid-template-columns:repeat(auto-fit,minmax(13.5rem,1fr));gap:1.25rem}
-.flip{height:26rem;perspective:1000px;cursor:pointer}
+.flip{position:relative;height:27rem;perspective:1000px;cursor:pointer}
 .in{position:relative;height:100%;transform-style:preserve-3d;transition:transform .9s cubic-bezier(.4,.2,.2,1)}
 .flip.on .in{transform:rotateY(180deg)}
-.face{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;padding:1.6rem 1.2rem;overflow:auto;text-align:center;backface-visibility:hidden;background:var(--card-bg);border:1px solid var(--border-color);border-radius:var(--radius-card)}
+.face{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;padding:1.6rem 1.2rem 5rem;overflow:auto;text-align:center;backface-visibility:hidden;background:var(--card-bg);border:1px solid var(--border-color);border-radius:var(--radius-card)}
 .flip.on .front{pointer-events:none}
 @media(hover:hover){.flip:hover .in{transform:rotateY(180deg)}.flip:hover .front{pointer-events:none}}
 .back{transform:rotateY(180deg);align-items:stretch;text-align:left}
@@ -110,8 +110,8 @@ button.x{min-height:2.75rem;min-width:2.75rem;padding:0;background:none;border:0
 .face h3{font-size:1.5rem;font-weight:400;margin:0 0 .2rem}
 .role{margin:0;font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-color)}
 .bio{margin:.5rem 0 1rem;color:var(--muted);font-size:.9rem}
-.soc{display:flex;gap:.6rem;margin-top:auto}
-.soc a{display:grid;place-items:center;width:2.75rem;height:2.75rem;border-radius:50%;border:1px solid var(--border-color);color:var(--text-main)}
+.soc{position:absolute;left:0;right:0;bottom:1.1rem;z-index:5;display:flex;justify-content:center;gap:.6rem;min-height:2.75rem}
+.soc a{display:grid;place-items:center;width:2.75rem;height:2.75rem;border-radius:50%;border:1px solid var(--border-color);background:var(--card-bg);color:var(--text-main)}
 .soc a:hover{color:var(--accent-color);border-color:var(--accent-color)}
 .tap{margin-top:.9rem;font-size:.62rem;letter-spacing:.2em;color:var(--muted)}
 /* ===== CONTACT BAND AND FOOTER ===== */
@@ -359,3 +359,34 @@ details.boost ol{margin:0 0 1rem;padding-left:1.2rem;color:var(--muted)}
 pre.prev{max-height:16rem;overflow:auto;margin:.4rem 0 0;padding:.9rem;border-radius:.8rem;background:var(--bg2);font:.8rem/1.55 ui-monospace,Menlo,monospace;white-space:pre-wrap}
 pre.prev{display:block;width:100%;box-sizing:border-box}
 @media(min-width:64.01rem){.cards .card:last-child:nth-child(3n+1){grid-column:2}}
+/* ===== PHONES: nothing should ever need a sideways swipe ===== */
+.tool-card-split>*,.panel{min-width:0}
+.tt{width:100%}
+@media(max-width:48rem){
+.tw{overflow-x:visible}
+.tt{table-layout:auto}
+.tt th,.tt td,.tt{padding:.55rem .25rem;font-size:.82rem;white-space:normal;overflow-wrap:anywhere;word-break:normal}
+.tt th{font-size:.74rem;line-height:1.25}
+.dtabs{flex-wrap:wrap}
+.fchip,.res{gap:.6rem;padding:.7rem .75rem}
+.opts{gap:.4rem}
+.opts button{min-height:2.75rem;padding:0 .9rem}
+.btn-primary,.btn-ghost{white-space:normal;text-align:center}
+}
+@media(max-width:48rem){
+table.stack thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+table.stack,table.stack tbody,table.stack tr,table.stack td{display:block;width:100%}
+table.stack tr{margin:0 0 .7rem;padding:.7rem .9rem;border:1px solid var(--border-color);border-radius:1rem;background:var(--bg2)}
+table.stack td{display:flex;justify-content:space-between;gap:1rem;padding:.3rem 0;border:0;text-align:right}
+table.stack td:before{content:attr(data-l);flex:none;font-size:.66rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-color);text-align:left;align-self:center}
+table.stack td:first-child{font-family:var(--font-heading);font-size:1.05rem;justify-content:flex-start;padding-bottom:.45rem;margin-bottom:.2rem;border-bottom:1px solid var(--border-color)}
+table.stack td:first-child:before{content:none}
+table.stack tr.sum td[colspan]{display:none}
+table.stack tr.sum{display:flex;justify-content:space-between;background:var(--card-bg)}
+}
+@media(max-width:48rem){.tt th{letter-spacing:0;text-transform:none}}
+@media(max-width:48rem){
+#classes .cl{position:relative;grid-template-columns:4.3rem 1fr;gap:.2rem .8rem}
+#classes .ca{position:absolute;top:.55rem;right:.55rem}
+#classes .cc{padding-right:5.6rem;min-height:2.5rem}
+}

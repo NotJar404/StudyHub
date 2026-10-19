@@ -68,14 +68,18 @@
   const roomLike=x=>/^(?:ONLINE|TBA|TBD|ASYNC|AVR|GYM|FIELD)$/i.test(x)||/^[A-Za-z1|]{1,5}-?\d{2,4}[A-Za-z]?\d?$/.test(x)||(/^[A-Za-z1]{1,3}[A-Z0-9]{2,4}[a-z]?$/.test(x)&&/\d/.test(x))||/^\d{3,4}[A-Za-z]?$/.test(x);
   const normRoom=x=>{
     x=x.replace(/^[1|](?=[A-Za-z])/,'I');
-    const m=x.match(/^([A-Za-z]{1,4})([0-9SsOo]{2,4})([A-Za-z]?)$/);
-    return m?m[1]+m[2].replace(/[Ss]/g,'5').replace(/[Oo]/g,'0')+m[3]:x;
+    for(let k=1;k<=4;k++){
+      const h=x.slice(0,k),m=x.slice(k).match(/^([0-9SsOoIl]{3})([A-Za-z]?)$/);
+      if(/^[A-Za-z]+$/.test(h)&&m)return h.toUpperCase()+m[1].replace(/[Ss]/g,'5').replace(/[Oo]/g,'0').replace(/[Il]/g,'1')+m[2].toLowerCase();
+    }
+    return x;
   };
   const CODE=/^[A-Z]{2,7}-?\d{1,3}[A-Z]?$/;
   const NUM=/^\d(?:\.\d)?$/;
   const SEC=/^[A-Za-z]{2,6}-\d{1,2}[A-Za-z]?$/; // a class section such as SBIT-1F
   // letters that OCR often confuses inside numbers
   const fixDigits=s=>s.replace(/(?<=\d)[OoQ](?=\d|\s*[:.;]|\s*[AaPp]\.?\s?[Mm])/g,'0').replace(/(?<=\d)[lI|](?=\d)/g,'1').replace(/(?<=[:.;])[OoQ]/g,'0').replace(/\b[OoQ](?=\d\s*[:.;]\d)/g,'0');
+  const fixDigits2=s=>fixDigits(s.replace(/(?<=[:.;])[GgDd](?=\d|[OoQ0])/g,'0').replace(/(^|[^A-Za-z0-9])&(?=\s*[:.;]\s*\d{2})/g,(m,p)=>p+'6'));
 
   const findCode=tk=>{
     for(let i=0;i<Math.min(tk.length,3);i++){
@@ -97,138 +101,358 @@
     return out.sort((a,b)=>a.i-b.i);
   };
 
-  const parseCOR=raw=>{
-    const lines=raw.split(/\r?\n/).map(l=>fixDigits(l.replace(/[|\[\]{}]/g,' ').replace(/[\t]+/g,'  ').replace(/\s+/g,' ').trim())).filter(Boolean);
-    const out=[],seen=new Set();let unsure=0,timeLines=0;
-    const tok=s=>s.replace(/[\/,;]/g,' ').split(/\s+/).filter(Boolean);
-    lines.forEach((line,k)=>{
-      const ts=timesIn(line);
-      if(!ts.length)return;
-      timeLines+=ts.length;
-      const first=ts[0];
-      let left=tok(line.slice(0,first.i));
-      // find the course code; if this line has none, borrow it from the line(s) just above
-      let head=[],cd=findCode(left);
-      if(!cd){
-        for(let b=k-1;b>=Math.max(0,k-2);b--){
-          if(timesIn(lines[b]).length)break;
-          const tk=tok(lines[b]);if(findCode(tk)){head=tk;break}
-        }
-      }
-      let all=head.length?head.concat(left):left;
-      cd=findCode(all);
-      let code=cd?cd[2]:'',rest=cd?all.slice(cd[0]+cd[1]):all,guess=false;
-      if(!cd&&all.length>1&&/\d/.test(all[0])&&/[A-Za-z]/.test(all[0])){code=all[0].toUpperCase();rest=all.slice(1);guess=true}
-      // each time range gets its own days (sorted by position)
-      ts.forEach((t,ti)=>{
-        const segLeft=ti?tok(line.slice(ts[ti-1].end,t.i)):rest.slice();
-        let days=[],body=segLeft.slice();
-        while(body.length&&isDay(body[body.length-1])&&days.length<4){days.unshift(body.pop())}
-        if(!days.length){ // days written after the time
-          const after=tok(line.slice(t.end,ti<ts.length-1?ts[ti+1].i:undefined));
-          let n=0;while(n<after.length&&isDay(after[n])&&n<4){days.push(after[n]);n++}
-        }
-        while(body.length>1&&SEC.test(body[body.length-1]))body.pop();
-        // room: the word right before the days (drop little OCR crumbs like "om" first)
-        let room='';
-        while(body.length>2&&/^(?:[^A-Za-z0-9]{1,2}|[a-z]{1,2})$/.test(body[body.length-1])&&NUM.test(body[body.length-2]))body.pop();
-        if(body.length>1&&roomLike(body[body.length-1])&&!NUM.test(body[body.length-1])){room=normRoom(body.pop())}
-        else{
-          const rm=body.findIndex((x,i)=>/^(RM|ROOM)$/i.test(x)&&/^\d{2,4}[A-Za-z]?$/.test(body[i+1]||''));
-          if(rm>=0){room=body[rm]+body[rm+1];body.splice(rm,2)}
-          else{const after=tok(line.slice(t.end)),j=after.findIndex(x=>roomLike(x)&&!isDay(x)&&!NUM.test(x));if(j>=0)room=normRoom(after[j])}
-        }
-        // units: trailing run of single digits (units, hours...)
-        let units=null,run=[];
-        while(body.length&&NUM.test(body[body.length-1])){run.unshift(body.pop())}
-        if(run.length&&+run[run.length-1]<=6){units=+run[run.length-1];body.push(...run.slice(0,-1))}else if(run.length)body.push(...run);
-        let subj=body.join(' ').replace(/^[-–:.,\s]+|[-–:.,\s]+$/g,'');
-        // subject that wraps onto the next line
-        const nx=lines[k+1];
-        if(ti===0&&nx&&!timesIn(nx).length&&!findCode(tok(nx))&&/^[A-Za-z(][A-Za-z ()&,'-]{1,40}$/.test(nx)&&!/total|units|tuition|fee|date|name|student/i.test(nx))subj+=' '+nx;
-        if(!subj)subj=code||'Class';
-        const dayStr=days.map(dayWord).join('');
-        const dl=dayStr.match(/TH|[MTWFS]/g)||[];
-        const type=/\b(lab|laboratory)\b/i.test(subj)?'Lab':/\b(lec|lecture)\b/i.test(subj)?'Lec':(units===0||(units>0&&hrs(t.start,t.stop)/units>=2.5))?'Lab':'Lec';
-        const make=(d,chk)=>{
-          const it={code:code||(subj.split(' ')[0]||'CLASS').toUpperCase(),subj,units:units==null?'':units,room,day:d,start:t.start,end:t.stop,type};
-          if(chk||!code||guess)it.chk=true;
-          const kk=keyOf(it);if(seen.has(kk))return;seen.add(kk);out.push(it);if(it.chk)unsure++;
-        };
-        if(dl.length)[...new Set(dl)].forEach(d=>make(DAYNAME[d],false));
-        else make('Monday',true);
-      });
-    });
-    return{items:out,unsure,timeLines};
+  // ----- cleaning one line of reader output -----
+  const cleanLine=l=>{
+    let s=fixDigits2(l.replace(/[|\[\]{}_]/g,' ').replace(/\t+/g,'  ').replace(/[—–=]{2,}/g,' ').replace(/\s+/g,' ').trim());
+    // "6-00PM" -> "6:00PM",   "2:30PM5:30PM" and "7:00PMa9:00PM" -> "2:30PM-5:30PM"
+    s=s.replace(/(^|[^\d:.])(\d{1,2})\s*-\s*(\d{2})\s*([AaPp][MmNn])/g,'$1$2:$3$4')
+       .replace(/([AaPp][MmNn])(?:[^\d\sA-Za-z]{1,3}|[a-z]|)(?=\d{1,2}\s*[:.;]\s*\d{2})/g,'$1-');
+    return s;
   };
+  // the section label that starts every subject on the certificate, e.g. "SBCS-3A-"
+  const MARK=/^[^A-Za-z0-9]*[A-Za-z0-9€$@]{2,6}-[^\sA-Za-z0-9]?[0-9A-Za-z]{1,3}-/;
+  const dayTok=x=>{
+    const s=x.replace(/[^A-Za-z]/g,'').toUpperCase();
+    if(!s)return'';
+    if(isDay(s))return dayWord(s);
+    if(/^[LIO1Q]/.test(s)&&isDay(s.slice(1)))return dayWord(s.slice(1)); // a stray bar read as I, l or O
+    return'';
+  };
+  const SMALL=new Set(['and','of','the','in','for','to','a','an','on','with','at','by']);
+  const tidySubject=s=>s.replace(/([a-z])(\d)$/,'$1 $2').replace(/\s+/g,' ').trim().split(' ').map((w,i)=>/^[a-z]/.test(w)&&(i===0||!SMALL.has(w))?w[0].toUpperCase()+w.slice(1):w).join(' ');
+  const fixRoom=x=>{
+    x=x.replace(/¢/g,'c').replace(/^[^A-Za-z0-9]+|[^A-Za-z0-9]+$/g,'');
+    let suf='';const m=x.match(/^(.*\d)(F[1Il])$/);if(m){x=m[1];suf=' F1'}
+    return normRoom(x)+suf;
+  };
+  const roomTok=x=>/^(?:[A-Za-z1|]{1,4}[0-9SsOo]{3}[A-Za-z]?(?:F[1Il])?|(?:ONLINE|TBA|TBD|ASYNC|AVR|GYM|FIELD))$/i.test(x.replace(/¢/g,'c').replace(/^[^A-Za-z0-9]+|[^A-Za-z0-9]+$/g,''));
+
+  // A row of the certificate table: [code] [SECTION-Subject] [units] [room] [days] [time]
+  const rowFromLine=(line,li)=>{
+    const ts=timesIn(line);
+    if(ts.length!==1)return null;
+    const t=ts[0];
+    const tokens=line.slice(0,t.i).replace(/[\/,;]/g,' ').split(/\s+/).filter(x=>/[A-Za-z0-9]/.test(x));
+    const mi=tokens.findIndex(x=>MARK.test(x));
+    if(mi<0)return null;
+    const codeText=tokens.slice(0,mi).join(' ');
+    const T=tokens.slice(mi);
+    T[0]=T[0].replace(MARK,'');if(!T[0])T.shift();
+    const last=()=>T[T.length-1]||'';
+    let days='',noDay=false,room='',units=null;
+    // days (the word just before the time)
+    const d=dayTok(last());
+    if(d&&T.length>2){days=d;T.pop()}
+    else if(/^F[1Iil|]\w?$/.test(last())&&T.length>3&&roomTok(T[T.length-2])){noDay=true}
+    // room, which may end in "F1"
+    if(noDay){const r=T[T.length-2];T.length-=2;room=fixRoom(r+'F1')}
+    else if(T.length>2&&/^F[1Iil|]$/.test(last())){T.pop();room=fixRoom(T.pop()+'F1')}
+    else if(T.length>2&&/^(\d)[1Il|]{1,2}(\d{3}[A-Za-z])$/.test(last())){ // "211603a" = unit 2 + room IL603a
+      const g=T.pop().match(/^(\d)[1Il|]{1,2}(\d{3}[A-Za-z])$/);units=+g[1];room='IL'+g[2];
+    }
+    else if(T.length>2&&roomTok(last())&&!NUM.test(last()))room=fixRoom(T.pop());
+    // units
+    if(units==null&&T.length>1&&/^[0-9][^A-Za-z0-9]?$/.test(last())){units=+last()[0];T.pop()}
+    let subj=T.join(' ');
+    return{li,codeText,subj,units,room,days,noDay,start:t.start,end:t.stop};
+  };
+
+  // ----- course code clean-up: letters then 1-3 digits, fixing letters that look like digits -----
+  const DFIX={O:'0',Q:'0',D:'0',I:'1',L:'1',S:'5',B:'8',Z:'2',G:'6'};
+  const normCode=s=>{
+    s=String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+    if(s.length<3||s.length>10)return null;
+    let best=null;
+    for(let k=2;k<s.length;k++){
+      const head=s.slice(0,k),tail=s.slice(k);
+      if(!/^[A-Z]+$/.test(head)||tail.length>3)continue;
+      const dg=tail.replace(/[A-Z]/g,c=>DFIX[c]||'?');
+      if(!/^\d+$/.test(dg))continue;
+      const sc=(tail.length===3?3:tail.length===1?1.5:1)+(head.length<=6?.5:0)-(/[0-9]/.test(tail)?0:.2);
+      if(!best||sc>best.sc||(sc===best.sc&&head.length>best.h.length))best={sc,h:head,code:head+dg};
+    }
+    return best?best.code:null;
+  };
+
+  const keyOfSubj=s=>String(s).toLowerCase().replace(/[^a-z]/g,'').slice(0,18);
+  const tot=lines=>{for(const l of lines){const m=l.match(/total\s*units?\D{0,6}(\d{1,3})/i);if(m)return+m[1]}return null};
+
+  // ----- fix what can be worked out from the other rows -----
+  const reconcile=(items,total)=>{
+    // rooms: a missing first letter (L504a) follows the other rooms (IL504a)
+    const f={};items.forEach(i=>{const m=(i.room||'').match(/^([A-Z]+)\d/);if(m&&m[1].length>=2)f[m[1]]=(f[m[1]]||0)+1});
+    const top=Object.keys(f).sort((a,b)=>f[b]-f[a]);
+    items.forEach(i=>{const m=(i.room||'').match(/^([A-Z])(\d.*)$/);if(m){const q=top.find(p=>p.endsWith(m[1]));if(q)i.room=q+m[2]}});
+    // days missing: a lab usually meets the same day as its lecture
+    items.forEach(i=>{if(i._noDay){const s=items.find(o=>o!==i&&!o._noDay&&(o.code===i.code||keyOfSubj(o.subj)===keyOfSubj(i.subj)));if(s)i.day=s.day;i.chk=true}});
+    // lecture or lab: of two rows with the same code, the longer one is the lab
+    const g={};items.forEach(i=>{(g[i.code]=g[i.code]||{})[i._li]=i});
+    Object.values(g).forEach(m=>{
+      const rows=Object.values(m);
+      const all=c=>items.filter(i=>i.code===rows[0].code&&i._li===c._li);
+      if(rows.length===2){
+        let [a,b]=rows;const ha=hrs(a.start,a.end),hb=hrs(b.start,b.end);
+        const aLab=ha>hb?true:hb>ha?false:(+a.units||9)<(+b.units||9);
+        all(a).forEach(i=>i.type=aLab?'Lab':'Lec');all(b).forEach(i=>i.type=aLab?'Lec':'Lab');
+      }else rows.forEach(r=>{all(r).forEach(i=>{i.type=/\blab(oratory)?\b/i.test(i.subj)?'Lab':(i.units>0&&hrs(i.start,i.end)/i.units>=2.5)||i.units===0?'Lab':'Lec'})});
+    });
+    // units can never be more than the hours; otherwise work them out (lecture: 1 unit an hour, lab: 3 hours a unit)
+    items.forEach(i=>{
+      const h=hrs(i.start,i.end),n=items.filter(o=>o._li===i._li).length,want=i.type==='Lab'?Math.max(1,Math.round(h/3)):Math.max(1,Math.round(h*n));
+      if(i.units===''||i.units==null||+i.units>h*n+.01||+i.units===0&&i.type!=='Lab'){i.units=want;i.chk=true}
+    });
+    const lines=new Map();items.forEach(i=>lines.set(i._li,i));
+    const sum=[...lines.values()].reduce((a,i)=>a+(+i.units||0),0);
+    return{sum,mismatch:total!=null&&total!==sum,total};
+  };
+
+  const buildItems=rows=>{
+    const items=[];
+    rows.forEach(r=>{
+      const dl=r.days?(r.days.match(/TH|[MTWFS]/g)||[]):[];
+      const code=r.code||'';
+      const mk=d=>{
+        const it={code:code||'CLASS',subj:r.subj,units:r.units==null?'':r.units,room:r.room,day:d,start:r.start,end:r.end,type:'Lec',_li:r.li};
+        if(r.chk||!code||(!dl.length&&d))it.chk=true;
+        if(!dl.length)it._noDay=true;
+        items.push(it);
+      };
+      if(dl.length)[...new Set(dl)].forEach(d=>mk(DAYNAME[d]));else mk('Monday');
+    });
+    return items;
+  };
+
+  // A looser reader for tables that do not look like the usual certificate
+  const genericRows=(lines,k)=>{
+    const line=lines[k],ts=timesIn(line);
+    if(!ts.length)return[];
+    const tok=s=>s.replace(/[\/,;]/g,' ').split(/\s+/).filter(Boolean);
+    const out=[];let left=tok(line.slice(0,ts[0].i));
+    let head=[],cd=findCode(left);
+    if(!cd){for(let b=k-1;b>=Math.max(0,k-2);b--){if(timesIn(lines[b]).length)break;const tk=tok(lines[b]);if(findCode(tk)){head=tk;break}}}
+    const all=head.length?head.concat(left):left;
+    cd=findCode(all);
+    let code=cd?cd[2]:'',rest=cd?all.slice(cd[0]+cd[1]):all,guess=false;
+    if(!cd&&all.length>1&&/\d/.test(all[0])&&/[A-Za-z]/.test(all[0])){code=all[0].toUpperCase();rest=all.slice(1);guess=true}
+    ts.forEach((t,ti)=>{
+      const segLeft=ti?tok(line.slice(ts[ti-1].end,t.i)):rest.slice();
+      let days=[],body=segLeft.slice();
+      while(body.length&&isDay(body[body.length-1])&&days.length<4)days.unshift(body.pop());
+      if(!days.length){const after=tok(line.slice(t.end,ti<ts.length-1?ts[ti+1].i:undefined));let n=0;while(n<after.length&&isDay(after[n])&&n<4){days.push(after[n]);n++}}
+      while(body.length>1&&SEC.test(body[body.length-1]))body.pop();
+      let room='';
+      while(body.length>2&&/^(?:[^A-Za-z0-9]{1,2}|[a-z]{1,2})$/.test(body[body.length-1])&&NUM.test(body[body.length-2]))body.pop();
+      if(body.length>1&&roomLike(body[body.length-1])&&!NUM.test(body[body.length-1]))room=normRoom(body.pop());
+      else{const after=tok(line.slice(t.end)),j=after.findIndex(x=>roomLike(x)&&!isDay(x)&&!NUM.test(x));if(j>=0)room=normRoom(after[j])}
+      let units=null,run=[];
+      while(body.length&&NUM.test(body[body.length-1]))run.unshift(body.pop());
+      if(run.length&&+run[run.length-1]<=6){units=+run[run.length-1];body.push(...run.slice(0,-1))}else if(run.length)body.push(...run);
+      let subj=body.join(' ').replace(/^[-–:.,\s]+|[-–:.,\s]+$/g,'');
+      if(!subj)subj=code||'Class';
+      out.push({li:k,code,codeText:'',subj,units,room,days:days.map(dayWord).join(''),noDay:!days.length,start:t.start,end:t.stop,chk:guess,generic:true});
+    });
+    return out;
+  };
+
+  // Turns the reader's lines into rows. (Course codes are fixed afterwards by a second look at the code column.)
+  const parseRows=raw=>{
+    const lines=(Array.isArray(raw)?raw:String(raw).split(/\r?\n/)).map(cleanLine);
+    const rows=[];
+    lines.forEach((l,k)=>{
+      if(!l)return;
+      const r=rowFromLine(l,k);
+      if(r){
+        // a subject that carries on to the next line
+        const nx=lines[k+1];
+        if(nx&&!timesIn(nx).length&&!MARK.test(nx.split(' ')[0]||'')&&/^[A-Za-z(][A-Za-z ()&,'-]{2,40}$/.test(nx)&&!/total|units|tuition|fee|date|name|student/i.test(nx))r.subj+=' '+nx;
+        rows.push(r);
+      }else rows.push(...genericRows(lines,k));
+    });
+    return{rows,lines,total:tot(lines),timeLines:lines.reduce((a,l)=>a+timesIn(l).length,0)};
+  };
+
+  const finish=(parsed,codes)=>{
+    const rows=parsed.rows.map(r=>{
+      const c=codes&&codes[r.li];
+      const code=c?c.code:(normCode(r.codeText)||(r.generic?r.code:'')||'');
+      return{...r,subj:tidySubject(String(r.subj).replace(/^[-–:.,\s]+|[-–:.,\s]+$/g,'')),code:code||(r.code||''),chk:r.chk||(c?c.unsure:!code)};
+    });
+    const items=buildItems(rows);
+    const info=reconcile(items,parsed.total);
+    return{items,unsure:items.filter(i=>i.chk).length,timeLines:parsed.timeLines,sum:info.sum,total:info.total,mismatch:info.mismatch};
+  };
+  const parseCOR=raw=>finish(parseRows(raw),null);
 
   // =================================================================
   //  SCANNING
+  //  1) clean the photo up  2) read it  3) read the sparse text for anything the first pass missed
+  //  4) look at the course-code column again, one row at a time, and vote on each code
   // =================================================================
   let cor=null,snapshot=null;
   const msg=(t,kind)=>{const m=$('#cor-msg');m.textContent=t;m.dataset.k=kind||''};
   const bar=p=>{$('#cor-bar').style.width=p+'%'};
-  const hasKey=()=>!!store.get('ocrkey','');
-
-  const compress=c=>{
-    let w=Math.min(c.width,2000),q=.85,out;
-    for(let i=0;i<8;i++){
-      const t=document.createElement('canvas');t.width=w;t.height=Math.round(c.height*w/c.width);t.getContext('2d').drawImage(c,0,0,t.width,t.height);
-      out=t.toDataURL('image/jpeg',q);if(out.length*.75<950000)return out;q-=.07;w=Math.round(w*.88);
-    }
-    return out;
-  };
-  const onlineRead=async(c,key)=>{
-    const fd=new FormData();
-    fd.append('apikey',key);fd.append('base64Image',compress(c));fd.append('language','eng');fd.append('isTable','true');fd.append('OCREngine','2');fd.append('scale','true');
-    const r=await fetch('https://api.ocr.space/parse/image',{method:'POST',body:fd});
-    const j=await r.json();
-    if(j.IsErroredOnProcessing||!j.ParsedResults)throw new Error([].concat(j.ErrorMessage||'The online reader could not read this photo.').join(' '));
-    return j.ParsedResults.map(p=>p.ParsedText).join('\n');
-  };
+  const wait=()=>new Promise(r=>setTimeout(r,30));
+  const med=a=>{const s=[...a].sort((x,y)=>x-y);return s[s.length>>1]};
 
   const addScanned=res=>{
     snapshot=items.map(x=>({...x}));
     const have=new Set(items.map(keyOf));let n=0;
-    res.items.forEach(x=>{if(!have.has(keyOf(x))){items.push(x);have.add(keyOf(x));n++}});
+    res.items.forEach(x=>{const y={...x};delete y._li;delete y._noDay;if(!have.has(keyOf(y))){items.push(y);have.add(keyOf(y));n++}});
     draw();
     return n;
   };
 
-  const score=r=>r.items.length*10-r.unsure*4+Math.min(r.timeLines,r.items.length);
+  const sectionWord=w=>MARK.test(w.t.replace(/^[^A-Za-z0-9]+/,'').replace(/^/,''))||MARK.test(w.t);
+  const cropOf=(canvas,x0,x1,yc,hh)=>{
+    const W=Math.round(x1-x0),H=Math.round(hh*2),k=1.3,c=document.createElement('canvas');
+    c.width=Math.round((W+48)*k);c.height=Math.round((H+48)*k);
+    const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.imageSmoothingQuality='high';
+    g.drawImage(canvas,Math.max(0,x0),Math.max(0,yc-hh),W,H,24*k,24*k,W*k,H*k);
+    return c;
+  };
+  // Looks at the code column of each row on its own, with a few different photo clean-ups, and lets the readings vote.
+  const readCodes=async(A,parsed,canvases,progress)=>{
+    const lines=A.lines;if(!lines||!lines.length)return null;
+    // where is the code of each row? (the words that come before the "SBCS-3A-" label)
+    const rowsAt={};
+    parsed.rows.forEach(r=>{
+      const L=lines[r.li];if(!L||!L.words)return;
+      const ws=[...L.words].sort((a,b)=>a.x0-b.x0),mi=ws.findIndex(sectionWord);
+      if(mi<0)return;
+      const cw=ws.slice(0,mi).filter(w=>/[A-Za-z0-9]/.test(w.t)&&(w.x1-w.x0)>8);
+      if(cw.length)rowsAt[r.li]={x0:Math.min(...cw.map(w=>w.x0)),x1:Math.max(...cw.map(w=>w.x1)),yc:med(cw.map(w=>(w.y0+w.y1)/2))};
+    });
+    const ids=Object.keys(rowsAt);if(!ids.length)return null;
+    const mx0=med(ids.map(i=>rowsAt[i].x0)),mx1=med(ids.map(i=>rowsAt[i].x1));
+    const votes={};let done=0;
+    const total=ids.length*canvases.length*2;
+    for(const id of ids){
+      const b=rowsAt[id],v=votes[id]={};
+      const x0=Math.min(b.x0,mx0+(b.x0-mx0)*.2)-12,x1=Math.max(b.x1,b.x0+60)+12;
+      for(const cv of canvases)for(const hh of[40,52]){
+        try{
+          const t=await Lib.ocr(cropOf(cv,x0,x1,b.yc,hh),{psm:7,whitelist:'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'});
+          const c=normCode(t);if(c)v[c]=(v[c]||0)+1;
+        }catch(e){}
+        progress(++done/total);
+      }
+    }
+    // rows with the same subject are the same course, so they share their votes
+    const subj={};parsed.rows.forEach(r=>{(subj[keyOfSubj(r.subj)]=subj[keyOfSubj(r.subj)]||[]).push(r.li)});
+    const out={};
+    parsed.rows.forEach(r=>{
+      const pool={};
+      (subj[keyOfSubj(r.subj)]||[r.li]).forEach(li=>{
+        const v=votes[li]||{};Object.keys(v).forEach(c=>pool[c]=(pool[c]||0)+v[c]);
+        const p=parsed.rows.find(x=>x.li===li);const pc=p&&normCode(p.codeText);if(pc)pool[pc]=(pool[pc]||0)+1;
+      });
+      const ks=Object.keys(pool);if(!ks.length)return;
+      const score=c=>pool[c]*10+(/^[A-Z]{2,6}\d{3}$/.test(c)?4:/^[A-Z]{2,7}\d{1,3}$/.test(c)?2:0)+c.length*.1;
+      ks.sort((a,b)=>score(b)-score(a));
+      const top=ks[0],all=ks.reduce((a,c)=>a+pool[c],0);
+      out[r.li]={code:top,unsure:pool[top]<2||pool[top]/all<.4};
+      if(window.SCH)SCH.dbg[r.li]=pool;
+    });
+    return out;
+  };
+
+  const lev=(a,b)=>{const d=Array.from({length:a.length+1},(_,i)=>[i,...Array(b.length).fill(0)]);for(let j=1;j<=b.length;j++)d[0][j]=j;for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return d[a.length][b.length]};
+  // The first word of each subject is glued to the "SBCS-3A-" label and is often misread. Compare both readings of
+  // every row of the same course and keep the one that agrees most with the others.
+  const fixFirstWords=(parsed,A,B)=>{
+    if(!A.lines)return;
+    const bm=B&&B.words?B.words.filter(w=>MARK.test(w.t)):[];
+    const per=parsed.rows.map(r=>{
+      const L=A.lines[r.li],cands=[];
+      const first=(r.subj.match(/^\S+/)||[''])[0];
+      if(first)cands.push({w:first,c:0});
+      const aw=L&&L.words?L.words.find(sectionWord):null;
+      if(aw){
+        cands[0]&&(cands[0].c=aw.c==null?50:aw.c);
+        const b=bm.find(w=>Math.abs(w.x0-aw.x0)<70&&Math.abs((w.y0+w.y1)/2-(aw.y0+aw.y1)/2)<60);
+        if(b){const t=b.t.replace(MARK,'');if(/^[A-Za-z]{3,}$/.test(t))cands.push({w:t,c:b.c==null?50:b.c})}
+      }
+      return{r,cands};
+    });
+    const groups={};per.forEach(p=>{(groups[keyOfSubj(p.r.subj.replace(/^\S+/,''))]=groups[keyOfSubj(p.r.subj.replace(/^\S+/,''))]||[]).push(p)});
+    Object.values(groups).forEach(g=>{
+      const all=g.flatMap(p=>p.cands);if(all.length<2)return;
+      const score=c=>all.reduce((a,o)=>a+lev(c.w.toLowerCase(),o.w.toLowerCase()),0)-c.c/100;
+      const best=all.slice().sort((a,b)=>score(a)-score(b))[0];
+      g.forEach(p=>{if(p.cands.length)p.r.subj=p.r.subj.replace(/^\S+/,best.w)});
+    });
+  };
+
+  // The first read can drop the second line of a long subject ("...Emerging / Technologies"). The sparse read finds it.
+  const addMissingWords=(parsed,A,B)=>{
+    if(!A.lines||!B||!B.words)return;
+    const inA=w=>A.words&&A.words.some(a=>{
+      const ox=Math.min(a.x1,w.x1)-Math.max(a.x0,w.x0),oy=Math.min(a.y1,w.y1)-Math.max(a.y0,w.y0);
+      return ox>0&&oy>0&&ox*oy>.4*(w.x1-w.x0)*(w.y1-w.y0)&&lev(a.t.toLowerCase(),w.t.toLowerCase())<=2;
+    });
+    const orphans=B.words.filter(w=>/^[A-Za-z][A-Za-z'&()-]{2,}$/.test(w.t)&&(w.c==null||w.c>=60)&&!inA(w));
+    if(!orphans.length)return;
+    const marks=[];
+    parsed.rows.forEach(r=>{
+      const L=A.lines[r.li];if(!L||!L.words)return;
+      const ws=[...L.words].sort((a,b)=>a.x0-b.x0),mi=ws.findIndex(sectionWord);if(mi<0)return;
+      const nums=ws.slice(mi).filter(w=>/^\d/.test(w.t)&&w.x0>ws[mi].x0+300);
+      marks.push({r,x0:ws[mi].x0-70,x1:nums.length?nums[0].x0-6:ws[mi].x0+1500,y:med(ws.slice(mi).map(w=>w.y0)),h:med(ws.slice(mi).map(w=>w.y1-w.y0))||50});
+    });
+    orphans.sort((a,b)=>a.x0-b.x0).forEach(w=>{
+      const cands=marks.filter(m=>w.x0>=m.x0&&w.x1<=m.x1&&w.y0>m.y+m.h*.3&&w.y0-m.y<m.h*2.6);
+      if(!cands.length)return;
+      const m=cands.sort((a,b)=>b.y-a.y)[0];
+      if(!m.r._added)m.r._added=[];
+      m.r._added.push(w.t);m.r.subj+=' '+w.t;
+    });
+  };
+
   let scanning=false;
   const scan=async()=>{
     if(!cor||scanning)return;
     scanning=true;$('#cor-scan').disabled=true;$('#cor-undo').hidden=true;$('#cor-raw').hidden=true;
-    let best={items:[],unsure:0,timeLines:0},raw='';
+    let raw='',res={items:[],unsure:0,timeLines:0};
     try{
-      // A) optional online reader (more accurate on blurry photos)
-      const key=store.get('ocrkey','');
-      if(key){
+      msg('Straightening and cleaning up your photo…');bar(4);await wait();
+      const bw=Lib.prep(cor,'bw');
+      msg('Reading your certificate… (the first time this loads the reader, please wait)');
+      const A=await Lib.ocr(bw,{psm:6,full:true,onProgress:p=>{bar(Math.round(8+p*40));msg('Reading your certificate… '+Math.round(p*100)+'%')}});
+      raw=A.text;
+      const lineTexts=A.lines&&A.lines.length?A.lines.map(l=>l.t):null;
+      let parsed=parseRows(lineTexts||A.text);
+      let codes=null;
+      const rows=parsed.rows.filter(r=>!r.generic);
+      if(rows.length){
         try{
-          msg('Reading with the online reader…');bar(35);
-          raw=await onlineRead(cor,key);best=parseCOR(raw);
-        }catch(e){msg('Online reader unavailable ('+(e.message||'error')+'). Using the built-in reader instead…');}
+          msg('Looking for anything the first read missed…');bar(52);await wait();
+          let B=null;
+          try{B=await Lib.ocr(bw,{psm:11,full:true})}catch(e){}
+          if(lineTexts&&B)addMissingWords(parsed,A,B);
+          if(lineTexts)fixFirstWords(parsed,A,B);
+          msg('Double-checking each course code…');bar(58);await wait();
+          const cans=[bw,Lib.prep(cor,'bws'),Lib.prep(cor,'bwl')];
+          codes=await readCodes(A,parsed,cans,p=>{bar(Math.round(60+p*38))});
+        }catch(e){codes=null}
       }
-      // B) built-in reader, up to three tries with different photo clean-ups
-      if(!best.items.length||best.items.length<best.timeLines){
-        const tries=[['bw',6,'Cleaning up the photo…'],['gray',6,'Trying again with softer contrast…'],['gray',4,'One more try with a different layout…']];
-        for(let i=0;i<tries.length;i++){
-          const[mode,psm,label]=tries[i];
-          msg(label);bar(5+i*30);await new Promise(r=>setTimeout(r,30));
-          const img=Lib.prep(cor,mode);
-          msg('Reading your certificate… (first time loads the reader, please wait)');
-          const text=await Lib.ocr(img,{psm,onProgress:p=>{bar(Math.round(5+i*30+p*28));msg('Reading your certificate… '+Math.round(p*100)+'%')}});
-          const r=parseCOR(text);
-          if(!raw||score(r)>score(best)){best=r;raw=text}
-          if(best.items.length&&best.items.length>=best.timeLines&&!best.unsure)break;
+      res=finish(parsed,codes);
+      // nothing found: try the other photo clean-ups and layouts
+      if(!res.items.length){
+        const tries=[['gray',6,'Trying again with softer contrast…'],['bws',4,'One more try with a different layout…']];
+        for(let i=0;i<tries.length&&!res.items.length;i++){
+          const[mode,psm,label]=tries[i];msg(label);bar(60+i*15);await wait();
+          const text=await Lib.ocr(Lib.prep(cor,mode),{psm});
+          const r=parseCOR(text);if(r.items.length){res=r;raw=text}
         }
       }
       bar(100);
       $('#cor-raw').hidden=!raw;$('#cor-raw pre').textContent=raw;
-      if(best.items.length){
-        const n=addScanned(best);
-        msg(n?('Added '+n+' class'+(n===1?'':'es')+' to your schedule'+(best.unsure?'. '+best.unsure+' marked “check” need a quick look.':'. Everything looks readable. ')+' Tap ✎ on any class to fix it.'):'Those classes are already in your schedule.','ok');
+      if(res.items.length){
+        const n=addScanned(res);
+        let m=n?('Added '+n+' class'+(n===1?'':'es')+' to your schedule.'):'Those classes are already in your schedule.';
+        if(res.unsure)m+=' '+res.unsure+' marked “check” may need a quick fix. Tap ✎ to edit.';
+        if(res.mismatch)m+=' Your certificate says '+res.total+' total units but the scan adds up to '+res.sum+', so double-check the units.';
+        msg(m,res.unsure||res.mismatch?'':'ok');
         $('#cor-undo').hidden=!n;
         $('#classes').scrollIntoView({behavior:still?'auto':'smooth',block:'start'});
       }else{
@@ -260,10 +484,6 @@
   $('#rot-l').onclick=()=>rot(-1);$('#rot-r').onclick=()=>rot(1);
   $('#cor-scan').onclick=scan;
   $('#cor-undo').onclick=()=>{if(snapshot){items=snapshot;snapshot=null;draw();$('#cor-undo').hidden=true;msg('Scan removed.')}};
-  // optional online reader key
-  const keyBox=$('#ocr-key');keyBox.value=store.get('ocrkey','');
-  $('#ocr-save').onclick=()=>{const v=keyBox.value.trim();store.set('ocrkey',v);$('#ocr-state').textContent=v?'Saved. Your next scan will use the online reader first.':'Removed. Scans use the built-in reader only.'};
-
   // =================================================================
   //  YOUR CLASSES (list + add by hand + edit)
   // =================================================================
@@ -508,7 +728,7 @@
   };
 
   // test hook (used by the automatic tests, harmless otherwise)
-  window.SCH={parseCOR};
+  window.SCH={parseCOR,parseRows,finish,normCode,dbg:{}};
 
   setBg(bgData);
   document.fonts&&document.fonts.ready.then(()=>{Promise.all(['500 40px Fraunces','400 20px "DM Sans"','500 20px "DM Sans"','700 20px "DM Sans"'].map(f=>document.fonts.load(f))).then(draw).catch(()=>{})});
