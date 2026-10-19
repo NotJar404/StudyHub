@@ -72,21 +72,23 @@ const SCALE=[[96.5,1],[92.5,1.25],[88.5,1.5],[84.5,1.75],[80.5,2],[76.5,2.25],[7
 const toGrade=p=>(SCALE.find(s=>p>=s[0])||[0,5])[1];
 if($('#g-cats')){
   const box=$('#g-cats'),fmt=g=>g%1?String(g):g.toFixed(1);
-  const row=h=>{const d=document.createElement('div');d.className='r3';d.innerHTML='<input type="number" min="0" step="any" placeholder="Score" aria-label="Score"><input type="number" min="1" step="any" placeholder="Total items" aria-label="Total items"><button type="button" class="x" aria-label="Remove">×</button>';d.querySelector('.x').onclick=()=>{d.remove();calc()};h.appendChild(d)};
+  const row=h=>{const d=document.createElement('div');d.className='r3';d.innerHTML='<input type="number" min="0" step="any" placeholder="Score" aria-label="Score"><input type="number" min="1" step="any" placeholder="Total" aria-label="Total items"><button type="button" class="x" aria-label="Remove">×</button>';d.querySelector('.x').onclick=()=>{d.remove();calc()};h.appendChild(d)};
   [['Activities',20],['Quizzes',20],['Assignments',20]].forEach(([n,w])=>{
     const s=document.createElement('div');s.className='cat';s.dataset.k=n;
-    s.innerHTML='<div class="cat-h"><h3>'+n+'</h3><label>Weight <input type="number" class="w" min="0" max="100" value="'+w+'" aria-label="'+n+' weight">%</label></div><div class="rows"></div><button type="button" class="ghost">+ Add item</button>';
+    s.innerHTML='<div class="cat-h"><h3>'+n+'</h3><span class="pc" title="Your percentage in this category">—</span><label>Weight <input type="number" class="w" min="0" max="100" value="'+w+'" aria-label="'+n+' weight">%</label></div><div class="colh"><span>Your score</span><span>Out of (total)</span></div><div class="rows"></div><button type="button" class="ghost">+ Add item</button>';
     const h=s.querySelector('.rows');for(let i=0;i<3;i++)row(h);
     s.querySelector('.ghost').onclick=()=>row(h);box.appendChild(s);
   });
   $('#g-scale').innerHTML='<table><tr><th>Final percentage</th><th>Grade</th></tr>'+SCALE.map((s,i)=>'<tr><td>'+s[0]+' to '+(i?(SCALE[i-1][0]-.1).toFixed(1):'100')+'</td><td>'+s[1].toFixed(2)+'</td></tr>').join('')+'<tr><td>64.4 and below</td><td>5.00</td></tr></table>';
   const calc=()=>{
     const parts=[];
-    $$('#g-cats .cat').forEach(c=>{let s=0,t=0;c.querySelectorAll('.r3').forEach(r=>{const i=r.querySelectorAll('input'),a=parseFloat(i[0].value),b=parseFloat(i[1].value);if(a>=0&&b>0){s+=a;t+=b}});parts.push({n:c.dataset.k,s,t,w:parseFloat(c.querySelector('.w').value)||0})});
+    $$('#g-cats .cat').forEach(c=>{let s=0,t=0;c.querySelectorAll('.r3').forEach(r=>{const i=r.querySelectorAll('input'),a=parseFloat(i[0].value),b=parseFloat(i[1].value);if(a>=0&&b>0){s+=a;t+=b}});c.querySelector('.pc').textContent=t?(s/t*100).toFixed(1)+'%':'—';parts.push({n:c.dataset.k,s,t,w:parseFloat(c.querySelector('.w').value)||0})});
     const es=parseFloat($('#ex-s').value),et=parseFloat($('#ex-t').value);
     parts.push({n:'Exam',s:es>=0?es:0,t:et>0?et:0,w:parseFloat($('#ex-w').value)||0});
+    $('#ex-pc').textContent=et>0&&es>=0?(es/et*100).toFixed(1)+'%':'—';
     let fin=0,wt=0,csP=0,csW=0;const miss=[];
     const rows=parts.map((p,k)=>{const pct=p.t?p.s/p.t*100:0,pts=pct*p.w/100;if(!p.t)miss.push(p.n);fin+=pts;wt+=p.w;if(k<3){csP+=pts;csW+=p.w}return '<tr><td data-l="Category"><b>'+p.n+'</b></td><td data-l="Computation">'+(p.t?p.s+' ÷ '+p.t+' × 100':'no items')+'</td><td data-l="Percent">'+pct.toFixed(1)+'%</td><td data-l="Weight">'+p.w+'%</td><td data-l="Points">'+pts.toFixed(2)+'</td></tr>'}).join('');
+    {const g=$('#g-wt');if(g){g.textContent=wt===100?'Weights add up to 100%.':'Your weights add up to '+wt+'%, not 100%. Adjust them to match your subject.';g.classList.toggle('warn',wt!==100)}}
     const exP=parts[3].t?parts[3].s/parts[3].t*parts[3].w:0,exW=parts[3].w;
     fin=Math.round(fin*10)/10;const g=toGrade(fin),none=miss.length===parts.length;
     $('#ring').style.setProperty('--p',none?0:Math.min(fin,100));
@@ -258,7 +260,9 @@ if($('#cv-in')){
     const dec=n<0n?-n:n;
     o.innerHTML=rows(n)+(dec<(10n**15n)?'<details><summary>Show the steps (decimal '+dec+' to other bases)</summary>'+[2,8,16].map(x=>'<h3 style="margin-top:1rem">To '+B[x].toLowerCase()+'</h3>'+steps(dec,x)).join('')+'</details>':'');
   };
-  $('#cv-in').oninput=conv;$('#cv-base').onchange=conv;
+  const HINT={2:'Binary uses only 0 and 1.',8:'Octal uses the digits 0 to 7.',10:'Decimal uses the digits 0 to 9.',16:'Hexadecimal uses 0 to 9 and A to F.'};
+  const hint=()=>{$('#cv-hint').textContent=HINT[+$('#cv-base').value]};
+  $('#cv-in').oninput=conv;$('#cv-base').onchange=()=>{hint();conv()};hint();
   $('#ca-form').onsubmit=e=>{
     e.preventDefault();
     const b=+$('#ca-base').value,x=parse($('#ca-a').value,b),y=parse($('#ca-b').value,b),op=$('#ca-op').value,o=$('#ca-out');
@@ -271,19 +275,22 @@ if($('#cv-in')){
   conv();
 }
 
-// ===== TEAM: FILTER, FLIP ON HOVER (TAP ON TOUCH), GLOW IN FAVORITE COLOR =====
-const aura=$('#aura');
-const glow=c=>{if(!aura)return;if(c){aura.style.setProperty('--aura',c.dataset.color||'#ff2d2d');aura.classList.add('show')}else aura.classList.remove('show')};
-const canHover=matchMedia('(hover:hover)').matches;
-$$('.flip').forEach(f=>{
-  const set=on=>{$$('.flip').forEach(x=>x!==f&&x.classList.remove('on'));f.classList.toggle('on',on);glow(on?f:null)};
-  if(canHover){f.onmouseenter=()=>set(true);f.onmouseleave=()=>set(false)}else f.onclick=()=>set(!f.classList.contains('on'));
-  f.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();set(!f.classList.contains('on'))}};
-  f.querySelectorAll('a').forEach(a=>a.onclick=e=>{e.stopPropagation();if(a.getAttribute('href')==='#')e.preventDefault()});
-});
-$$('#filters .chip').forEach(b=>b.onclick=()=>{
-  const k=b.dataset.cat;
-  $$('#filters .chip').forEach(x=>{x.classList.toggle('sel',x===b);x.setAttribute('aria-pressed',x===b)});
-  $$('.flip').forEach(f=>{f.classList.remove('on');f.style.display=k==='All'||f.dataset.cat.split(',').includes(k)?'':'none'});
-  glow(null);
+
+
+
+// ===== SEGMENTED CHOICES: every small dropdown becomes a row of big, clear buttons =====
+$$('select.seg').forEach(sel=>{
+  const box=document.createElement('div');box.className='seg';box.setAttribute('role','radiogroup');
+  const lab=document.querySelector('label[for="'+sel.id+'"]');if(lab){box.setAttribute('aria-label',lab.textContent);lab.setAttribute('for','');}
+  const sync=()=>[...box.children].forEach((b,i)=>{const on=sel.selectedIndex===i;b.classList.toggle('sel',on);b.setAttribute('aria-checked',on)});
+  [...sel.options].forEach((o,i)=>{
+    const b=document.createElement('button');b.type='button';b.setAttribute('role','radio');
+    const m=o.textContent.match(/^(.*?)\s*\((.*)\)$/);
+    b.innerHTML=m?'<b>'+m[1]+'</b><small>'+m[2]+'</small>':'<b>'+o.textContent+'</b>';
+    b.onclick=()=>{sel.selectedIndex=i;sel.dispatchEvent(new Event('change',{bubbles:true}));sync()};
+    box.appendChild(b);
+  });
+  box.dataset.n=sel.options.length;if([...sel.options].every(o=>o.textContent.length<=3))box.dataset.short='1';
+  sel.classList.add('sr');sel.tabIndex=-1;sel.insertAdjacentElement('afterend',box);
+  sel.addEventListener('change',sync);sync();
 });
