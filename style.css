@@ -394,15 +394,11 @@ table.stack tr.sum{display:flex;justify-content:space-between;background:var(--c
 }
 
 /* ===== SMOOTH PAGE CHANGES AND DAY/NIGHT SWITCH ===== */
-@view-transition{navigation:auto}
-::view-transition-old(root),::view-transition-new(root){animation-duration:.35s;animation-timing-function:ease}
-.nav{view-transition-name:site-nav}
-::view-transition-group(site-nav){animation-duration:0s}
 :root[data-theme=night]{color-scheme:dark}
 :root[data-theme=day]{color-scheme:light}
 html.theming *,html.theming *:before,html.theming *:after{transition:background-color .5s ease,color .5s ease,border-color .5s ease,box-shadow .5s ease,fill .5s ease,stroke .5s ease!important}
 @keyframes pagein{from{opacity:0}to{opacity:1}}
-body{animation:pagein .4s ease both}
+
 
 /* scheduler controls */
 .acc{margin-top:.9rem}
@@ -418,3 +414,5 @@ body{animation:pagein .4s ease both}
 .rng{display:grid;grid-template-columns:5.5rem 1fr 3rem;align-items:center;gap:.6rem;margin:.5rem 0}
 .rng input{min-width:0;width:100%}.rng output{font-size:.85rem;text-align:right}
 #fill-box.off,#line-box.off{opacity:.4;pointer-events:none}
+
+main{animation:pagein .35s ease both}
