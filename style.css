@@ -1,11 +1,12 @@
 /* ===== DESIGN TOKENS (day = golden autumn, night = starry willow) ===== */
 :root{--radius-card:1.5rem;--font-heading:"Fraunces",Georgia,serif}
-:root[data-theme=day]{--bg-color:#f8f0e3;--bg2:#efe3cf;--card-bg:#fffaf0;--border-color:rgba(120,80,40,.18);--text-main:#2d2a2e;--muted:#6a6258;--accent-color:#a85c1c;--btn-text:#fff;--nav:rgba(255,250,240,.88);--field:#fff;--sky:#d8d1c4;--orb:#f3e3c3;--ground:#b87440;--trunk:#3a2417;--g1:#b57a21;--g2:#d49b2e;--g3:#ecc15a;--g4:#fbe7a0;--stars:0;--ok:#2f6b3e;--bad:#a63d2a;--p1:#2a2720;--p2:#3a352c;--px:#fbefdc;--gold:#e6a95a}
+:root,:root[data-theme=day]{--bg-color:#f8f0e3;--bg2:#efe3cf;--card-bg:#fffaf0;--border-color:rgba(120,80,40,.18);--text-main:#2d2a2e;--muted:#6a6258;--accent-color:#a85c1c;--btn-text:#fff;--nav:rgba(255,250,240,.88);--field:#fff;--sky:#d8d1c4;--orb:#f3e3c3;--ground:#b87440;--trunk:#3a2417;--g1:#b57a21;--g2:#d49b2e;--g3:#ecc15a;--g4:#fbe7a0;--stars:0;--ok:#2f6b3e;--bad:#a63d2a;--p1:#2a2720;--p2:#3a352c;--px:#fbefdc;--gold:#e6a95a}
 :root[data-theme=night]{--bg-color:#0d1020;--bg2:#1b1628;--card-bg:#15192e;--border-color:rgba(255,220,170,.15);--text-main:#f1e8d8;--muted:#aab0c4;--accent-color:#f0b562;--btn-text:#1b1020;--nav:rgba(13,16,32,.88);--field:#0c1530;--sky:#1b1d38;--orb:#f3e6b8;--ground:#4a3228;--trunk:#120b0e;--g1:#5c3c14;--g2:#82581c;--g3:#b0832f;--g4:#d9b46a;--stars:1;--ok:#8fcf9e;--bad:#ff9a85;--p1:#0f1530;--p2:#1d2147;--px:#f1e8d8;--gold:#f0b562}
 /* ===== BASE ===== */
 *{box-sizing:border-box}
 html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);scroll-behavior:smooth;scroll-padding-top:6.5rem}
-body{margin:0;overflow-x:hidden;color:var(--text-main);font:1rem/1.7 "DM Sans",system-ui,sans-serif;background:linear-gradient(180deg,var(--bg-color),var(--bg2));background-attachment:fixed;transition:background .6s,color .6s;animation:in .6s ease both}
+html{background:var(--bg-color)}
+body{margin:0;overflow-x:hidden;color:var(--text-main);font:1rem/1.7 "DM Sans",system-ui,sans-serif;background:linear-gradient(180deg,var(--bg-color),var(--bg2));background-attachment:fixed}
 @keyframes in{from{opacity:0}to{opacity:1}}
 #bg,#tr{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
 #bg{z-index:0}#tr{z-index:99}
@@ -415,4 +416,3 @@ html.theming *,html.theming *:before,html.theming *:after{transition:background-
 .rng input{min-width:0;width:100%}.rng output{font-size:.85rem;text-align:right}
 #fill-box.off,#line-box.off{opacity:.4;pointer-events:none}
 
-main{animation:pagein .35s ease both}

@@ -47,10 +47,10 @@ const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
     r.classList.add('theming');show(m);clearTimeout(b._t);b._t=setTimeout(()=>r.classList.remove('theming'),700);
   };
   addEventListener('storage',e=>{if(e.key==='theme')show(saved())});
-  addEventListener('pageshow',()=>show(saved()));
   const close=()=>{nav.classList.remove('open');bg.setAttribute('aria-expanded','false')};
   bg.onclick=()=>bg.setAttribute('aria-expanded',nav.classList.toggle('open'));
   $$('#menu a').forEach(a=>a.addEventListener('click',close));
+  addEventListener('pageshow',()=>{show(saved());close()});
   addEventListener('keydown',e=>{if(e.key==='Escape')close()});
 })();
 
