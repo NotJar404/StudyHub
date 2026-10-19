@@ -31,18 +31,22 @@ const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
   new MutationObserver(()=>{if(still)requestAnimationFrame(draw)}).observe(document.documentElement,{attributes:true});
 })();
 
-// ===== DAY / NIGHT (FOLLOWS THE CLOCK UNLESS YOU PICK) AND MOBILE MENU =====
+// ===== DAY / NIGHT (DAY BY DEFAULT) AND MOBILE MENU =====
 (()=>{
   const b=$('#theme'),r=document.documentElement,nav=$('#nav'),bg=$('#burger');
   const svg=p=>'<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>';
   const MOON=svg('<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>')+'<span>Night</span>';
   const SUN=svg('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2m-7.07-2.93 1.41-1.41m11.32-11.32 1.41-1.41M2 12h2m16 0h2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41"/>')+'<span>Day</span>';
-  const auto=()=>{const h=new Date().getHours();return h>=18||h<6?'night':'day'};
-  const saved=()=>{try{return localStorage.getItem('theme')}catch(e){return null}};
-  const show=m=>{r.dataset.theme=m;b.innerHTML=m==='night'?SUN:MOON;b.setAttribute('aria-pressed',m==='night')};
-  show(saved()||auto());
-  b.onclick=()=>{const m=r.dataset.theme==='night'?'day':'night';try{localStorage.setItem('theme',m)}catch(e){}show(m)};
-  setInterval(()=>{if(!saved())show(auto())},60000);
+  // Day is the standard on every page. Night only turns on when you press the button, and it is remembered on every page.
+  const saved=()=>{try{return localStorage.getItem('theme')==='night'?'night':'day'}catch(e){return'day'}};
+  const show=m=>{r.dataset.theme=m;b.innerHTML=m==='night'?SUN:MOON;b.setAttribute('aria-pressed',m==='night');b.setAttribute('aria-label',m==='night'?'Switch to day mode':'Switch to night mode')};
+  show(saved());
+  b.onclick=()=>{
+    const m=r.dataset.theme==='night'?'day':'night';
+    try{localStorage.setItem('theme',m)}catch(e){}
+    r.classList.add('theming');show(m);clearTimeout(b._t);b._t=setTimeout(()=>r.classList.remove('theming'),700);
+  };
+  addEventListener('storage',e=>{if(e.key==='theme')show(saved())});
   const close=()=>{nav.classList.remove('open');bg.setAttribute('aria-expanded','false')};
   bg.onclick=()=>bg.setAttribute('aria-expanded',nav.classList.toggle('open'));
   $$('#menu a').forEach(a=>a.addEventListener('click',close));
