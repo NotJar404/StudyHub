@@ -1,4 +1,4 @@
-// ===== SHARED HELPERS FOR THE SCHEDULER AND THE FILE CONVERTER =====
+  // ===== SHARED HELPERS FOR THE SCHEDULER AND THE FILE CONVERTER =====
 // Loads the heavy libraries only when a tool needs them, so the other pages stay fast.
 const Lib=(()=>{
   const loaded={};
@@ -136,16 +136,22 @@ const Lib=(()=>{
   };
 
   // ----- Text reader (Tesseract, runs in the browser) -----
-  const TESS=['https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js','https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.1/tesseract.min.js'];
+  const TESS=['https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js','https://unpkg.com/tesseract.js@5.1.1/dist/tesseract.min.js','https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.1/tesseract.min.js'];
   const LANG='https://cdn.jsdelivr.net/npm/@tesseract.js-data/eng/4.0.0_best_int';
   let worker=null,hold={cb:null};
   const getWorker=async()=>{
     await script(TESS,()=>window.Tesseract);
     if(worker)return worker;
     const logger=m=>{hold.cb&&hold.cb(m)};
-    try{worker=await Tesseract.createWorker('eng',1,{logger,langPath:LANG})}
-    catch(e){worker=await Tesseract.createWorker('eng',1,{logger})}
-    return worker;
+    // try the main address first, then a backup address, then the library's own defaults
+    const tries=[
+      {logger,langPath:LANG},
+      {logger,langPath:'https://unpkg.com/@tesseract.js-data/eng@1.0.0/4.0.0_best_int',workerPath:'https://unpkg.com/tesseract.js@5.1.1/dist/worker.min.js',corePath:'https://unpkg.com/tesseract.js-core@5.1.0'},
+      {logger}
+    ];
+    let last;
+    for(const o of tries){try{worker=await Tesseract.createWorker('eng',1,o);return worker}catch(e){last=e}}
+    throw last;
   };
   // psm 6 = one block of text (good for tables), psm 4 = columns of varying size
   // Turns whatever the reader returns into plain lists of words and lines with their positions.

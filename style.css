@@ -52,7 +52,6 @@ form .btn-primary{width:100%}
 button.x{min-height:2.75rem;min-width:2.75rem;padding:0;background:none;border:0;color:var(--accent-color);font-size:1.3rem}
 .lb{display:block;margin:0 0 .35rem;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:0 .8rem}
-.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:.6rem;margin-bottom:2rem}
 .chip{min-height:3rem;padding:0 1.4rem;border-radius:999px;background:var(--card-bg);color:var(--text-main);font-weight:500}
 .chip.sel{background:var(--text-main);color:var(--card-bg);border-color:var(--text-main)}
 /* ===== HOME: HERO ===== */
@@ -118,7 +117,6 @@ button.x{min-height:2.75rem;min-width:2.75rem;padding:0;background:none;border:0
 .looks{display:flex;flex-wrap:wrap;gap:.7rem;margin-bottom:1.2rem}
 .looks button{width:3rem;height:3rem;min-height:0;padding:0;border-radius:50%;color:#fff;border:3px solid var(--card-bg);box-shadow:0 0 0 1px var(--border-color)}
 .looks button.sel{box-shadow:0 0 0 2px var(--accent-color)}
-.quote{margin:1.2rem 0 0;text-align:center;font:italic 1rem var(--font-heading);color:#6a6258}
 .tw{overflow-x:auto}
 table{width:100%;border-collapse:collapse}
 td,th{padding:.65rem .5rem;text-align:left;vertical-align:top;border-bottom:1px solid var(--border-color);font-size:.92rem}
@@ -140,14 +138,7 @@ th{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ac
 .result h2{margin:.5rem 0;font-size:1.8rem;font-weight:400}
 .ok{color:var(--ok)}.bad{color:var(--bad)}
 details{margin-top:1.2rem;text-align:left}summary{cursor:pointer;color:var(--accent-color);font-weight:600}
-.decks{display:grid;gap:.8rem;max-height:34rem;overflow:auto}
-.dcard{padding:1rem;background:var(--bg2);border-radius:1rem}
 .dh{display:flex;align-items:center;justify-content:space-between}
-.bdg2{padding:.15rem .75rem;border-radius:999px;background:var(--border-color);color:var(--accent-color);font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
-.dcard h3{margin:.5rem 0;font-size:1.25rem}
-.dtxt{white-space:pre-wrap;color:var(--muted)}
-.dcode{white-space:pre-wrap;padding:.7rem;border-radius:.6rem;background:var(--card-bg);font:.85rem/1.5 ui-monospace,Consolas,monospace}
-.sw-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem}
 .sw{display:flex;flex-direction:column;justify-content:flex-end;min-height:6rem;padding:.7rem;border:1px solid var(--border-color);border-radius:.75rem;text-align:left}
 .sw small{font-weight:500;opacity:.85}
 .fb{text-align:center;padding:1.5rem 0}
@@ -231,11 +222,6 @@ input[type=range]{padding:0;min-height:2rem;border:0;background:transparent;acce
 .dz.over{border-color:var(--accent-color);background:var(--card-bg)}
 .dz .ic{margin:0}
 .cor img{display:block;width:100%;max-height:16rem;margin:1rem 0;object-fit:contain;border-radius:.8rem;background:var(--bg2)}
-.rvi{margin-bottom:.7rem;padding:1rem;background:var(--bg2);border-radius:.9rem}
-.rvi input{margin:.3rem 0 .6rem}
-.rvi .meta{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.6rem}
-.rvi .meta span{padding:.15rem .7rem;border-radius:999px;background:var(--card-bg);border:1px solid var(--border-color);font-size:.78rem}
-.rvi select{margin:0}
 .lbl{display:block;margin-bottom:.7rem;font-size:.65rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
 .fcf,.fcb{box-shadow:0 .6rem 1.6rem rgba(60,35,10,.08);text-align:center}
 .dh2{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1.2rem}
@@ -283,7 +269,6 @@ input[type=range]{padding:0;min-height:2rem;border:0;background:transparent;acce
 .ghost[hidden],.btn-primary[hidden],.btn-ghost[hidden]{display:none}
 .smsg{min-height:1.5rem;margin:.2rem 0 .8rem;font-size:.95rem;color:var(--muted)}
 .smsg[data-k=ok]{color:var(--ok)}.smsg[data-k=warn]{color:var(--bad)}
-details.raw pre{max-height:14rem;overflow:auto;margin:.6rem 0 0;padding:.8rem;border-radius:.8rem;background:var(--bg2);font:.78rem/1.5 ui-monospace,Menlo,monospace;white-space:pre-wrap}
 details.boost{margin:1rem 0 0;padding:.9rem 1.1rem;border:1px solid var(--border-color);border-radius:1rem;background:var(--bg2)}
 details.boost[open]{background:transparent}
 details.boost .bbody{margin-top:.9rem}
@@ -465,7 +450,6 @@ html.theming *,html.theming *:before,html.theming *:after{transition:background-
 /* bigger, calmer truth table */
 .tw th{font-size:.82rem!important;letter-spacing:.06em}
 .tw td{font-size:1.02rem;padding-top:.7rem;padding-bottom:.7rem}
-.dk-tabs button{min-height:3rem}
 
 .seg[data-n="4"]{grid-template-columns:repeat(4,minmax(0,1fr))}
 .seg[data-n="3"]{grid-template-columns:repeat(3,minmax(0,1fr))}
