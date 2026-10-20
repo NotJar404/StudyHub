@@ -56,11 +56,11 @@
 
   // Fast path: send the photo to /api/scan, which asks Gemini and returns ready-made rows.
   const aiScan=async()=>{
-    const k=Math.min(1,1800/Math.max(cor.width,cor.height)),c=document.createElement('canvas');
+    const k=Math.min(1,1400/Math.max(cor.width,cor.height)),c=document.createElement('canvas');
     c.width=Math.round(cor.width*k);c.height=Math.round(cor.height*k);
     const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.drawImage(cor,0,0,c.width,c.height);
-    const image=c.toDataURL('image/jpeg',.85).split(',')[1];
-    const ctl=new AbortController(),to=setTimeout(()=>ctl.abort(),30000);
+    const image=c.toDataURL('image/jpeg',.8).split(',')[1];
+    const ctl=new AbortController(),to=setTimeout(()=>ctl.abort(),55000);
     try{
       const r=await fetch(AI_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image,mime:'image/jpeg'}),signal:ctl.signal});
       if(!r.ok)throw new Error('http '+r.status);
@@ -437,7 +437,7 @@
   };
   $('#bg-file').onchange=async e=>{
     const f=e.target.files[0];e.target.value='';if(!f)return;
-    try{const c=await Lib.fileToCanvas(f,1800);setBg(c.toDataURL('image/jpeg',.85))}catch(err){alert('I could not open that photo.')}
+    try{const c=await Lib.fileToCanvas(f,1800);setBg(c.toDataURL('image/jpeg',.8))}catch(err){alert('I could not open that photo.')}
   };
   $('#bg-clear').onclick=()=>setBg(null);
 
