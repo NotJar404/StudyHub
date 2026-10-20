@@ -45,26 +45,58 @@ module.exports = async (req, res) => {
   if (typeof image !== 'string' || !/^image\/(jpeg|png|webp)$/.test(mime || '')) return res.status(400).json({ error: 'Send a JPEG, PNG or WebP image' });
   if (image.length > 4000000) return res.status(413).json({ error: 'Image too large' });
 
-  const model = process.env.GEMINI_MODEL || 'gemini-3.6-flash';
-  try {
+  // Speed + reliability: start with the fastest model; if it has not answered in 4 s (or fails), start the next one
+  // alongside it. The first good answer wins and the rest are cancelled.
+  const models = [process.env.GEMINI_MODEL, 'gemini-3.5-flash-lite', 'gemini-3.6-flash', 'gemini-3.8-flash', 'gemini-2.5-flash']
+    .filter((m, i, a) => m && a.indexOf(m) === i);
+  const payload = JSON.stringify({
+    contents: [{ parts: [{ text: PROMPT }, { inlineData: { mimeType: mime, data: image } }] }],
+    generationConfig: { temperature: 0, responseMimeType: 'application/json', responseSchema: SCHEMA }
+  });
+  const RETRY = [404, 429, 500, 503, 504];
+
+  const all = new AbortController();
+  const ask = async (model) => {
     const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: PROMPT }, { inlineData: { mimeType: mime, data: image } }] }],
-        generationConfig: { temperature: 0, responseMimeType: 'application/json', responseSchema: SCHEMA }
-      })
+      body: payload,
+      signal: AbortSignal.any([all.signal, AbortSignal.timeout(15000)])
     });
     if (!r.ok) {
       const detail = (await r.text()).slice(0, 500);
       console.error('Gemini error', r.status, 'model:', model, detail); // shows up in Vercel > Logs
-      return res.status(502).json({ error: 'Gemini error ' + r.status, detail });
+      const e = new Error('Gemini error ' + r.status); e.status = r.status; e.detail = detail; e.fatal = !RETRY.includes(r.status);
+      throw e;
     }
     const j = await r.json();
     const text = j?.candidates?.[0]?.content?.parts?.map(p => p.text || '').join('') || '';
-    return res.status(200).json(JSON.parse(text));
-  } catch (e) {
-    console.error('scan failed:', e);
-    return res.status(502).json({ error: 'Could not read the image' });
-  }
+    return JSON.parse(text);
+  };
+
+  const result = await new Promise((resolve) => {
+    let next = 0, running = 0, done = false, last = { status: 0, detail: '' }, timer;
+    const finish = (v) => { if (done) return; done = true; clearTimeout(timer); all.abort(); resolve(v); };
+    const launch = () => {
+      if (done) return;
+      clearTimeout(timer);
+      if (next >= models.length) { if (!running) finish({ error: last }); return; }
+      const model = models[next++];
+      running++;
+      timer = setTimeout(launch, 4000); // slow? bring in the next model
+      ask(model).then(
+        (json) => finish({ json }),
+        (e) => {
+          running--;
+          last = { status: e.status || 0, detail: e.detail || String(e.message || e) };
+          if (e.fatal) return finish({ error: last }); // bad key / bad request: another model will not help
+          launch();
+        }
+      );
+    };
+    launch();
+  });
+
+  if (result.json) return res.status(200).json(result.json);
+  return res.status(502).json({ error: 'Gemini error ' + result.error.status, detail: result.error.detail });
 };
