@@ -42,11 +42,15 @@ const Lib=(()=>{
     if(/pdf/i.test(file.type)||/\.pdf$/i.test(file.name)){
       const pdf=await openPdf(file);return pdfPageToCanvas(pdf,1,Math.min(max,2400));
     }
+    // Read the file with the FileReader API, then decode it as an image (the browser applies the photo's rotation).
+    const readDataUrl=f=>new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=()=>no(r.error);r.readAsDataURL(f)});
     let src,w,h;
-    try{src=await createImageBitmap(file,{imageOrientation:'from-image'});w=src.width;h=src.height}
-    catch(e){
-      src=await new Promise((ok,no)=>{const im=new Image(),u=URL.createObjectURL(file);im.onload=()=>ok(im);im.onerror=no;im.src=u});
+    try{
+      const url=await readDataUrl(file);
+      src=await new Promise((ok,no)=>{const im=new Image();im.onload=()=>ok(im);im.onerror=no;im.src=url});
       w=src.naturalWidth;h=src.naturalHeight;
+    }catch(e){
+      src=await createImageBitmap(file,{imageOrientation:'from-image'});w=src.width;h=src.height;
     }
     const k=Math.min(1,max/Math.max(w,h)),c=document.createElement('canvas');
     c.width=Math.max(1,Math.round(w*k));c.height=Math.max(1,Math.round(h*k));
