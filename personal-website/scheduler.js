@@ -6,7 +6,7 @@
 
   // Address of the Gemini proxy Worker. The API key lives only on that server.
   // Leave empty to use the built-in offline reader instead.
-  const AI_URL='';
+  const AI_URL='/api/scan';
 
   const DAYS=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   // [name, text colour, -, -, accent, text on accent, background top, background bottom, default panel fill]
