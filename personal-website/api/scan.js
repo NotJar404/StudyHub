@@ -45,21 +45,26 @@ module.exports = async (req, res) => {
   if (typeof image !== 'string' || !/^image\/(jpeg|png|webp)$/.test(mime || '')) return res.status(400).json({ error: 'Send a JPEG, PNG or WebP image' });
   if (image.length > 4000000) return res.status(413).json({ error: 'Image too large' });
 
-  const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+  const model = process.env.GEMINI_MODEL || 'gemini-3.6-flash';
   try {
     const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
       body: JSON.stringify({
         contents: [{ parts: [{ text: PROMPT }, { inlineData: { mimeType: mime, data: image } }] }],
-        generationConfig: { temperature: 0, responseMimeType: 'application/json', responseSchema: SCHEMA, thinkingConfig: { thinkingBudget: 0 } }
+        generationConfig: { temperature: 0, responseMimeType: 'application/json', responseSchema: SCHEMA }
       })
     });
-    if (!r.ok) return res.status(502).json({ error: 'Gemini error ' + r.status });
+    if (!r.ok) {
+      const detail = (await r.text()).slice(0, 500);
+      console.error('Gemini error', r.status, 'model:', model, detail); // shows up in Vercel > Logs
+      return res.status(502).json({ error: 'Gemini error ' + r.status, detail });
+    }
     const j = await r.json();
     const text = j?.candidates?.[0]?.content?.parts?.map(p => p.text || '').join('') || '';
     return res.status(200).json(JSON.parse(text));
-  } catch {
+  } catch (e) {
+    console.error('scan failed:', e);
     return res.status(502).json({ error: 'Could not read the image' });
   }
 };
