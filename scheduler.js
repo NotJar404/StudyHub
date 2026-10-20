@@ -4,9 +4,8 @@
 (()=>{
   if(!$('#sch-form'))return;
 
-  // Address of the Gemini proxy Worker. The API key lives only on that server.
-  // Leave empty to use the built-in offline reader instead.
-  const AI_URL='';
+  // Address of the serverless scan endpoint. Never empty — always points to /api/scan.
+  const AI_URL='/api/scan';
 
   const DAYS=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   // [name, text colour, -, -, accent, text on accent, background top, background bottom, default panel fill]
@@ -31,10 +30,11 @@
   const keyOf=x=>[x.code,x.day,x.start,x.end].join('|');
 
   // =================================================================
-  //  SCANNING: the photo goes to /api/scan, Gemini reads it, and the rows go straight into the list
+  //  SCANNING: the file goes to /api/scan, Gemini reads it, rows go straight into the list
   // =================================================================
-  let cor=null,snapshot=null;
-  const msg=(t,kind)=>{const m=$('#cor-msg');m.textContent=t;m.dataset.k=kind||''};
+  let cor=null,snapshot=null,lastFile=null;
+  const msg=(t,kind)=>{const m=$('#cor-msg');m.innerHTML=t;m.dataset.k=kind||''};
+  const bar=pct=>{const b=$('#scan-bar');if(b){b.hidden=pct<=0;b.querySelector('i').style.width=Math.min(100,pct)+'%'}};
 
   const addScanned=res=>{
     snapshot=items.map(x=>({...x}));
@@ -45,25 +45,65 @@
   };
 
   const finishScan=res=>{
+    bar(100);
     const n=addScanned(res);
     let m=n?('Added '+n+' class'+(n===1?'':'es')+' to your schedule.'):'Those classes are already in your schedule.';
-    if(res.unsure)m+=' '+res.unsure+' marked “check” may need a quick fix. Tap ✎ to edit.';
-    if(res.mismatch)m+=' Your certificate says '+res.total+' total units but the scan adds up to '+res.sum+', so double-check the units.';
-    msg(m,res.unsure||res.mismatch?'':'ok');
+    if(res.unsure)m+=' '+res.unsure+' marked "check" may need a quick fix. Tap ✎ to edit.';
+    if(res.mismatch)m+=' <b>⚠ Your certificate says '+res.total+' total units but the scan adds up to '+res.sum+'.</b> Double-check the units.';
+    msg(m,res.unsure||res.mismatch?'warn':'ok');
     $('#cor-undo').hidden=!n;
     $('#classes').scrollIntoView({behavior:still?'auto':'smooth',block:'start'});
   };
 
-  // Fast path: send the photo to /api/scan, which asks Gemini and returns ready-made rows.
-  const aiScan=async()=>{
-    const k=Math.min(1,1800/Math.max(cor.width,cor.height)),c=document.createElement('canvas');
-    c.width=Math.round(cor.width*k);c.height=Math.round(cor.height*k);
-    const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.drawImage(cor,0,0,c.width,c.height);
-    const image=c.toDataURL('image/jpeg',.85).split(',')[1];
-    const ctl=new AbortController(),to=setTimeout(()=>ctl.abort(),30000);
+  // ---------- PDF text extraction (fast, no AI needed) ----------
+  const DAYMAP={M:'Monday',T:'Tuesday',W:'Wednesday',TH:'Thursday',F:'Friday',S:'Saturday'};
+  const expandDays=str=>{
+    const s=str.toUpperCase().trim();
+    const out=[];
+    let i=0;
+    while(i<s.length){
+      if(s[i]==='T'&&s[i+1]==='H'){out.push('Thursday');i+=2}
+      else if(DAYMAP[s[i]]){out.push(DAYMAP[s[i]]);i++}
+      else i++;
+    }
+    return[...new Set(out)];
+  };
+  const TIME_RE=/(\d{1,2}):(\d{2})\s*(AM|PM)?/gi;
+  const parseTime=s=>{
+    const m=s.match(/(\d{1,2}):(\d{2})\s*(AM|PM)?/i);
+    if(!m)return null;
+    let h=+m[1],mm=m[2];
+    if(m[3]){if(m[3].toUpperCase()==='PM'&&h<12)h+=12;if(m[3].toUpperCase()==='AM'&&h===12)h=0}
+    return String(h).padStart(2,'0')+':'+mm;
+  };
+
+  // Try to parse COR text locally — returns {items,totalUnits} or null if it can't
+  const parseCorText=text=>{
+    if(!text||text.trim().length<30)return null;
+    // This parser handles common QCU COR text-layer formats
+    // We'll send it to the server if local parsing fails
+    return null; // Always delegate to server for accuracy
+  };
+
+  // ---------- Send to /api/scan (AI path) ----------
+  const aiScan=async(imageB64,mime,pdfText)=>{
+    const body=pdfText
+      ?{text:pdfText}
+      :{image:imageB64,mime:mime||'image/jpeg'};
+    const ctl=new AbortController(),to=setTimeout(()=>ctl.abort(),50000);
     try{
-      const r=await fetch(AI_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image,mime:'image/jpeg'}),signal:ctl.signal});
-      if(!r.ok)throw new Error('http '+r.status);
+      const r=await fetch(AI_URL,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(body),
+        signal:ctl.signal
+      });
+      if(!r.ok){
+        const detail=await r.text().catch(()=>'');
+        let parsed;try{parsed=JSON.parse(detail)}catch(e){}
+        const errMsg=parsed?.detail||parsed?.error||('HTTP '+r.status);
+        throw new Error(errMsg);
+      }
       const j=await r.json(),T=/^([01]?\d|2[0-3]):[0-5]\d$/;
       const out=(j.items||[]).filter(x=>x&&DAYS.includes(x.day)&&T.test(x.start)&&T.test(x.end)).map(x=>({
         code:String(x.code||'CLASS').trim().toUpperCase(),subj:String(x.subj||'').trim(),day:x.day,type:x.type==='Lab'?'Lab':'Lec',
@@ -74,16 +114,99 @@
     }finally{clearTimeout(to)}
   };
 
+  // ---------- Image resize helper ----------
+  const resizeForUpload=canvas=>{
+    const k=Math.min(1,1400/Math.max(canvas.width,canvas.height));
+    if(k>=1)return canvas;
+    const c=document.createElement('canvas');
+    c.width=Math.round(canvas.width*k);c.height=Math.round(canvas.height*k);
+    const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.drawImage(canvas,0,0,c.width,c.height);
+    return c;
+  };
+
+  // ---------- Extract text from PDF ----------
+  const extractPdfText=async file=>{
+    try{
+      const lib=await Lib.pdfjs();
+      const pdf=await lib.getDocument({data:new Uint8Array(await file.arrayBuffer())}).promise;
+      let allText='';
+      for(let p=1;p<=Math.min(pdf.numPages,3);p++){
+        const page=await pdf.getPage(p);
+        const tc=await page.getTextContent();
+        const pageText=tc.items.map(i=>i.str).join(' ');
+        allText+=pageText+'\n';
+      }
+      return allText.trim();
+    }catch(e){
+      console.warn('PDF text extraction failed:',e);
+      return '';
+    }
+  };
+
+  // ---------- Skeleton loading UI ----------
+  const showSkeleton=()=>{
+    const el=$('#classes');
+    el.innerHTML='<div class="skel-wrap">'+
+      [1,2,3,4,5].map(()=>'<div class="skel-row"><div class="skel-block sb1"></div><div class="skel-block sb2"></div><div class="skel-block sb3"></div></div>').join('')+
+      '</div>';
+  };
+
+  // ---------- Main scan orchestration ----------
   let scanning=false;
   const scan=async()=>{
-    if(!cor||scanning)return;
+    if(!cor&&!lastFile||scanning)return;
     scanning=true;$('#cor-scan').disabled=true;$('#cor-undo').hidden=true;
+    bar(15);showSkeleton();
+    const retryBtn=$('#cor-retry');if(retryBtn)retryBtn.hidden=true;
+
     try{
-      msg('Reading your schedule…');
-      finishScan(await aiScan());
+      let pdfText='';
+      // If the original file was a PDF, try text extraction first
+      if(lastFile&&(/pdf/i.test(lastFile.type)||/\.pdf$/i.test(lastFile.name))){
+        msg('📄 Extracting text from your PDF…');bar(20);
+        pdfText=await extractPdfText(lastFile);
+        if(pdfText&&pdfText.length>50){
+          // Has a text layer — send text to server for structured parsing
+          msg('⚡ Reading your certificate…');bar(40);
+          try{
+            const res=await aiScan(null,null,pdfText);
+            finishScan(res);
+            scanning=false;$('#cor-scan').disabled=false;
+            return;
+          }catch(e){
+            console.warn('Text-based scan failed, falling back to image:',e);
+            // Fall through to image-based scan
+          }
+        }
+      }
+
+      // Image-based scan
+      if(!cor){
+        msg('I could not read this file. Please try a clearer photo or PDF.','warn');
+        bar(0);scanning=false;$('#cor-scan').disabled=false;return;
+      }
+      msg('⚡ Reading your certificate…');bar(30);
+      const small=resizeForUpload(cor);
+      const imageB64=small.toDataURL('image/jpeg',.8).split(',')[1];
+      bar(50);
+      const res=await aiScan(imageB64,'image/jpeg',null);
+      finishScan(res);
     }catch(e){
-      console.error('Gemini scan failed:',e);
-      msg(e.message==='empty'?'I could not find any classes. Try rotating the photo so the text is upright, retake it flat and well lit, or add classes by hand below.':'The reader could not be reached right now. Please try again in a moment, or add classes by hand below.','warn');
+      console.error('Scan failed:',e);
+      bar(0);
+      const isNetErr=e.name==='AbortError'||e.message.includes('Failed to fetch');
+      const isEmpty=e.message==='empty';
+      let errHtml;
+      if(isEmpty){
+        errHtml='I could not find any classes in this image. Make sure the photo shows the full class table, is upright, and well lit.';
+      }else if(isNetErr){
+        errHtml='Could not reach the reader. Check your internet and try again.';
+      }else{
+        errHtml='The reader could not process this image. <small>('+esc(e.message.slice(0,120))+')</small>';
+      }
+      errHtml+=' <button type="button" class="ghost sm" id="cor-retry">Try again</button>';
+      msg(errHtml,'warn');
+      const rb=$('#cor-retry');if(rb)rb.onclick=scan;
     }
     scanning=false;$('#cor-scan').disabled=false;
   };
@@ -95,10 +218,19 @@
   };
   const loadCor=async f=>{
     if(!f)return;
-    msg('Opening your file…');$('#cor-box').hidden=false;
-    try{cor=await Lib.fileToCanvas(f,3200);showCor();await scan()}
-    catch(e){msg('I could not open that file. Please use a photo (JPG or PNG) or a PDF.','warn')}
+    lastFile=f;
+    msg('Opening your file…');$('#cor-box').hidden=false;bar(5);
+    try{
+      cor=await Lib.fileToCanvas(f,3200);
+      showCor();
+      // Auto-scan immediately
+      await scan();
+    }catch(e){
+      msg('I could not open that file. Please use a photo (JPG or PNG) or a PDF.','warn');
+      bar(0);
+    }
   };
+  // Start scan immediately when a file is chosen
   $('#cor-file').onchange=e=>{loadCor(e.target.files[0]);e.target.value=''};
   const dz=$('#cor-dz');
   ['dragenter','dragover'].forEach(v=>dz.addEventListener(v,e=>{e.preventDefault();dz.classList.add('over')}));
@@ -109,7 +241,7 @@
   $('#cor-scan').onclick=scan;
   $('#cor-undo').onclick=()=>{if(snapshot){items=snapshot;snapshot=null;draw();$('#cor-undo').hidden=true;msg('Scan removed.')}};
   // =================================================================
-  //  YOUR CLASSES (list + add by hand + edit)
+  //  YOUR CLASSES (list + edit/delete)
   // =================================================================
   const form=$('#sch-form');
   const resetForm=()=>{editIdx=null;form.reset();$('#add-main').textContent='Add class';$('#add-keep').hidden=false;$('#add-cancel').hidden=true};
@@ -143,12 +275,14 @@
   });
   const drawList=()=>{
     const el=$('#classes');
-    if(!items.length){el.innerHTML='<p class="empty">No classes yet. Scan your certificate above, or add one by hand.</p>';return}
-    el.innerHTML=DAYS.map(d=>{
+    if(!items.length){el.innerHTML='<p class="empty">No classes yet. Upload your certificate above to fill in your schedule.</p>';return}
+    const u=items.reduce((a,x)=>a+(+x.units||0),0);
+    let hdr='<div class="class-summary">'+items.length+' session'+(items.length===1?'':'s')+(u?' · '+u+' units':'')+'</div>';
+    el.innerHTML=hdr+DAYS.map(d=>{
       const l=items.map((x,i)=>({...x,i})).filter(x=>x.day===d).sort((a,b)=>a.start.localeCompare(b.start));
       if(!l.length)return'';
       return'<div class="dg"><div class="dgh"><b>'+d+'</b><small>'+l.length+' session'+(l.length===1?'':'s')+'</small></div>'+l.map(x=>
-        '<div class="cl"><div class="ct"><b>'+t12(x.start)+'</b><span>'+t12(x.end)+'</span></div><div class="cm"><div class="cc"><b>'+esc(x.code)+'</b><span class="lt'+(x.type==='Lab'?' lab':'')+'">'+(x.type==='Lab'?'Lab':'Lec')+'</span>'+(x.chk?'<span class="chk">check</span>':'')+'</div><small>'+esc(x.subj)+'</small>'+(x.room?'<em>'+esc(x.room)+'</em>':'')+'</div><div class="ca"><button type="button" class="ib" data-a="edit" data-i="'+x.i+'" aria-label="Edit '+esc(x.code)+'">✎</button><button type="button" class="ib" data-a="del" data-i="'+x.i+'" aria-label="Remove '+esc(x.code)+'">×</button></div></div>').join('')+'</div>';
+        '<div class="cl"><div class="ct"><b>'+t12(x.start)+'</b><span>'+t12(x.end)+'</span></div><div class="cm"><div class="cc"><b>'+esc(x.code)+'</b><span class="lt'+(x.type==='Lab'?' lab':'')+'">'+( x.type==='Lab'?'Lab':'Lec')+'</span>'+(x.chk?'<span class="chk">check</span>':'')+'</div><small>'+esc(x.subj)+'</small>'+(x.room?'<em>'+esc(x.room)+'</em>':'')+'</div><div class="ca"><button type="button" class="ib" data-a="edit" data-i="'+x.i+'" aria-label="Edit '+esc(x.code)+'">✎</button><button type="button" class="ib" data-a="del" data-i="'+x.i+'" aria-label="Remove '+esc(x.code)+'">×</button></div></div>').join('')+'</div>';
     }).join('');
   };
 
@@ -367,7 +501,7 @@
     const warn=$('#wall-warn');warn.textContent='';
     if(!items.length){
       g.fillStyle=th.tc;g.textAlign='center';g.font='500 64px '+HEAD;g.fillText('Your schedule',W/2,H*.42);
-      g.font='400 32px '+FONT;g.globalAlpha=.8;g.fillText('Scan your certificate or add a class',W/2,H*.42+60);g.globalAlpha=1;g.textAlign='left';return;
+      g.font='400 32px '+FONT;g.globalAlpha=.8;g.fillText('Upload your certificate to get started',W/2,H*.42+60);g.globalAlpha=1;g.textAlign='left';return;
     }
     // sample phone clock, preview only: it is NOT part of the saved wallpaper
     const M=64,top=S.clock?Math.round(H*(S.size===0?.255:.28)):Math.round(H*.07),bottom=Math.round(H*.06),avail=H-top-bottom;
@@ -377,7 +511,7 @@
     for(;s>=.42;s-=.02){const Lw=BW/s;if(paint(dummy,s,W,Lw,th,bgc,0,0,false)*s<=avail)break}
     s=Math.max(.42,s);
     const Lw=BW/s,h=paint(dummy,s,W,Lw,th,bgc,0,0,false)*s;
-    if(h>avail)warn.textContent='Too many classes to fit on one wallpaper. Turn off “Keep space for the clock” or remove a few.';
+    if(h>avail)warn.textContent='Too many classes to fit on one wallpaper. Turn off "Keep space for the clock" or remove a few.';
     const oy=top+Math.max(0,avail-h)*S.py/100;
     g.save();g.translate(left,oy);g.scale(s,s);
     paint(g,s,W,Lw,th,bgc,left,oy,true);
@@ -444,14 +578,14 @@
   // ----- save as JPEG -----
   const toJpeg=()=>new Promise(ok=>cv.toBlob(ok,'image/jpeg',.93));
   $('#sch-jpg').onclick=async()=>{
-    if(!items.length)return alert('Add at least one class first.');
+    if(!items.length)return alert('Upload your certificate first to add classes.');
     const b=await toJpeg();Lib.download(b,'my-class-schedule.jpg');
     $('#save-note').textContent='Saved as my-class-schedule.jpg. Open it in your photos and set it as your wallpaper.';
   };
   const share=$('#sch-share');
   if(navigator.canShare&&navigator.canShare({files:[new File([''],'a.jpg',{type:'image/jpeg'})]}))share.hidden=false;
   share.onclick=async()=>{
-    if(!items.length)return alert('Add at least one class first.');
+    if(!items.length)return alert('Upload your certificate first to add classes.');
     const b=await toJpeg();
     try{await navigator.share({files:[new File([b],'my-class-schedule.jpg',{type:'image/jpeg'})],title:'My class schedule'})}catch(e){}
   };

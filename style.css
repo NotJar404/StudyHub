@@ -455,3 +455,15 @@ html.theming *,html.theming *:before,html.theming *:after{transition:background-
 .seg[data-n="3"]{grid-template-columns:repeat(3,minmax(0,1fr))}
 @media(max-width:36rem){.seg[data-n="4"]:not([data-short]){grid-template-columns:repeat(2,minmax(0,1fr))}.dtabs{width:100%}.dtabs button{flex:1;padding:0 .6rem}}
 .seg#sizes{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+
+/* --- Skeleton loading for scan --- */
+.skel-wrap{display:flex;flex-direction:column;gap:.7rem;padding:1rem 0}
+.skel-row{display:flex;gap:.7rem;align-items:center}
+.skel-block{border-radius:.6rem;background:var(--border-color);animation:skel 1.2s ease-in-out infinite alternate}
+.sb1{width:5rem;height:2.6rem}
+.sb2{flex:1;height:2.6rem}
+.sb3{width:4rem;height:2.6rem}
+@keyframes skel{from{opacity:.35}to{opacity:.7}}
+.class-summary{font-weight:700;font-size:.95rem;margin-bottom:.6rem;color:var(--muted)}
+#scan-bar{margin:.6rem 0 0}
