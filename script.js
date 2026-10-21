@@ -111,14 +111,15 @@ if($('#g-cats')){
 // Each line is one item: Term - Definition  (also works with ":" or "=" or a Tab)
 if($('#dk-file')){
   let cards=store.get('dk3',[]),name=store.get('dk3n','Your reviewer'),mode='flash',i=0,qz=null;
-  const parse=t=>{const ok=[];let bad=0;t.split(/\r?\n/).map(l=>l.trim()).filter(Boolean).forEach(l=>{const m=l.match(/^(.+?)(?:\t+|\s+[-–—]\s+|\s*[:=]\s*)(.+)$/);m?ok.push({t:m[1].trim(),d:m[2].trim()}):bad++});return{ok,bad}};
-  const load=(t,nm)=>{const r=parse(t);if(!r.ok.length){$('#dk-msg').textContent='No items found. Write each line like: Term - Definition';return}
+  // cont = true for Word/PDF files: a line that is not "Term - Definition" continues the previous definition
+  const parse=(t,cont)=>{const ok=[];let bad=0;t.split(/\r?\n/).map(l=>l.trim().replace(/^(?:[•●▪◦‣·*]|-(?=\s)|\d{1,3}[.)])\s+/,'')).filter(Boolean).forEach(l=>{const m=l.match(/^(.+?)(?:\t+|\s+[-–—]\s+|\s*[:=]\s*)(.+)$/);if(m)ok.push({t:m[1].trim(),d:m[2].trim()});else if(cont&&ok.length&&l.length>2&&!/^(?:page\s*)?\d+$/i.test(l))ok[ok.length-1].d+=' '+l;else bad++});return{ok,bad}};
+  const load=(t,nm,cont)=>{const r=parse(t,cont);if(!r.ok.length){$('#dk-msg').textContent='No items found. Write each line like: Term - Definition';return}
     cards=r.ok;name=nm;i=0;mode='flash';qz=null;store.set('dk3',cards);store.set('dk3n',name);
-    $('#dk-msg').textContent=cards.length+' cards created'+(r.bad?' ('+r.bad+' lines skipped).':'.');draw()};
+    $('#dk-msg').textContent=cards.length+' cards created'+(r.bad?' ('+r.bad+' lines skipped).':'.')+(cont?' Skim them to make sure each card looks right.':'');draw()};
   const shuf=a=>{a=[...a];for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a};
   const draw=()=>{
     const out=$('#dk-out');
-    if(!cards.length){out.innerHTML='<p class="empty">Upload a .txt reviewer to create your flashcards.</p>';return}
+    if(!cards.length){out.innerHTML='<p class="empty">Upload a reviewer (.txt, Word or PDF) to create your flashcards.</p>';return}
     let h='<div class="dh2"><div><span class="eyebrow" style="margin:0">Your reviewer</span><h3>'+esc(name)+'</h3></div><span class="badge">'+cards.length+' cards</span></div><div class="dtabs"><button type="button" class="'+(mode==='flash'?'sel':'')+'" data-m="flash">Flashcards</button><button type="button" class="'+(mode==='quiz'?'sel':'')+'" data-m="quiz">Quiz</button></div>';
     if(mode==='flash'){
       const c=cards[i];
@@ -146,7 +147,69 @@ if($('#dk-file')){
     if(a==='nextq'){qz.pick=null;qz.k++;if(qz.k>=qz.q.length)qz.done=true}
     draw();
   });
-  const readFile=f=>{if(!f)return;const r=new FileReader();r.onload=()=>load(r.result,f.name.replace(/\.txt$/i,''));r.readAsText(f)};
+  // ----- read a .txt, Word (.docx) or PDF file into plain lines of text -----
+  const W_NS='http://schemas.openxmlformats.org/wordprocessingml/2006/main';
+  const docxText=async f=>{
+    await Lib.jszip();
+    const zip=await JSZip.loadAsync(await f.arrayBuffer());
+    const part=zip.file('word/document.xml');if(!part)throw new Error('This does not look like a Word (.docx) file.');
+    const xml=new DOMParser().parseFromString(await part.async('string'),'application/xml');
+    const run=el=>{let t='';const walk=n=>{[...n.childNodes].forEach(c=>{if(c.nodeType!==1)return;const k=c.localName;if(k==='t')t+=c.textContent;else if(k==='tab')t+='\t';else if(k==='br'||k==='cr')t+=' ';else if(k!=='instrText')walk(c)})};walk(el);return t.trim()};
+    const lines=[];
+    const block=n=>{
+      [...n.childNodes].forEach(c=>{
+        if(c.nodeType!==1)return;
+        if(c.localName==='p'){const t=run(c);if(t)lines.push(t)}
+        else if(c.localName==='tbl'){
+          [...c.getElementsByTagNameNS(W_NS,'tr')].forEach(tr=>{
+            const cells=[...tr.childNodes].filter(x=>x.nodeType===1&&x.localName==='tc').map(run).filter(Boolean);
+            if(cells.length>1)lines.push(cells[0]+' - '+cells.slice(1).join(' '));else if(cells.length)lines.push(cells[0]);
+          });
+        }
+        else if(c.localName==='body'||c.localName==='sdt'||c.localName==='sdtContent')block(c);
+      });
+    };
+    const body=xml.getElementsByTagNameNS(W_NS,'body')[0];if(body)block(body);
+    return lines.join('\n');
+  };
+  const pdfLines=async f=>{
+    const lib=await Lib.pdfjs();
+    const pdf=await lib.getDocument({data:new Uint8Array(await f.arrayBuffer())}).promise;
+    const out=[];
+    for(let p=1;p<=Math.min(pdf.numPages,80);p++){
+      const tc=await(await pdf.getPage(p)).getTextContent();
+      let line='',y=null;
+      tc.items.forEach(it=>{
+        const yy=it.transform?Math.round(it.transform[5]):0;
+        if(y!==null&&Math.abs(yy-y)>3){out.push(line.replace(/\s+/g,' ').trim());line=''}
+        line+=it.str+(it.hasEOL?'\n':'');y=yy;
+        if(it.hasEOL){out.push(line.replace(/\s+/g,' ').trim());line=''}
+      });
+      out.push(line.replace(/\s+/g,' ').trim());
+    }
+    return out.filter(Boolean).join('\n');
+  };
+  const readFile=async f=>{
+    if(!f)return;
+    const nm=f.name.replace(/\.(txt|docx|pdf)$/i,''),msgEl=$('#dk-msg');
+    try{
+      if(/\.docx$/i.test(f.name)){
+        msgEl.textContent='Reading your Word file…';
+        const t=await docxText(f);
+        if(!t.trim()){msgEl.textContent='That Word file has no text in it.';return}
+        load(t,nm,true);
+      }else if(/\.pdf$/i.test(f.name)||f.type==='application/pdf'){
+        msgEl.textContent='Reading your PDF…';
+        const t=await pdfLines(f);
+        if(t.length<10){msgEl.textContent='This PDF has no selectable text (it may be a scan or a photo). Try a PDF with real text, or a Word or .txt file.';return}
+        load(t,nm,true);
+      }else if(/\.(doc|ppt|pptx)$/i.test(f.name)){
+        msgEl.textContent='Please save it as .docx or .txt first. Old .doc files are not supported.';
+      }else{
+        const r=new FileReader();r.onload=()=>load(r.result,nm);r.onerror=()=>{msgEl.textContent='I could not open that file.'};r.readAsText(f);
+      }
+    }catch(e){msgEl.textContent=(e&&e.message&&/internet|library/i.test(e.message))?e.message:'I could not read that file. Try another one, or paste the text instead.'}
+  };
   $('#dk-file').onchange=e=>readFile(e.target.files[0]);
   const dz=$('#dk-dz');
   ['dragenter','dragover'].forEach(v=>dz.addEventListener(v,e=>{e.preventDefault();dz.classList.add('over')}));
