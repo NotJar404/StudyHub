@@ -75,17 +75,17 @@ if($('#g-cats')){
   const row=h=>{const d=document.createElement('div');d.className='r3';d.innerHTML='<input type="number" min="0" step="any" placeholder="Score" aria-label="Score"><input type="number" min="1" step="any" placeholder="Total" aria-label="Total items"><button type="button" class="x" aria-label="Remove">×</button>';d.querySelector('.x').onclick=()=>{d.remove();calc()};h.appendChild(d)};
   [['Activities',20],['Quizzes',20],['Assignments',20]].forEach(([n,w])=>{
     const s=document.createElement('div');s.className='cat';s.dataset.k=n;
-    s.innerHTML='<div class="cat-h"><h3>'+n+'</h3><span class="pc" title="Your percentage in this category">—</span><label>Weight <input type="number" class="w" min="0" max="100" value="'+w+'" aria-label="'+n+' weight">%</label></div><div class="colh"><span>Your score</span><span>Out of (total)</span></div><div class="rows"></div><button type="button" class="ghost">+ Add item</button>';
+    s.innerHTML='<div class="cat-h"><h3>'+n+'</h3><span class="pc" title="Your percentage in this category"></span><label>Weight <input type="number" class="w" min="0" max="100" value="'+w+'" aria-label="'+n+' weight">%</label></div><div class="colh"><span>Your score</span><span>Out of (total)</span></div><div class="rows"></div><button type="button" class="ghost">+ Add item</button>';
     const h=s.querySelector('.rows');for(let i=0;i<3;i++)row(h);
     s.querySelector('.ghost').onclick=()=>row(h);box.appendChild(s);
   });
   $('#g-scale').innerHTML='<table><tr><th>Final percentage</th><th>Grade</th></tr>'+SCALE.map((s,i)=>'<tr><td>'+s[0]+' to '+(i?(SCALE[i-1][0]-.1).toFixed(1):'100')+'</td><td>'+s[1].toFixed(2)+'</td></tr>').join('')+'<tr><td>64.4 and below</td><td>5.00</td></tr></table>';
   const calc=()=>{
     const parts=[];
-    $$('#g-cats .cat').forEach(c=>{let s=0,t=0;c.querySelectorAll('.r3').forEach(r=>{const i=r.querySelectorAll('input'),a=parseFloat(i[0].value),b=parseFloat(i[1].value);if(a>=0&&b>0){s+=a;t+=b}});c.querySelector('.pc').textContent=t?(s/t*100).toFixed(1)+'%':'—';parts.push({n:c.dataset.k,s,t,w:parseFloat(c.querySelector('.w').value)||0})});
+    $$('#g-cats .cat').forEach(c=>{let s=0,t=0;c.querySelectorAll('.r3').forEach(r=>{const i=r.querySelectorAll('input'),a=parseFloat(i[0].value),b=parseFloat(i[1].value);if(a>=0&&b>0){s+=a;t+=b}});c.querySelector('.pc').textContent=t?(s/t*100).toFixed(1)+'%':'';parts.push({n:c.dataset.k,s,t,w:parseFloat(c.querySelector('.w').value)||0})});
     const es=parseFloat($('#ex-s').value),et=parseFloat($('#ex-t').value);
     parts.push({n:'Exam',s:es>=0?es:0,t:et>0?et:0,w:parseFloat($('#ex-w').value)||0});
-    $('#ex-pc').textContent=et>0&&es>=0?(es/et*100).toFixed(1)+'%':'—';
+    $('#ex-pc').textContent=et>0&&es>=0?(es/et*100).toFixed(1)+'%':'';
     let fin=0,wt=0,csP=0,csW=0;const miss=[];
     const rows=parts.map((p,k)=>{const pct=p.t?p.s/p.t*100:0,pts=pct*p.w/100;if(!p.t)miss.push(p.n);fin+=pts;wt+=p.w;if(k<3){csP+=pts;csW+=p.w}return '<tr><td data-l="Category"><b>'+p.n+'</b></td><td data-l="Computation">'+(p.t?p.s+' ÷ '+p.t+' × 100':'no items')+'</td><td data-l="Percent">'+pct.toFixed(1)+'%</td><td data-l="Weight">'+p.w+'%</td><td data-l="Points">'+pts.toFixed(2)+'</td></tr>'}).join('');
     {const g=$('#g-wt');if(g){g.textContent=wt===100?'Weights add up to 100%.':'Your weights add up to '+wt+'%, not 100%. Adjust them to match your subject.';g.classList.toggle('warn',wt!==100)}}

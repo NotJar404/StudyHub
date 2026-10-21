@@ -210,7 +210,7 @@ input[type=range]{padding:0;min-height:2rem;border:0;background:transparent;acce
 .opt2.wrong{background:rgba(166,61,42,.16);border-color:var(--bad)}
 .q{margin:.4rem 0 1rem;font:500 1.5rem var(--font-heading)}
 .prog{height:.4rem;margin-bottom:1rem;border-radius:99px;background:var(--border-color);overflow:hidden}
-.prog i{display:block;height:100%;background:var(--accent-color)}
+.prog i{display:block;width:0;height:100%;background:var(--accent-color);transition:width .3s ease}
 @media(max-width:48rem){.ft{grid-template-columns:1fr 1fr}}
 @media(max-width:30rem){.ft{grid-template-columns:1fr}.tiles{grid-template-columns:1fr}}
 /* ===== ROUND 3: images, scheduler, deck, truth tables ===== */
@@ -527,3 +527,30 @@ html.theming *,html.theming *:before,html.theming *:after{transition:background-
   .altrow{grid-template-columns:1fr}
 }
 .swc{flex:none}
+
+/* ===== CONSISTENCY PASS ===== */
+/* how-it-works strip: compact on phones so the tool starts higher up */
+@media(max-width:44rem){
+  .how{grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin-bottom:1.2rem}
+  .how li{flex-direction:column;align-items:center;text-align:center;gap:.35rem;padding:.7rem .4rem}
+  .how li span:not(.sn){display:none}
+  .how li b:not(.sn){font-size:.88rem}
+}
+/* every panel: same padding, same gap under the step heading */
+.panel{padding:1.8rem}
+@media(max-width:48rem){.panel{padding:1.25rem}}
+.panel>.step:first-child,.panel>.shead:first-child{margin-top:0}
+.step{min-height:1.9rem}
+/* grade calculator: tidy category header */
+.pc:empty{display:none}
+.cat-h{flex-wrap:nowrap;gap:.5rem}
+.cat-h h3{flex:1;min-width:0}
+.cat-h label{white-space:nowrap}
+.cat-h input{width:4.2rem}
+/* number converter: calculator fields use the full width so nothing is squeezed */
+#ca-form .row2.one{grid-template-columns:1fr}
+/* truth tables and deck tabs stay on one line */
+.dtabs button{white-space:nowrap}
+@media(max-width:30rem){.dtabs button{font-size:.9rem;padding:0 .5rem}}
+.shead.tight{flex-wrap:wrap;gap:.5rem}
+.seg button{padding-left:.25rem;padding-right:.25rem}.seg button b{font-size:.86rem;overflow-wrap:anywhere}
