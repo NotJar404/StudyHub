@@ -467,3 +467,63 @@ html.theming *,html.theming *:before,html.theming *:after{transition:background-
 @keyframes skel{from{opacity:.35}to{opacity:.7}}
 .class-summary{font-weight:700;font-size:.95rem;margin-bottom:.6rem;color:var(--muted)}
 #scan-bar{margin:.6rem 0 0}
+
+/* ===== SCHEDULER: guided layout, sticky preview and tabbed customize card ===== */
+.guide{list-style:none;margin:.2rem 0 1rem;padding:0;display:grid;gap:.45rem}
+.guide li{display:flex;align-items:center;gap:.6rem;font-size:.9rem;color:var(--muted)}
+.guide li:before{content:"✓";flex:none;display:inline-grid;place-items:center;width:1.4rem;height:1.4rem;border-radius:50%;background:color-mix(in srgb,var(--accent-color) 16%,transparent);color:var(--accent-color);font-weight:700;font-size:.8rem}
+.altrow{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:0 0 .5rem}
+.altrow .ghost{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border-style:solid}
+.altrow .i{width:1.1rem;height:1.1rem}
+#alt-msg:empty{display:none}
+.shead.tight{margin-top:0}
+.up{white-space:nowrap;text-decoration:none}
+.jump{display:none;margin-top:1rem;text-align:center;text-decoration:none}
+.wgrid{display:grid;gap:1.4rem}
+.wprev{text-align:center}
+.wprev .phone{position:relative;width:min(16rem,72%);margin-bottom:.8rem}
+.clk{position:absolute;left:0;right:0;top:9%;display:flex;align-items:baseline;justify-content:center;gap:.2rem;pointer-events:none;text-shadow:0 1px 8px rgba(0,0,0,.35)}
+.clk[hidden]{display:none}
+.clk b{font:600 clamp(2.2rem,9cqw,3.2rem)/1 var(--font-heading)}
+.clk span{font-size:.85rem;font-weight:700}
+.phone{container-type:inline-size}
+.tog.center{justify-content:center;margin-bottom:.3rem}
+.hint.center{text-align:center;margin:0}
+.wprev .sum{margin:0 0 .4rem;font-weight:600;color:var(--text-main)}
+.wctl .save .btn-primary{min-height:3.4rem;font-size:1.02rem}
+.custom{margin-top:1.2rem;border:1px solid var(--border-color);border-radius:1.2rem;overflow:hidden;background:var(--card-bg)}
+.chead{display:flex;align-items:center;gap:.8rem;padding:1rem 1.1rem;background:var(--bg2)}
+.chead .i{width:1.5rem;height:1.5rem;flex:none;color:var(--accent-color)}
+.chead b{display:block;font-size:1.05rem}.chead small{color:var(--muted)}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--border-color)}
+.tabs button{display:flex;align-items:center;justify-content:center;gap:.45rem;min-height:3.2rem;padding:0 .4rem;border:0;border-bottom:3px solid transparent;border-radius:0;background:transparent;color:var(--muted);font-weight:600;cursor:pointer}
+.tabs button .i{width:1.15rem;height:1.15rem;flex:none}
+.tabs button.sel{color:var(--text-main);border-bottom-color:var(--accent-color)}
+.tabs button:hover{color:var(--text-main)}
+.tpanel{padding:1.1rem}
+.tpanel[hidden]{display:none}
+.tpanel .lb{margin:1rem 0 .5rem}.tpanel .lb:first-child{margin-top:0}
+.tpanel .wide{width:100%;margin-top:1rem}
+.lay-opt{position:relative;align-items:flex-start;text-align:left;padding:.9rem .9rem 1rem;border-radius:1.1rem;gap:.35rem;background:var(--card-bg)}
+.lay-opt .lay-ic{display:grid;place-items:center;width:3.4rem;height:3.4rem;margin-bottom:.3rem;border:1px solid var(--border-color);border-radius:.9rem;background:var(--bg2)}
+.lay-opt .lay-ic svg{width:2rem;height:2rem}
+.lay-opt .rad{position:absolute;top:.8rem;right:.8rem;width:1.35rem;height:1.35rem;border-radius:50%;border:2px solid var(--border-color);background:var(--card-bg)}
+.lay-opt.sel{border-color:var(--text-main);box-shadow:none}
+.lay-opt.sel .rad{border-color:var(--text-main);background:radial-gradient(circle,var(--text-main) 0 45%,var(--card-bg) 50%)}
+.lay-opt b{font-size:.98rem}.lay-opt small{opacity:.75;line-height:1.35}
+@media(min-width:64rem){
+  .wgrid{grid-template-columns:15.5rem minmax(0,1fr);align-items:start;gap:1.6rem}
+  .wprev{position:sticky;top:6.5rem}
+  .wprev .phone{width:100%}
+}
+@media(max-width:63.99rem){
+  .jump{display:block}
+  .wprev .phone{width:min(17rem,78%)}
+}
+@media(max-width:30rem){
+  .tabs button span{font-size:.88rem}
+  .lay-grid{gap:.5rem}
+  .lay-opt{padding:.8rem .7rem .9rem}
+  .altrow{grid-template-columns:1fr}
+}
+.swc{flex:none}

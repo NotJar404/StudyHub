@@ -528,7 +528,7 @@
     ICON('<circle cx="12" cy="11" r="3"/><circle cx="24" cy="11" r="3"/><circle cx="36" cy="11" r="3"/><rect x="9" y="19" width="6" height="21" rx="2"/><rect x="21" y="19" width="6" height="14" rx="2"/><rect x="33" y="19" width="6" height="18" rx="2"/>'),
     ICON('<path d="M12 8v32"/><circle cx="12" cy="11" r="2.6"/><circle cx="12" cy="25" r="2.6"/><circle cx="12" cy="39" r="2.6" /><path d="M21 11h19M21 25h19M21 39h12"/>')
   ];
-  $('#layouts').innerHTML=LAYOUTS.map((l,i)=>'<button type="button" class="lay-opt" aria-pressed="false"><span class="lay-ic">'+ICONS[i]+'</span><b>'+l[0]+'</b><small>'+l[1]+'</small></button>').join('');
+  $('#layouts').innerHTML=LAYOUTS.map((l,i)=>'<button type="button" class="lay-opt" aria-pressed="false"><i class="rad" aria-hidden="true"></i><span class="lay-ic">'+ICONS[i]+'</span><b>'+l[0]+'</b><small>'+l[1]+'</small></button>').join('');
   $('#colors').innerHTML=COL.map(c=>'<button type="button" class="dotc" style="background:linear-gradient(135deg,'+c[6]+','+c[7]+')" aria-label="'+c[0]+'" title="'+c[0]+'" aria-pressed="false"></button>').join('');
   $('#sizes').innerHTML=SIZES.map(s=>'<button type="button" aria-pressed="false">'+s[0]+'</button>').join('');
   const swatches=(el,list,key)=>{
@@ -544,7 +544,52 @@
   $('#fill-on').onchange=e=>{S.fillOn=e.target.checked;draw()};
   $('#line-on').onchange=e=>{S.lineOn=e.target.checked;draw()};
   [['fill-op','fillOp','%'],['line-w','lineW',' px'],['p-w','wf','%'],['p-x','px','%'],['p-y','py','%']].forEach(([id,k,u])=>{$('#'+id).oninput=e=>{S[k]=+e.target.value;draw()}});
-  $('#p-reset').onclick=()=>{S.wf=100;S.px=50;S.py=18;draw()};
+  $('#p-reset').onclick=()=>{S.lay=0;S.wf=100;S.px=50;S.py=18;draw()};
+
+  // ----- container presets (they simply set the existing fill / outline controls) -----
+  const PRESETS=[
+    ['Frosted glass','See-through fill',s=>{s.fillOn=true;s.fillOp=62;s.lineOn=false},s=>s.fillOn&&!s.lineOn&&s.fillOp<96&&s.fillOp>0],
+    ['Solid','Opaque fill',s=>{s.fillOn=true;s.fillOp=100;s.lineOn=false},s=>s.fillOn&&!s.lineOn&&s.fillOp>=96],
+    ['Outline','Border only',s=>{s.fillOn=false;s.lineOn=true;s.lineW=Math.max(s.lineW,3)},s=>!s.fillOn&&s.lineOn],
+    ['No container','Text without a box',s=>{s.fillOn=false;s.lineOn=false},s=>!s.fillOn&&!s.lineOn]
+  ];
+  const PICO=[
+    ICON('<rect x="8" y="10" width="32" height="28" rx="8" stroke-dasharray="0"/><path d="M14 20h20M14 28h12" opacity=".5"/>'),
+    ICON('<rect x="8" y="10" width="32" height="28" rx="8" fill="currentColor" opacity=".25"/><rect x="8" y="10" width="32" height="28" rx="8"/>'),
+    ICON('<rect x="8" y="10" width="32" height="28" rx="8" stroke-dasharray="4 4"/>'),
+    ICON('<circle cx="24" cy="24" r="14"/><path d="M14 34 34 14"/>')
+  ];
+  $('#presets').innerHTML=PRESETS.map((p,i)=>'<button type="button" class="lay-opt" aria-pressed="false"><i class="rad" aria-hidden="true"></i><span class="lay-ic">'+PICO[i]+'</span><b>'+p[0]+'</b><small>'+p[1]+'</small></button>').join('');
+  $$('#presets button').forEach((b,i)=>b.onclick=()=>{PRESETS[i][2](S);draw()});
+  $('#c-reset').onclick=()=>{S.fillOn=true;S.fill=COL[S.col][8];S.fillOp=62;S.lineOn=false;S.line=COL[S.col][4];S.lineW=2;draw()};
+  // ----- tabs -----
+  const tabs=$$('.tabs [role=tab]');
+  const showTab=t=>{
+    tabs.forEach(b=>{const on=b===t;b.classList.toggle('sel',on);b.setAttribute('aria-selected',on);b.tabIndex=on?0:-1;$('#'+b.getAttribute('aria-controls')).hidden=!on});
+  };
+  tabs.forEach((b,i)=>{
+    b.onclick=()=>showTab(b);
+    b.onkeydown=e=>{
+      const k={ArrowRight:1,ArrowLeft:-1}[e.key];if(!k)return;
+      e.preventDefault();const n=tabs[(i+k+tabs.length)%tabs.length];showTab(n);n.focus();
+    };
+  });
+  // ----- friendly starting points -----
+  const SAMPLE=[
+    ['CS101','Introduction to Computing','Monday','Lec','3','08:00','09:30','Room 101'],
+    ['GE104','Mathematics in the Modern World','Tuesday','Lec','3','10:00','11:30','Room 301'],
+    ['GE105','Purposive Communication','Wednesday','Lec','3','13:00','15:00','Room 204'],
+    ['SCI101','General Physics','Thursday','Lab','1','09:00','10:30','Lab 1'],
+    ['GE106','Philippine History','Friday','Lec','3','11:00','12:30','Room 205']
+  ].map(([code,subj,day,type,units,start,end,room])=>({code,subj,day,type,units,start,end,room}));
+  $('#try-sample').onclick=()=>{
+    snapshot=items.map(x=>({...x}));
+    const have=new Set(items.map(keyOf));let n=0;
+    SAMPLE.forEach(x=>{if(!have.has(keyOf(x))){items.push({...x});n++}});
+    draw();
+    const am=$('#alt-msg');am.textContent=n?'Added 5 sample classes so you can try the designs. Use “Clear all” below to remove them.':'The sample is already in your schedule.';am.dataset.k=n?'ok':'';
+  };
+  $('#go-manual').onclick=()=>{const d=$('#manual');d.open=true;d.scrollIntoView({behavior:still?'auto':'smooth',block:'center'});setTimeout(()=>$('#code').focus({preventScroll:true}),300)};
 
   const draw=()=>{
     $$('#layouts button').forEach((b,i)=>{b.classList.toggle('sel',i===S.lay);b.setAttribute('aria-pressed',i===S.lay)});
@@ -556,9 +601,11 @@
     });
     $('#clock').checked=S.clock;$('#fill-on').checked=S.fillOn;$('#line-on').checked=S.lineOn;
     [['fill-op','fillOp','%'],['line-w','lineW',' px'],['p-w','wf','%'],['p-x','px','%'],['p-y','py','%']].forEach(([id,k,u])=>{$('#'+id).value=S[k];$('#'+id+'-o').textContent=S[k]+u});
+    $$('#presets button').forEach((b,i)=>{const on=PRESETS[i][3](S);b.classList.toggle('sel',on);b.setAttribute('aria-pressed',on)});
+    {const k=$('#clk');k.hidden=!(S.clock&&items.length);k.style.color=COL[S.col][1];k.style.top=(S.size===0?'9':'8')+'%'}
     $('#fill-box').classList.toggle('off',!S.fillOn);$('#line-box').classList.toggle('off',!S.lineOn);
     drawList();
-    $('#sch-sum').textContent=items.length?items.length+' sessions · '+items.reduce((a,x)=>a+(+x.units||0),0)+' units':'';
+    $('#sch-sum').textContent=items.length?items.length+' session'+(items.length===1?'':'s')+' · '+items.reduce((a,x)=>a+(+x.units||0),0)+' units · '+SIZES[S.size][1]+' × '+SIZES[S.size][2]:'Add classes to see your wallpaper';
     store.set('sch5',items);store.set('sch6s',S);store.set('sbg',bgData);
     if(drawQueued)return;drawQueued=true;
     requestAnimationFrame(()=>{drawQueued=false;renderWall()});
