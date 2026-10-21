@@ -554,3 +554,15 @@ html.theming *,html.theming *:before,html.theming *:after{transition:background-
 @media(max-width:30rem){.dtabs button{font-size:.9rem;padding:0 .5rem}}
 .shead.tight{flex-wrap:wrap;gap:.5rem}
 .seg button{padding-left:.25rem;padding-right:.25rem}.seg button b{font-size:.86rem;overflow-wrap:anywhere}
+
+/* real phone clock position + round swatches */
+.screen{position:relative;container-type:inline-size;line-height:0}
+.screen canvas{display:block;width:100%;height:auto;border-radius:1.9rem}
+.phone{container-type:normal}
+.clk{top:10%;flex-direction:column;align-items:center;gap:.1rem;line-height:1}
+.clk small{font:600 4.2cqw/1.2 var(--font-body,"DM Sans",system-ui,sans-serif);opacity:.9}
+.clk b{font:600 19cqw/1 var(--font-body,"DM Sans",system-ui,sans-serif);letter-spacing:-.02em}
+.swc,.sws .swc{min-height:0;width:2.4rem;height:2.4rem;padding:0;border-radius:50%;aspect-ratio:1}
+.opts .dotc{min-height:0;width:2.75rem;height:2.75rem;aspect-ratio:1;border-radius:50%;padding:0}
+.fitnote{margin:0 0 .4rem;font-size:.9rem;color:var(--muted);line-height:1.5}
+.swc,.sws .swc{width:2.1rem;height:2.1rem}.sws{gap:.45rem}

@@ -17,7 +17,8 @@
     ['Ocean','#eaf6ff','','','#7cc4f5','#0b2038','#2a77b5','#0b2038','#0e2644']
   ];
   const LAYOUTS=[['Stacked days','One day per row'],['Grouped list','All days in one shared panel'],['Day columns','Weekday circles and class stacks'],['Timeline','Connected days, clear rows']];
-  const SIZES=[['Tall phone (most phones)',1080,2340],['Standard phone',1080,1920]];
+  // One wallpaper size that suits every phone (20:9). Phones scale it to cover the screen, so the content stays inside a safe area.
+  const SIZES=[['Fits every phone',1080,2400]];
 
   let items=store.get('sch5',null);
   if(!items)items=store.get('sch4',[]);
@@ -504,7 +505,9 @@
       g.font='400 32px '+FONT;g.globalAlpha=.8;g.fillText('Upload your certificate to get started',W/2,H*.42+60);g.globalAlpha=1;g.textAlign='left';return;
     }
     // sample phone clock, preview only: it is NOT part of the saved wallpaper
-    const M=64,top=S.clock?Math.round(H*(S.size===0?.255:.28)):Math.round(H*.07),bottom=Math.round(H*.06),avail=H-top-bottom;
+    // Safe area: a 16:9 phone crops up to 10% of the height from the top and bottom, so nothing important sits there.
+    // With the clock on, the schedule starts under the real lock-screen clock (about 28% down).
+    const M=64,top=S.clock?Math.round(H*.28):Math.round(H*.10),bottom=Math.round(H*.10),avail=H-top-bottom;
     const BW=(W-2*M)*S.wf/100,left=M+(W-2*M-BW)*S.px/100;
     let s=1;
     const dummy=document.createElement('canvas').getContext('2d');
@@ -530,7 +533,6 @@
   ];
   $('#layouts').innerHTML=LAYOUTS.map((l,i)=>'<button type="button" class="lay-opt" aria-pressed="false"><i class="rad" aria-hidden="true"></i><span class="lay-ic">'+ICONS[i]+'</span><b>'+l[0]+'</b><small>'+l[1]+'</small></button>').join('');
   $('#colors').innerHTML=COL.map(c=>'<button type="button" class="dotc" style="background:linear-gradient(135deg,'+c[6]+','+c[7]+')" aria-label="'+c[0]+'" title="'+c[0]+'" aria-pressed="false"></button>').join('');
-  $('#sizes').innerHTML=SIZES.map(s=>'<button type="button" aria-pressed="false">'+s[0]+'</button>').join('');
   const swatches=(el,list,key)=>{
     el.innerHTML=list.map(c=>'<button type="button" class="swc" data-c="'+c+'" style="background:'+c+'" aria-label="Color '+c+'" aria-pressed="false"></button>').join('')+'<label class="swc custom" title="Pick any color"><input type="color" aria-label="Custom color"></label>';
     el.querySelectorAll('.swc[data-c]').forEach(b=>b.onclick=()=>{S[key]=b.dataset.c;draw()});
@@ -539,7 +541,6 @@
   swatches($('#fill-sw'),FILLS,'fill');swatches($('#line-sw'),LINES,'line');
   $$('#layouts button').forEach((b,i)=>b.onclick=()=>{S.lay=i;draw()});
   $$('#colors button').forEach((b,i)=>b.onclick=()=>{S.col=i;S.fill=COL[i][8];S.fillOn=true;S.line=COL[i][4];draw()});
-  $$('#sizes button').forEach((b,i)=>b.onclick=()=>{S.size=i;draw()});
   $('#clock').onchange=e=>{S.clock=e.target.checked;draw()};
   $('#fill-on').onchange=e=>{S.fillOn=e.target.checked;draw()};
   $('#line-on').onchange=e=>{S.lineOn=e.target.checked;draw()};
@@ -594,7 +595,6 @@
   const draw=()=>{
     $$('#layouts button').forEach((b,i)=>{b.classList.toggle('sel',i===S.lay);b.setAttribute('aria-pressed',i===S.lay)});
     $$('#colors button').forEach((b,i)=>{b.classList.toggle('sel',i===S.col);b.setAttribute('aria-pressed',i===S.col)});
-    $$('#sizes button').forEach((b,i)=>{b.classList.toggle('sel',i===S.size);b.setAttribute('aria-pressed',i===S.size)});
     [['fill-sw','fill'],['line-sw','line']].forEach(([id,k])=>{
       $$('#'+id+' .swc[data-c]').forEach(b=>{const on=b.dataset.c.toLowerCase()===String(S[k]).toLowerCase();b.classList.toggle('sel',on);b.setAttribute('aria-pressed',on)});
       const ci=$('#'+id+' input');if(ci&&/^#[0-9a-f]{6}$/i.test(S[k]))ci.value=S[k];
@@ -602,10 +602,10 @@
     $('#clock').checked=S.clock;$('#fill-on').checked=S.fillOn;$('#line-on').checked=S.lineOn;
     [['fill-op','fillOp','%'],['line-w','lineW',' px'],['p-w','wf','%'],['p-x','px','%'],['p-y','py','%']].forEach(([id,k,u])=>{$('#'+id).value=S[k];$('#'+id+'-o').textContent=S[k]+u});
     $$('#presets button').forEach((b,i)=>{const on=PRESETS[i][3](S);b.classList.toggle('sel',on);b.setAttribute('aria-pressed',on)});
-    {const k=$('#clk');k.hidden=!(S.clock&&items.length);k.style.color=COL[S.col][1];k.style.top=(S.size===0?'9':'8')+'%'}
+    {const k=$('#clk');k.hidden=!(S.clock&&items.length);k.style.color=COL[S.col][1];$('#clk-date').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})}
     $('#fill-box').classList.toggle('off',!S.fillOn);$('#line-box').classList.toggle('off',!S.lineOn);
     drawList();
-    $('#sch-sum').textContent=items.length?items.length+' session'+(items.length===1?'':'s')+' · '+items.reduce((a,x)=>a+(+x.units||0),0)+' units · '+SIZES[S.size][1]+' × '+SIZES[S.size][2]:'Add classes to see your wallpaper';
+    $('#sch-sum').textContent=items.length?items.length+' session'+(items.length===1?'':'s')+' · '+items.reduce((a,x)=>a+(+x.units||0),0)+' units':'Add classes to see your wallpaper';
     store.set('sch5',items);store.set('sch6s',S);store.set('sbg',bgData);
     if(drawQueued)return;drawQueued=true;
     requestAnimationFrame(()=>{drawQueued=false;renderWall()});

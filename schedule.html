@@ -23,11 +23,11 @@
 <div class="shead tight"><p class="step"><b class="sn">3</b><span>Your phone wallpaper</span></p><a class="ghost sm up" href="#classes">↑ Edit classes</a></div>
 <div class="wgrid">
 <div class="wprev">
-<div class="phone"><canvas id="wall" width="1080" height="2340" aria-label="Preview of your schedule wallpaper"></canvas><div class="clk" id="clk" aria-hidden="true"><b>9:41</b><span>AM</span></div></div>
+<div class="phone"><div class="screen"><canvas id="wall" width="1080" height="2400" aria-label="Preview of your schedule wallpaper"></canvas><div class="clk" id="clk" aria-hidden="true"><small id="clk-date"></small><b>9:41</b></div></div></div>
 <p class="sum" id="sch-sum"></p>
 <p class="note warnline" id="wall-warn"></p>
 <label class="tog center"><input type="checkbox" id="clock"><span>Show clock preview</span></label>
-<p class="hint center">The clock is only a preview. It is not saved in your JPEG.</p>
+<p class="hint center">The clock only shows where your phone puts its own clock. It is not saved in your JPEG.</p>
 </div>
 <div class="wctl">
 <div class="save"><button class="btn-primary" id="sch-jpg" type="button"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3m0 12-4-4m4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>Download wallpaper (JPEG)</button><button class="btn-ghost" id="sch-share" type="button" hidden>Share to phone</button></div>
@@ -57,7 +57,7 @@
 <button type="button" class="ghost wide" id="c-reset">Reset container to default</button>
 </div>
 <div class="tpanel" role="tabpanel" id="p-style" aria-labelledby="t-style" hidden>
-<p class="lb">Phone size</p><div class="seg" id="sizes"></div>
+<p class="lb">Fits every phone</p><p class="fitnote">One wallpaper that adapts to any phone. It is made at 1080 × 2400 and keeps its edges clear, so it fits your lock screen and home screen without cutting anything off.</p>
 <p class="lb">Colors</p><div class="opts" id="colors"></div>
 <p class="lb">Background photo</p><div class="upl"><label class="btn-primary sm" for="bg-file" tabindex="0" onkeydown="if(event.key==='Enter')this.click()">Upload photo</label><input class="sr" id="bg-file" type="file" accept="image/*"><button type="button" class="ghost" id="bg-clear">Remove photo</button></div>
 </div>
