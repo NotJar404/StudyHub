@@ -1,7 +1,811 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Home | Student Study Hub</title>
-<script>document.documentElement.classList.add('js');(function(){var K='theme',R=document.documentElement;function rd(){var c=[];try{c.push(localStorage.getItem(K))}catch(e){}try{c.push(sessionStorage.getItem(K))}catch(e){}try{var m=/(?:^|;)sh-theme=([^;]*)/.exec(window.name);if(m)c.push(m[1])}catch(e){}try{var k=/(?:^|; )sh-theme=([^;]*)/.exec(document.cookie);if(k)c.push(k[1])}catch(e){}var best='day',t=0;c.forEach(function(v){if(!v)return;var p=String(v).split('|'),ts=+p[1]||1;if((p[0]==='night'||p[0]==='day')&&ts>=t){t=ts;best=p[0]}});return best}function wr(m){var v=m+'|'+Date.now();try{localStorage.setItem(K,v)}catch(e){}try{sessionStorage.setItem(K,v)}catch(e){}try{window.name=String(window.name||'').replace(/(?:^|;)sh-theme=[^;]*/g,'')+';sh-theme='+v}catch(e){}try{document.cookie='sh-theme='+v+';path=/;max-age=31536000;SameSite=Lax'}catch(e){}}window.__theme={get:rd,set:wr};R.dataset.theme=rd()})()</script>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet"><link rel="icon" href="images/logo.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css?v=7"></head><body><div id="aura"></div>
-<canvas id="bg"></canvas><canvas id="tr"></canvas>
-<nav class="nav" id="nav"><a class="brand" href="index.html"><img class="logo" src="images/logo.svg" alt=""><span class="bt"><b>Study Hub</b></span></a><div class="menu" id="menu"><a href="index.html">Home</a><a href="#about">About</a><div class="dd"><a href="#tools">Tools</a><div class="dl"><a href="schedule.html">Class Scheduler</a><a href="grades.html">Grade Calculator</a><a href="deck.html">Reviewer Deck</a><a href="logic.html">Truth Tables</a><a href="colors.html">Color Picker</a><a href="convert.html">Number Converter</a><a href="files.html">File Converter</a></div></div><a href="#team">Team</a><a href="#contact">Contact</a></div><button class="pill" id="theme" type="button" aria-label="Switch between day and night mode"></button><button class="iconbtn burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="menu"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button></nav>
-<main class="wrap"><header class="hero2"><div class="hl"><span class="eyebrow">QCU · BS Information Technology</span><h1>Study better.<i>Grow together.</i></h1><p>A calm digital corner made by SBIT-1F students for planning classes, tracking grades, meeting our team, and making college feel a little lighter.</p><div class="btns"><a class="btn-primary" href="schedule.html">Plan my week<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></a><a class="btn-ghost" href="#about">Our story</a></div><p class="note-ok"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>No login. No cost. Just useful tools.</p></div><div class="art" id="art"><img class="wd" src="images/willow-day.svg" alt="A golden weeping willow tree in autumn"><img class="wn" src="images/willow-night.svg" alt="A golden weeping willow tree under the night sky"><img src="images/willow.jpg" alt="" onerror="this.remove()"><div id="canopy"></div><div class="cap"><small>STUDY UNDER THE WILLOW</small><p>A place to pause, plan, and progress.</p></div></div></header><section id="about" class="sec rv"><div class="about"><div><span class="eyebrow">Our final project · 2026</span><h2>Built around real student days.</h2></div><div><p>Between commutes, classes, group work, and deadlines, student life gets crowded fast. Study Hub gives our QCU community one uncluttered place to sort it out.</p><p>Every tool works instantly and privately in your browser, so you can focus on the work, not another account.</p><a class="more" href="#team">Meet the students behind it <svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></a></div></div></section><section id="tools" class="sec rv"><div class="sh"><span class="eyebrow">Your academic toolkit</span><h2>Everything you need to stay on track</h2><div class="orn"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></div></div><div class="cards"><a class="card" href="schedule.html"><span class="num">01</span><span class="ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><span class="pillb">MOST USED</span><h3>Class Scheduler</h3><p>Upload your Certificate of Registration and get a JPEG wallpaper of your week.</p><span class="go">Open tool<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></span></a><a class="card" href="grades.html"><span class="num">02</span><span class="ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg></span><span class="pillb">ACCURATE</span><h3>Grade Calculator</h3><p>Estimate your standing using the 60/40 grading rule.</p><span class="go">Open tool<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></span></a><a class="card" href="deck.html"><span class="num">03</span><span class="ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5M2 12l10 5 10-5"/></svg></span><span class="pillb">NEW</span><h3>Reviewer Deck</h3><p>Upload a .txt reviewer and get flashcards and a quiz instantly.</p><span class="go">Open tool<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></span></a><a class="card" href="logic.html"><span class="num">04</span><span class="ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg></span><span class="pillb">DISCRETE MATH</span><h3>Truth Tables</h3><p>Type expressions with ¬ ∧ ∨ → ↔ and get the full table.</p><span class="go">Open tool<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></span></a><a class="card" href="colors.html"><span class="num">05</span><span class="ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.93 0 1.65-.75 1.65-1.69 0-.44-.18-.84-.44-1.13-.29-.29-.44-.65-.44-1.13a1.64 1.64 0 0 1 1.67-1.67h2c3.05 0 5.55-2.5 5.55-5.55C21.97 6.01 17.46 2 12 2z"/></svg></span><span class="pillb">DESIGN</span><h3>Color Picker</h3><p>Pick from a color wheel and copy HEX, RGB, or HSL codes.</p><span class="go">Open tool<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></span></a><a class="card" href="convert.html"><span class="num">06</span><span class="ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h16M4 15h16M10 3 8 21M16 3l-2 18"/></svg></span><span class="pillb">FOR IT STUDENTS</span><h3>Number Converter</h3><p>Convert and calculate in binary, octal, decimal, and hex.</p><span class="go">Open tool<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></span></a><a class="card" href="files.html"><span class="num">07</span><span class="ic"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg></span><span class="pillb">NEW</span><h3>File Converter</h3><p>Turn PDF into Word, slides into text, or photos into a PDF.</p><span class="go">Open tool<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></span></a></div></section><section id="team" class="sec rv"><div class="sh"><span class="eyebrow">Meet SBIT—1F</span><h2>The students behind Study Hub</h2><div class="orn"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></div></div><div class="team"><article class="tm"><div class="av">JL<img src="images/member1.jpg" alt="" onerror="this.remove()"></div><h3>Jarield Lumapas</h3><p class="role">Team Leader</p><p class="bio">Leads the team and keeps every tool working together.</p><dl class="kvs"><div><dt>Birthday</dt><dd>August 27, 2006</dd></div><div><dt>Hometown</dt><dd>Quezon City</dd></div></dl><div class="soc"><a href="mailto:arcenal.carelynann.araneta@gmail.com" aria-label="Email of Jarield Lumapas" title="arcenal.carelynann.araneta@gmail.com"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg><span>Email</span></a><a href="https://www.facebook.com/share/1FjkF41rWy/" target="_blank" rel="noopener" aria-label="Facebook of Jarield Lumapas" title="Facebook"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg><span>Facebook</span></a><a href="https://github.com/NotJar404" target="_blank" rel="noopener" aria-label="GitHub of Jarield Lumapas" title="GitHub"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg><span>GitHub</span></a></div></article><article class="tm"><div class="av">HG<img src="images/member2.jpg" alt="" onerror="this.remove()"></div><h3>Hannah Lee Jazz Gliane</h3><p class="role">UI Designer</p><p class="bio">Shapes how Study Hub looks, from colors to layout.</p><dl class="kvs"><div><dt>Birthday</dt><dd>May 14, 2008</dd></div><div><dt>Hometown</dt><dd>Quezon City</dd></div></dl><div class="soc"><a href="mailto:hannahleejazz1@gmail.com" aria-label="Email of Hannah Lee Jazz Gliane" title="hannahleejazz1@gmail.com"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg><span>Email</span></a><a href="https://www.facebook.com/share/14pFSVu78Qr/" target="_blank" rel="noopener" aria-label="Facebook of Hannah Lee Jazz Gliane" title="Facebook"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg><span>Facebook</span></a></div></article><article class="tm"><div class="av">MD<img src="images/member3.jpg" alt="" onerror="this.remove()"></div><h3>Mark David Gideon M. Dando</h3><p class="role">UX Designer</p><p class="bio">Makes every tool easy to understand and quick to use.</p><dl class="kvs"><div><dt>Birthday</dt><dd>December 28, 2007</dd></div><div><dt>Hometown</dt><dd>Rodriguez, Rizal</dd></div></dl><div class="soc"><a href="mailto:dando.markdavidgideon.mendoza@gmail.com" aria-label="Email of Mark David Gideon M. Dando" title="dando.markdavidgideon.mendoza@gmail.com"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg><span>Email</span></a><a href="https://www.facebook.com/share/14tKQWBkTkT/" target="_blank" rel="noopener" aria-label="Facebook of Mark David Gideon M. Dando" title="Facebook"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg><span>Facebook</span></a></div></article><article class="tm"><div class="av">CA<img src="images/member4.jpg" alt="" onerror="this.remove()"></div><h3>Carelyn Ann A. Arcenal</h3><p class="role">Researcher</p><p class="bio">Finds out what students need and checks that it works.</p><dl class="kvs"><div><dt>Birthday</dt><dd>July 30, 2006</dd></div><div><dt>Hometown</dt><dd>Quezon City</dd></div></dl><div class="soc"><a href="mailto:arcenal.carelynann.araneta@gmail.com" aria-label="Email of Carelyn Ann A. Arcenal" title="arcenal.carelynann.araneta@gmail.com"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg><span>Email</span></a><a href="https://www.facebook.com/share/1FjkF41rWy/" target="_blank" rel="noopener" aria-label="Facebook of Carelyn Ann A. Arcenal" title="Facebook"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg><span>Facebook</span></a></div></article><article class="tm"><div class="av">5<img src="images/member5.jpg" alt="" onerror="this.remove()"></div><h3>Team Member 5</h3><p class="role">Backend Developer</p><p class="bio">Builds the behind-the-scenes logic that keeps Study Hub running.</p><dl class="kvs"><div><dt>Birthday</dt><dd><span class="tbd">To be added</span></dd></div><div><dt>Hometown</dt><dd><span class="tbd">To be added</span></dd></div></dl><div class="soc"><span class="tbd">Links to be added</span></div></article></div></section><section id="contact" class="sec rv"><div class="cta"><div><span class="eyebrow">Let’s study together</span><h2>Questions, ideas, or feedback?</h2></div><div><p>Study Hub is a student project, and we would love to hear how it can make your academic routine better.</p><a class="btn-primary" href="mailto:arcenal.carelynann.araneta@gmail.com"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>Email the team</a></div></div></section></main>
-<footer><div class="wrap"><div class="ft"><div><a class="brand" href="index.html"><img class="logo" src="images/logo.svg" alt=""><span class="bt"><b>Study Hub</b></span></a><p>A calm study space made by students, for students.</p></div><div class="col"><h4>Tools</h4><a href="schedule.html">Class Scheduler</a><a href="grades.html">Grade Calculator</a><a href="deck.html">Reviewer Deck</a><a href="logic.html">Truth Tables</a><a href="colors.html">Color Picker</a><a href="convert.html">Number Converter</a><a href="files.html">File Converter</a></div><div class="col"><h4>Explore</h4><a href="index.html#about">About</a><a href="index.html#team">Team</a><a href="index.html#contact">Contact</a></div><div class="col"><h4>The project</h4><span>Web Systems final project</span><span>BS Information Technology</span><span>QCU San Bartolome Campus</span></div></div><div class="fbar"><span>© 2026 Study Hub. Made with care by SBIT-1F.</span><a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">Back to top</a></div></div></footer><script src="script.js?v=7"></script></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <title>Home | Student Study Hub</title>
+    <script>
+      document.documentElement.classList.add('js');
+      (function () {
+        var K = 'theme',
+          R = document.documentElement;
+        function rd() {
+          var c = [];
+          try {
+            c.push(localStorage.getItem(K));
+          } catch (e) {}
+          try {
+            c.push(sessionStorage.getItem(K));
+          } catch (e) {}
+          try {
+            var m = /(?:^|;)sh-theme=([^;]*)/.exec(window.name);
+            if (m) c.push(m[1]);
+          } catch (e) {}
+          try {
+            var k = /(?:^|; )sh-theme=([^;]*)/.exec(document.cookie);
+            if (k) c.push(k[1]);
+          } catch (e) {}
+          var best = 'day',
+            t = 0;
+          c.forEach(function (v) {
+            if (!v) return;
+            var p = String(v).split('|'),
+              ts = +p[1] || 1;
+            if ((p[0] === 'night' || p[0] === 'day') && ts >= t) {
+              t = ts;
+              best = p[0];
+            }
+          });
+          return best;
+        }
+        function wr(m) {
+          var v = m + '|' + Date.now();
+          try {
+            localStorage.setItem(K, v);
+          } catch (e) {}
+          try {
+            sessionStorage.setItem(K, v);
+          } catch (e) {}
+          try {
+            window.name =
+              String(window.name || '').replace(/(?:^|;)sh-theme=[^;]*/g, '') + ';sh-theme=' + v;
+          } catch (e) {}
+          try {
+            document.cookie = 'sh-theme=' + v + ';path=/;max-age=31536000;SameSite=Lax';
+          } catch (e) {}
+        }
+        window.__theme = { get: rd, set: wr };
+        R.dataset.theme = rd();
+      })();
+    </script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=DM+Sans:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" href="images/logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="style.css?v=7" />
+  </head>
+  <body>
+    <div id="aura"></div>
+    <canvas id="bg"></canvas><canvas id="tr"></canvas>
+    <nav class="nav" id="nav">
+      <a class="brand" href="index.html"
+        ><img class="logo" src="images/logo.svg" alt="" /><span class="bt"
+          ><b>Study Hub</b></span
+        ></a
+      >
+      <div class="menu" id="menu">
+        <a href="index.html">Home</a><a href="#about">About</a>
+        <div class="dd">
+          <a href="#tools">Tools</a>
+          <div class="dl">
+            <a href="schedule.html">Class Scheduler</a><a href="grades.html">Grade Calculator</a
+            ><a href="deck.html">Reviewer Deck</a><a href="logic.html">Truth Tables</a
+            ><a href="colors.html">Color Picker</a><a href="convert.html">Number Converter</a
+            ><a href="files.html">File Converter</a>
+          </div>
+        </div>
+        <a href="#team">Team</a><a href="#contact">Contact</a>
+      </div>
+      <button
+        class="pill"
+        id="theme"
+        type="button"
+        aria-label="Switch between day and night mode"
+      ></button
+      ><button
+        class="iconbtn burger"
+        id="burger"
+        type="button"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="menu"
+      >
+        <svg
+          class="i"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M3 12h18M3 6h18M3 18h18" />
+        </svg>
+      </button>
+    </nav>
+    <main class="wrap">
+      <header class="hero2">
+        <div class="hl">
+          <span class="eyebrow">QCU · BS Information Technology</span>
+          <h1>Study better.<i>Grow together.</i></h1>
+          <p>
+            A calm digital corner made by SBIT-1F students for planning classes, tracking grades,
+            meeting our team, and making college feel a little lighter.
+          </p>
+          <div class="btns">
+            <a class="btn-primary" href="schedule.html"
+              >Plan my week<svg
+                class="i"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14m-7-7 7 7-7 7" /></svg></a
+            ><a class="btn-ghost" href="#about">Our story</a>
+          </div>
+          <p class="note-ok">
+            <svg
+              class="i"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M20 6 9 17l-5-5" /></svg
+            >No login. No cost. Just useful tools.
+          </p>
+        </div>
+        <div class="art" id="art">
+          <img
+            class="wd"
+            src="images/willow-day.svg"
+            alt="A golden weeping willow tree in autumn"
+          /><img
+            class="wn"
+            src="images/willow-night.svg"
+            alt="A golden weeping willow tree under the night sky"
+          /><img src="images/willow.jpg" alt="" onerror="this.remove()" />
+          <div id="canopy"></div>
+          <div class="cap">
+            <small>STUDY UNDER THE WILLOW</small>
+            <p>A place to pause, plan, and progress.</p>
+          </div>
+        </div>
+      </header>
+      <section id="about" class="sec rv">
+        <div class="about">
+          <div>
+            <span class="eyebrow">Our final project · 2026</span>
+            <h2>Built around real student days.</h2>
+          </div>
+          <div>
+            <p>
+              Between commutes, classes, group work, and deadlines, student life gets crowded fast.
+              Study Hub gives our QCU community one uncluttered place to sort it out.
+            </p>
+            <p>
+              Every tool works instantly and privately in your browser, so you can focus on the
+              work, not another account.
+            </p>
+            <a class="more" href="#team"
+              >Meet the students behind it
+              <svg
+                class="i"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14m-7-7 7 7-7 7" /></svg
+            ></a>
+          </div>
+        </div>
+      </section>
+      <section id="tools" class="sec rv">
+        <div class="sh">
+          <span class="eyebrow">Your academic toolkit</span>
+          <h2>Everything you need to stay on track</h2>
+          <div class="orn">
+            <svg
+              class="i"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path
+                d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"
+              />
+              <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+            </svg>
+          </div>
+        </div>
+        <div class="cards">
+          <a class="card" href="schedule.html"
+            ><span class="num">01</span
+            ><span class="ic"
+              ><svg
+                class="i"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <rect width="18" height="18" x="3" y="4" rx="2" />
+                <path d="M16 2v4M8 2v4M3 10h18" /></svg></span
+            ><span class="pillb">MOST USED</span>
+            <h3>Class Scheduler</h3>
+            <p>Upload your Certificate of Registration and get a JPEG wallpaper of your week.</p>
+            <span class="go"
+              >Open tool<svg
+                class="i"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14m-7-7 7 7-7 7" /></svg></span></a
+          ><a class="card" href="grades.html"
+            ><span class="num">02</span
+            ><span class="ic"
+              ><svg
+                class="i"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path
+                  d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"
+                /></svg></span
+            ><span class="pillb">ACCURATE</span>
+            <h3>Grade Calculator</h3>
+            <p>Estimate your standing using the 60/40 grading rule.</p>
+            <span class="go"
+              >Open tool<svg
+                class="i"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14m-7-7 7 7-7 7" /></svg></span></a
+          ><a class="card" href="deck.html"
+            ><span class="num">03</span
+            ><span class="ic"
+              ><svg
+                class="i"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="m12 2 10 5-10 5L2 7z" />
+                <path d="m2 17 10 5 10-5M2 12l10 5 10-5" /></svg></span
+            ><span class="pillb">NEW</span>
+            <h3>Reviewer Deck</h3>
+            <p>Upload a .txt reviewer and get flashcards and a quiz instantly.</p>
+            <span class="go"
+              >Open tool<svg
+                class="i"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14m-7-7 7 7-7 7" /></svg></span></a
+          ><a class="card" href="logic.html"
+            ><span class="num">04</span
+            ><span class="ic"
+              ><svg
+                class="i"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <rect width="7" height="7" x="3" y="3" rx="1" />
+                <rect width="7" height="7" x="14" y="3" rx="1" />
+                <rect width="7" height="7" x="14" y="14" rx="1" />
+                <rect width="7" height="7" x="3" y="14" rx="1" /></svg></span
+            ><span class="pillb">DISCRETE MATH</span>
+            <h3>Truth Tables</h3>
+            <p>Type expressions with ¬ ∧ ∨ → ↔ and get the full table.</p>
+            <span class="go"
+              >Open tool<svg
+                class="i"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14m-7-7 7 7-7 7" /></svg></span></a
+          ><a class="card" href="colors.html"
+            ><span class="num">05</span
+            ><span class="ic"
+              ><svg
+                class="i"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="13.5" cy="6.5" r=".5" />
+                <circle cx="17.5" cy="10.5" r=".5" />
+                <circle cx="8.5" cy="7.5" r=".5" />
+                <circle cx="6.5" cy="12.5" r=".5" />
+                <path
+                  d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.93 0 1.65-.75 1.65-1.69 0-.44-.18-.84-.44-1.13-.29-.29-.44-.65-.44-1.13a1.64 1.64 0 0 1 1.67-1.67h2c3.05 0 5.55-2.5 5.55-5.55C21.97 6.01 17.46 2 12 2z"
+                /></svg></span
+            ><span class="pillb">DESIGN</span>
+            <h3>Color Picker</h3>
+            <p>Pick from a color wheel and copy HEX, RGB, or HSL codes.</p>
+            <span class="go"
+              >Open tool<svg
+                class="i"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14m-7-7 7 7-7 7" /></svg></span></a
+          ><a class="card" href="convert.html"
+            ><span class="num">06</span
+            ><span class="ic"
+              ><svg
+                class="i"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M4 9h16M4 15h16M10 3 8 21M16 3l-2 18" /></svg></span
+            ><span class="pillb">FOR IT STUDENTS</span>
+            <h3>Number Converter</h3>
+            <p>Convert and calculate in binary, octal, decimal, and hex.</p>
+            <span class="go"
+              >Open tool<svg
+                class="i"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14m-7-7 7 7-7 7" /></svg></span></a
+          ><a class="card" href="files.html"
+            ><span class="num">07</span
+            ><span class="ic"
+              ><svg
+                class="i"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <path d="M14 2v6h6M9 15l2 2 4-4" /></svg></span
+            ><span class="pillb">NEW</span>
+            <h3>File Converter</h3>
+            <p>Turn PDF into Word, slides into text, or photos into a PDF.</p>
+            <span class="go"
+              >Open tool<svg
+                class="i"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14m-7-7 7 7-7 7" /></svg></span
+          ></a>
+        </div>
+      </section>
+      <section id="team" class="sec rv">
+        <div class="sh">
+          <span class="eyebrow">Meet SBIT—1F</span>
+          <h2>The students behind Study Hub</h2>
+          <div class="orn">
+            <svg
+              class="i"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path
+                d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"
+              />
+              <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+            </svg>
+          </div>
+        </div>
+        <div class="team">
+          <article class="tm">
+            <div class="av">JL<img src="images/member1.jpg" alt="" onerror="this.remove()" /></div>
+            <h3>Jarield Lumapas</h3>
+            <p class="role">Team Leader</p>
+            <p class="bio">Leads the team and keeps every tool working together.</p>
+            <dl class="kvs">
+              <div>
+                <dt>Birthday</dt>
+                <dd>August 27, 2006</dd>
+              </div>
+              <div>
+                <dt>Hometown</dt>
+                <dd>Quezon City</dd>
+              </div>
+            </dl>
+            <div class="soc">
+              <a
+                href="mailto:arcenal.carelynann.araneta@gmail.com"
+                aria-label="Email of Jarield Lumapas"
+                title="arcenal.carelynann.araneta@gmail.com"
+                ><svg
+                  class="i"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect width="20" height="16" x="2" y="4" rx="2" />
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg
+                ><span>Email</span></a
+              ><a
+                href="https://www.facebook.com/share/1FjkF41rWy/"
+                target="_blank"
+                rel="noopener"
+                aria-label="Facebook of Jarield Lumapas"
+                title="Facebook"
+                ><svg
+                  class="i"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+                  /></svg
+                ><span>Facebook</span></a
+              ><a
+                href="https://github.com/NotJar404"
+                target="_blank"
+                rel="noopener"
+                aria-label="GitHub of Jarield Lumapas"
+                title="GitHub"
+                ><svg
+                  class="i"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"
+                  />
+                  <path d="M9 18c-4.51 2-5-2-7-2" /></svg
+                ><span>GitHub</span></a
+              >
+            </div>
+          </article>
+          <article class="tm">
+            <div class="av">HG<img src="images/member2.jpg" alt="" onerror="this.remove()" /></div>
+            <h3>Hannah Lee Jazz Gliane</h3>
+            <p class="role">UI Designer</p>
+            <p class="bio">Shapes how Study Hub looks, from colors to layout.</p>
+            <dl class="kvs">
+              <div>
+                <dt>Birthday</dt>
+                <dd>May 14, 2008</dd>
+              </div>
+              <div>
+                <dt>Hometown</dt>
+                <dd>Quezon City</dd>
+              </div>
+            </dl>
+            <div class="soc">
+              <a
+                href="mailto:hannahleejazz1@gmail.com"
+                aria-label="Email of Hannah Lee Jazz Gliane"
+                title="hannahleejazz1@gmail.com"
+                ><svg
+                  class="i"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect width="20" height="16" x="2" y="4" rx="2" />
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg
+                ><span>Email</span></a
+              ><a
+                href="https://www.facebook.com/share/14pFSVu78Qr/"
+                target="_blank"
+                rel="noopener"
+                aria-label="Facebook of Hannah Lee Jazz Gliane"
+                title="Facebook"
+                ><svg
+                  class="i"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+                  /></svg
+                ><span>Facebook</span></a
+              >
+            </div>
+          </article>
+          <article class="tm">
+            <div class="av">MD<img src="images/member3.jpg" alt="" onerror="this.remove()" /></div>
+            <h3>Mark David Gideon M. Dando</h3>
+            <p class="role">UX Designer</p>
+            <p class="bio">Makes every tool easy to understand and quick to use.</p>
+            <dl class="kvs">
+              <div>
+                <dt>Birthday</dt>
+                <dd>December 28, 2007</dd>
+              </div>
+              <div>
+                <dt>Hometown</dt>
+                <dd>Rodriguez, Rizal</dd>
+              </div>
+            </dl>
+            <div class="soc">
+              <a
+                href="mailto:dando.markdavidgideon.mendoza@gmail.com"
+                aria-label="Email of Mark David Gideon M. Dando"
+                title="dando.markdavidgideon.mendoza@gmail.com"
+                ><svg
+                  class="i"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect width="20" height="16" x="2" y="4" rx="2" />
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg
+                ><span>Email</span></a
+              ><a
+                href="https://www.facebook.com/share/14tKQWBkTkT/"
+                target="_blank"
+                rel="noopener"
+                aria-label="Facebook of Mark David Gideon M. Dando"
+                title="Facebook"
+                ><svg
+                  class="i"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+                  /></svg
+                ><span>Facebook</span></a
+              >
+            </div>
+          </article>
+          <article class="tm">
+            <div class="av">CA<img src="images/member4.jpg" alt="" onerror="this.remove()" /></div>
+            <h3>Carelyn Ann A. Arcenal</h3>
+            <p class="role">Researcher</p>
+            <p class="bio">Finds out what students need and checks that it works.</p>
+            <dl class="kvs">
+              <div>
+                <dt>Birthday</dt>
+                <dd>July 30, 2006</dd>
+              </div>
+              <div>
+                <dt>Hometown</dt>
+                <dd>Quezon City</dd>
+              </div>
+            </dl>
+            <div class="soc">
+              <a
+                href="mailto:arcenal.carelynann.araneta@gmail.com"
+                aria-label="Email of Carelyn Ann A. Arcenal"
+                title="arcenal.carelynann.araneta@gmail.com"
+                ><svg
+                  class="i"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect width="20" height="16" x="2" y="4" rx="2" />
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg
+                ><span>Email</span></a
+              ><a
+                href="https://www.facebook.com/share/1FjkF41rWy/"
+                target="_blank"
+                rel="noopener"
+                aria-label="Facebook of Carelyn Ann A. Arcenal"
+                title="Facebook"
+                ><svg
+                  class="i"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+                  /></svg
+                ><span>Facebook</span></a
+              >
+            </div>
+          </article>
+          <article class="tm">
+            <div class="av">5<img src="images/member5.jpg" alt="" onerror="this.remove()" /></div>
+            <h3>Team Member 5</h3>
+            <p class="role">Backend Developer</p>
+            <p class="bio">Builds the behind-the-scenes logic that keeps Study Hub running.</p>
+            <dl class="kvs">
+              <div>
+                <dt>Birthday</dt>
+                <dd><span class="tbd">To be added</span></dd>
+              </div>
+              <div>
+                <dt>Hometown</dt>
+                <dd><span class="tbd">To be added</span></dd>
+              </div>
+            </dl>
+            <div class="soc"><span class="tbd">Links to be added</span></div>
+          </article>
+        </div>
+      </section>
+      <section id="contact" class="sec rv">
+        <div class="cta">
+          <div>
+            <span class="eyebrow">Let’s study together</span>
+            <h2>Questions, ideas, or feedback?</h2>
+          </div>
+          <div>
+            <p>
+              Study Hub is a student project, and we would love to hear how it can make your
+              academic routine better.
+            </p>
+            <a class="btn-primary" href="mailto:arcenal.carelynann.araneta@gmail.com"
+              ><svg
+                class="i"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <rect width="20" height="16" x="2" y="4" rx="2" />
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg
+              >Email the team</a
+            >
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <div class="wrap">
+        <div class="ft">
+          <div>
+            <a class="brand" href="index.html"
+              ><img class="logo" src="images/logo.svg" alt="" /><span class="bt"
+                ><b>Study Hub</b></span
+              ></a
+            >
+            <p>A calm study space made by students, for students.</p>
+          </div>
+          <div class="col">
+            <h4>Tools</h4>
+            <a href="schedule.html">Class Scheduler</a><a href="grades.html">Grade Calculator</a
+            ><a href="deck.html">Reviewer Deck</a><a href="logic.html">Truth Tables</a
+            ><a href="colors.html">Color Picker</a><a href="convert.html">Number Converter</a
+            ><a href="files.html">File Converter</a>
+          </div>
+          <div class="col">
+            <h4>Explore</h4>
+            <a href="index.html#about">About</a><a href="index.html#team">Team</a
+            ><a href="index.html#contact">Contact</a>
+          </div>
+          <div class="col">
+            <h4>The project</h4>
+            <span>Web Systems final project</span><span>BS Information Technology</span
+            ><span>QCU San Bartolome Campus</span>
+          </div>
+        </div>
+        <div class="fbar">
+          <span>© 2026 Study Hub. Made with care by SBIT-1F.</span
+          ><a
+            href="#"
+            onclick="
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+              return false;
+            "
+            >Back to top</a
+          >
+        </div>
+      </div>
+    </footer>
+    <script src="script.js?v=7"></script>
+  </body>
+</html>

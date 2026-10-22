@@ -1,12 +1,273 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Truth Tables | Student Study Hub</title>
-<script>document.documentElement.classList.add('js');(function(){var K='theme',R=document.documentElement;function rd(){var c=[];try{c.push(localStorage.getItem(K))}catch(e){}try{c.push(sessionStorage.getItem(K))}catch(e){}try{var m=/(?:^|;)sh-theme=([^;]*)/.exec(window.name);if(m)c.push(m[1])}catch(e){}try{var k=/(?:^|; )sh-theme=([^;]*)/.exec(document.cookie);if(k)c.push(k[1])}catch(e){}var best='day',t=0;c.forEach(function(v){if(!v)return;var p=String(v).split('|'),ts=+p[1]||1;if((p[0]==='night'||p[0]==='day')&&ts>=t){t=ts;best=p[0]}});return best}function wr(m){var v=m+'|'+Date.now();try{localStorage.setItem(K,v)}catch(e){}try{sessionStorage.setItem(K,v)}catch(e){}try{window.name=String(window.name||'').replace(/(?:^|;)sh-theme=[^;]*/g,'')+';sh-theme='+v}catch(e){}try{document.cookie='sh-theme='+v+';path=/;max-age=31536000;SameSite=Lax'}catch(e){}}window.__theme={get:rd,set:wr};R.dataset.theme=rd()})()</script>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet"><link rel="icon" href="images/logo.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css?v=7"></head><body>
-<canvas id="bg"></canvas><canvas id="tr"></canvas>
-<nav class="nav" id="nav"><a class="brand" href="index.html"><img class="logo" src="images/logo.svg" alt=""><span class="bt"><b>Study Hub</b></span></a><div class="menu" id="menu"><a href="index.html">Home</a><a href="index.html#about">About</a><div class="dd"><a href="index.html#tools">Tools</a><div class="dl"><a href="schedule.html">Class Scheduler</a><a href="grades.html">Grade Calculator</a><a href="deck.html">Reviewer Deck</a><a href="logic.html">Truth Tables</a><a href="colors.html">Color Picker</a><a href="convert.html">Number Converter</a><a href="files.html">File Converter</a></div></div><a href="index.html#team">Team</a><a href="index.html#contact">Contact</a></div><button class="pill" id="theme" type="button" aria-label="Switch between day and night mode"></button><button class="iconbtn burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="menu"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button></nav>
-<main class="wrap tool"><a class="back-link" href="index.html#tools">← All tools</a><header class="th rv"><span class="eyebrow">Tool 04</span><h1>Truth Tables</h1><p class="lead">Build truth tables for logical connectives (discrete math) or for standard logic gates.</p></header><ol class="how rv" aria-label="How it works"><li><b class="sn">1</b><div><b>Write</b><span>Type an expression or pick a logic gate.</span></div></li><li><b class="sn">2</b><div><b>Build</b><span>Press Build truth table.</span></div></li><li><b class="sn">3</b><div><b>Read</b><span>Every row of the table appears instantly.</span></div></li></ol><div class="tool-card-split rv"><section class="panel"><div class="dtabs" id="lg-tabs"><button type="button" class="sel" data-t="conn">Logical connectives</button><button type="button" data-t="gate">Logic gates</button></div><div id="pane-conn"><p class="step"><b class="sn">1</b><span>Type your expression</span></p><form id="lg-form"><label class="lb" for="lg-in">Expression (up to 4 variables)</label><input id="lg-in" autocomplete="off" placeholder="¬p → (q ∧ r)"><div class="symbtn" role="group" aria-label="Symbols"><button type="button" data-s="¬" aria-label="not">¬</button><button type="button" data-s="∧" aria-label="and">∧</button><button type="button" data-s="∨" aria-label="or">∨</button><button type="button" data-s="→" aria-label="implies">→</button><button type="button" data-s="↔" aria-label="if and only if">↔</button><button type="button" data-s="(" aria-label="open bracket">(</button><button type="button" data-s=")" aria-label="close bracket">)</button><button type="button" data-s="p" aria-label="p">p</button><button type="button" data-s="q" aria-label="q">q</button><button type="button" data-s="r" aria-label="r">r</button><button type="button" data-s="s" aria-label="s">s</button></div><div class="fbtns"><button class="btn-primary" type="submit">Build truth table</button><button type="button" class="ghost" id="lg-clear">Clear</button></div></form>
-<p class="lb exh">Try an example <small>Tap one to load it and build its table</small></p><div class="ex" id="lg-ex"><button type="button">¬p → (q ∧ r)</button><button type="button">p ↔ q</button><button type="button">(p ∨ q) ∧ ¬r</button><button type="button">(p → q) ∧ (q → r)</button><button type="button">p ∨ q ∧ r</button><button type="button">p ∨ ¬p</button><button type="button">p ∧ ¬p</button></div>
-<div class="prec"><p class="lb">Order of operations <small>Highest priority first</small></p>
-<ol class="plist"><li><b>¬</b><span>not</span><em>1st · highest</em></li><li><b>∧</b><span>and</span><em>2nd</em></li><li><b>∨</b><span>or</span><em>3rd</em></li><li><b>→</b><span>if … then</span><em>4th</em></li><li><b>↔</b><span>if and only if</span><em>5th · lowest</em></li></ol>
-<p class="note">Brackets ( ) always go first. Operators at the same level group left to right, except → which groups right to left. Example: p ∨ q ∧ r means p ∨ (q ∧ r).</p></div>
-<p class="note">You can also type: ~ or ! for ¬, &amp; for ∧, | for ∨, -&gt; for →, and &lt;-&gt; for ↔.</p></div><div id="pane-gate" hidden><p class="step"><b class="sn">1</b><span>Choose a gate</span></p><form id="gt-form"><label class="lb" for="gt-g">Gate</label><select class="seg" id="gt-g"><option>AND</option><option>OR</option><option>NOT</option><option>NAND</option><option>NOR</option><option>XOR</option><option>XNOR</option></select><label class="lb" for="gt-n">Number of inputs</label><select class="seg" id="gt-n"><option value="2">2 inputs</option><option value="3">3 inputs</option><option value="4">4 inputs</option></select><button class="btn-primary" type="submit">Build truth table</button></form><p class="note" id="gt-desc"></p></div></section><section class="panel sticky"><p class="step"><b class="sn">2</b><span>Truth table</span></p><div id="lg-out"><p class="empty">Type an expression, for example ¬p → (q ∧ r), or tap an example.</p></div></section></div></main>
-<footer><div class="wrap"><div class="ft"><div><a class="brand" href="index.html"><img class="logo" src="images/logo.svg" alt=""><span class="bt"><b>Study Hub</b></span></a><p>A calm study space made by students, for students.</p></div><div class="col"><h4>Tools</h4><a href="schedule.html">Class Scheduler</a><a href="grades.html">Grade Calculator</a><a href="deck.html">Reviewer Deck</a><a href="logic.html">Truth Tables</a><a href="colors.html">Color Picker</a><a href="convert.html">Number Converter</a><a href="files.html">File Converter</a></div><div class="col"><h4>Explore</h4><a href="index.html#about">About</a><a href="index.html#team">Team</a><a href="index.html#contact">Contact</a></div><div class="col"><h4>The project</h4><span>Web Systems final project</span><span>BS Information Technology</span><span>QCU San Bartolome Campus</span></div></div><div class="fbar"><span>© 2026 Study Hub. Made with care by SBIT-1F.</span><a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">Back to top</a></div></div></footer><script src="script.js?v=7"></script></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <title>Truth Tables | Student Study Hub</title>
+    <script>
+      document.documentElement.classList.add('js');
+      (function () {
+        var K = 'theme',
+          R = document.documentElement;
+        function rd() {
+          var c = [];
+          try {
+            c.push(localStorage.getItem(K));
+          } catch (e) {}
+          try {
+            c.push(sessionStorage.getItem(K));
+          } catch (e) {}
+          try {
+            var m = /(?:^|;)sh-theme=([^;]*)/.exec(window.name);
+            if (m) c.push(m[1]);
+          } catch (e) {}
+          try {
+            var k = /(?:^|; )sh-theme=([^;]*)/.exec(document.cookie);
+            if (k) c.push(k[1]);
+          } catch (e) {}
+          var best = 'day',
+            t = 0;
+          c.forEach(function (v) {
+            if (!v) return;
+            var p = String(v).split('|'),
+              ts = +p[1] || 1;
+            if ((p[0] === 'night' || p[0] === 'day') && ts >= t) {
+              t = ts;
+              best = p[0];
+            }
+          });
+          return best;
+        }
+        function wr(m) {
+          var v = m + '|' + Date.now();
+          try {
+            localStorage.setItem(K, v);
+          } catch (e) {}
+          try {
+            sessionStorage.setItem(K, v);
+          } catch (e) {}
+          try {
+            window.name =
+              String(window.name || '').replace(/(?:^|;)sh-theme=[^;]*/g, '') + ';sh-theme=' + v;
+          } catch (e) {}
+          try {
+            document.cookie = 'sh-theme=' + v + ';path=/;max-age=31536000;SameSite=Lax';
+          } catch (e) {}
+        }
+        window.__theme = { get: rd, set: wr };
+        R.dataset.theme = rd();
+      })();
+    </script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=DM+Sans:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" href="images/logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="style.css?v=7" />
+  </head>
+  <body>
+    <canvas id="bg"></canvas><canvas id="tr"></canvas>
+    <nav class="nav" id="nav">
+      <a class="brand" href="index.html"
+        ><img class="logo" src="images/logo.svg" alt="" /><span class="bt"
+          ><b>Study Hub</b></span
+        ></a
+      >
+      <div class="menu" id="menu">
+        <a href="index.html">Home</a><a href="index.html#about">About</a>
+        <div class="dd">
+          <a href="index.html#tools">Tools</a>
+          <div class="dl">
+            <a href="schedule.html">Class Scheduler</a><a href="grades.html">Grade Calculator</a
+            ><a href="deck.html">Reviewer Deck</a><a href="logic.html">Truth Tables</a
+            ><a href="colors.html">Color Picker</a><a href="convert.html">Number Converter</a
+            ><a href="files.html">File Converter</a>
+          </div>
+        </div>
+        <a href="index.html#team">Team</a><a href="index.html#contact">Contact</a>
+      </div>
+      <button
+        class="pill"
+        id="theme"
+        type="button"
+        aria-label="Switch between day and night mode"
+      ></button
+      ><button
+        class="iconbtn burger"
+        id="burger"
+        type="button"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="menu"
+      >
+        <svg
+          class="i"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M3 12h18M3 6h18M3 18h18" />
+        </svg>
+      </button>
+    </nav>
+    <main class="wrap tool">
+      <a class="back-link" href="index.html#tools">← All tools</a>
+      <header class="th rv">
+        <span class="eyebrow">Tool 04</span>
+        <h1>Truth Tables</h1>
+        <p class="lead">
+          Build truth tables for logical connectives (discrete math) or for standard logic gates.
+        </p>
+      </header>
+      <ol class="how rv" aria-label="How it works">
+        <li>
+          <b class="sn">1</b>
+          <div><b>Write</b><span>Type an expression or pick a logic gate.</span></div>
+        </li>
+        <li>
+          <b class="sn">2</b>
+          <div><b>Build</b><span>Press Build truth table.</span></div>
+        </li>
+        <li>
+          <b class="sn">3</b>
+          <div><b>Read</b><span>Every row of the table appears instantly.</span></div>
+        </li>
+      </ol>
+      <div class="tool-card-split rv">
+        <section class="panel">
+          <div class="dtabs" id="lg-tabs">
+            <button type="button" class="sel" data-t="conn">Logical connectives</button
+            ><button type="button" data-t="gate">Logic gates</button>
+          </div>
+          <div id="pane-conn">
+            <p class="step"><b class="sn">1</b><span>Type your expression</span></p>
+            <form id="lg-form">
+              <label class="lb" for="lg-in">Expression (up to 4 variables)</label
+              ><input id="lg-in" autocomplete="off" placeholder="¬p → (q ∧ r)" />
+              <div class="symbtn" role="group" aria-label="Symbols">
+                <button type="button" data-s="¬" aria-label="not">¬</button
+                ><button type="button" data-s="∧" aria-label="and">∧</button
+                ><button type="button" data-s="∨" aria-label="or">∨</button
+                ><button type="button" data-s="→" aria-label="implies">→</button
+                ><button type="button" data-s="↔" aria-label="if and only if">↔</button
+                ><button type="button" data-s="(" aria-label="open bracket">(</button
+                ><button type="button" data-s=")" aria-label="close bracket">)</button
+                ><button type="button" data-s="p" aria-label="p">p</button
+                ><button type="button" data-s="q" aria-label="q">q</button
+                ><button type="button" data-s="r" aria-label="r">r</button
+                ><button type="button" data-s="s" aria-label="s">s</button>
+              </div>
+              <div class="fbtns">
+                <button class="btn-primary" type="submit">Build truth table</button
+                ><button type="button" class="ghost" id="lg-clear">Clear</button>
+              </div>
+            </form>
+            <p class="lb exh">
+              Try an example <small>Tap one to load it and build its table</small>
+            </p>
+            <div class="ex" id="lg-ex">
+              <button type="button">¬p → (q ∧ r)</button><button type="button">p ↔ q</button
+              ><button type="button">(p ∨ q) ∧ ¬r</button
+              ><button type="button">(p → q) ∧ (q → r)</button
+              ><button type="button">p ∨ q ∧ r</button><button type="button">p ∨ ¬p</button
+              ><button type="button">p ∧ ¬p</button>
+            </div>
+            <div class="prec">
+              <p class="lb">Order of operations <small>Highest priority first</small></p>
+              <ol class="plist">
+                <li><b>¬</b><span>not</span><em>1st · highest</em></li>
+                <li><b>∧</b><span>and</span><em>2nd</em></li>
+                <li><b>∨</b><span>or</span><em>3rd</em></li>
+                <li><b>→</b><span>if … then</span><em>4th</em></li>
+                <li><b>↔</b><span>if and only if</span><em>5th · lowest</em></li>
+              </ol>
+              <p class="note">
+                Brackets ( ) always go first. Operators at the same level group left to right,
+                except → which groups right to left. Example: p ∨ q ∧ r means p ∨ (q ∧ r).
+              </p>
+            </div>
+            <p class="note">
+              You can also type: ~ or ! for ¬, &amp; for ∧, | for ∨, -&gt; for →, and &lt;-&gt; for
+              ↔.
+            </p>
+          </div>
+          <div id="pane-gate" hidden>
+            <p class="step"><b class="sn">1</b><span>Choose a gate</span></p>
+            <form id="gt-form">
+              <label class="lb" for="gt-g">Gate</label
+              ><select class="seg" id="gt-g">
+                <option>AND</option>
+                <option>OR</option>
+                <option>NOT</option>
+                <option>NAND</option>
+                <option>NOR</option>
+                <option>XOR</option>
+                <option>XNOR</option></select
+              ><label class="lb" for="gt-n">Number of inputs</label
+              ><select class="seg" id="gt-n">
+                <option value="2">2 inputs</option>
+                <option value="3">3 inputs</option>
+                <option value="4">4 inputs</option></select
+              ><button class="btn-primary" type="submit">Build truth table</button>
+            </form>
+            <p class="note" id="gt-desc"></p>
+          </div>
+        </section>
+        <section class="panel sticky">
+          <p class="step"><b class="sn">2</b><span>Truth table</span></p>
+          <div id="lg-out">
+            <p class="empty">Type an expression, for example ¬p → (q ∧ r), or tap an example.</p>
+          </div>
+        </section>
+      </div>
+    </main>
+    <footer>
+      <div class="wrap">
+        <div class="ft">
+          <div>
+            <a class="brand" href="index.html"
+              ><img class="logo" src="images/logo.svg" alt="" /><span class="bt"
+                ><b>Study Hub</b></span
+              ></a
+            >
+            <p>A calm study space made by students, for students.</p>
+          </div>
+          <div class="col">
+            <h4>Tools</h4>
+            <a href="schedule.html">Class Scheduler</a><a href="grades.html">Grade Calculator</a
+            ><a href="deck.html">Reviewer Deck</a><a href="logic.html">Truth Tables</a
+            ><a href="colors.html">Color Picker</a><a href="convert.html">Number Converter</a
+            ><a href="files.html">File Converter</a>
+          </div>
+          <div class="col">
+            <h4>Explore</h4>
+            <a href="index.html#about">About</a><a href="index.html#team">Team</a
+            ><a href="index.html#contact">Contact</a>
+          </div>
+          <div class="col">
+            <h4>The project</h4>
+            <span>Web Systems final project</span><span>BS Information Technology</span
+            ><span>QCU San Bartolome Campus</span>
+          </div>
+        </div>
+        <div class="fbar">
+          <span>© 2026 Study Hub. Made with care by SBIT-1F.</span
+          ><a
+            href="#"
+            onclick="
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+              return false;
+            "
+            >Back to top</a
+          >
+        </div>
+      </div>
+    </footer>
+    <script src="script.js?v=7"></script>
+  </body>
+</html>

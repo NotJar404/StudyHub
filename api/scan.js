@@ -34,10 +34,17 @@ const SCHEMA = {
       items: {
         type: 'OBJECT',
         properties: {
-          code: { type: 'STRING' }, subj: { type: 'STRING' },
-          day: { type: 'STRING', enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] },
-          type: { type: 'STRING', enum: ['Lec', 'Lab'] }, units: { type: 'STRING' },
-          start: { type: 'STRING' }, end: { type: 'STRING' }, room: { type: 'STRING' }
+          code: { type: 'STRING' },
+          subj: { type: 'STRING' },
+          day: {
+            type: 'STRING',
+            enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+          },
+          type: { type: 'STRING', enum: ['Lec', 'Lab'] },
+          units: { type: 'STRING' },
+          start: { type: 'STRING' },
+          end: { type: 'STRING' },
+          room: { type: 'STRING' }
         },
         required: ['code', 'subj', 'day', 'type', 'start', 'end']
       }
@@ -55,7 +62,7 @@ function thinkingConfigFor(model) {
   return undefined;
 }
 
-const STAGGER_MS = 8000;   // wait before launching the next model
+const STAGGER_MS = 8000; // wait before launching the next model
 const PER_MODEL_MS = 45000; // per-model timeout (Vercel limit is 60 s)
 const MAX_MODELS = 3;
 const FATAL_STATUSES = new Set([400, 403]);
@@ -71,7 +78,13 @@ module.exports = async (req, res) => {
 
     // --- Parse body ---
     let body = req.body;
-    if (typeof body === 'string') { try { body = JSON.parse(body); } catch { body = null; } }
+    if (typeof body === 'string') {
+      try {
+        body = JSON.parse(body);
+      } catch {
+        body = null;
+      }
+    }
     const { image, mime, text } = body || {};
 
     // Determine mode: text-based or image-based
@@ -86,7 +99,12 @@ module.exports = async (req, res) => {
     }
 
     // --- Build model list ---
-    const models = [process.env.GEMINI_MODEL, 'gemini-3.5-flash-lite', 'gemini-3.6-flash', 'gemini-3.8-flash']
+    const models = [
+      process.env.GEMINI_MODEL,
+      'gemini-3.5-flash-lite',
+      'gemini-3.6-flash',
+      'gemini-3.8-flash'
+    ]
       .filter((m, i, a) => m && a.indexOf(m) === i)
       .slice(0, MAX_MODELS);
 
@@ -117,7 +135,7 @@ module.exports = async (req, res) => {
     const t0 = Date.now();
     const globalAbort = new AbortController();
 
-    const ask = async (model) => {
+    const ask = async model => {
       const payload = buildPayload(model);
       const r = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
@@ -146,12 +164,14 @@ module.exports = async (req, res) => {
       return parsed;
     };
 
-    const result = await new Promise((resolve) => {
-      let next = 0, running = 0, done = false;
+    const result = await new Promise(resolve => {
+      let next = 0,
+        running = 0,
+        done = false;
       let last = { status: 0, detail: '' };
       let staggerTimer;
 
-      const finish = (v) => {
+      const finish = v => {
         if (done) return;
         done = true;
         clearTimeout(staggerTimer);
@@ -173,12 +193,16 @@ module.exports = async (req, res) => {
           staggerTimer = setTimeout(launch, STAGGER_MS);
         }
         ask(model).then(
-          (json) => finish({ json, model }),
-          (e) => {
+          json => finish({ json, model }),
+          e => {
             running--;
             last = {
               status: e.status || 0,
-              detail: e.detail || (e.name === 'TimeoutError' ? 'Gemini took too long to answer' : String(e.message || e))
+              detail:
+                e.detail ||
+                (e.name === 'TimeoutError'
+                  ? 'Gemini took too long to answer'
+                  : String(e.message || e))
             };
             if (e.fatal) return finish({ error: last });
             launch(); // retryable: try next model immediately
@@ -190,7 +214,9 @@ module.exports = async (req, res) => {
     });
 
     if (result.json) return res.status(200).json(result.json);
-    return res.status(502).json({ error: 'Gemini error ' + result.error.status, detail: result.error.detail });
+    return res
+      .status(502)
+      .json({ error: 'Gemini error ' + result.error.status, detail: result.error.detail });
   } catch (err) {
     console.error('scan.js uncaught:', err);
     return res.status(500).json({ error: 'Internal error', detail: String(err.message || err) });
