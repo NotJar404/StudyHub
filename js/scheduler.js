@@ -1,5 +1,5 @@
 /* ============================================================================
-   scheduler.js  -  Class Scheduler (schedule.html)
+   js/scheduler.js  -  Class Scheduler (schedule.html)
    ----------------------------------------------------------------------------
    Press Ctrl+F and search for the words in quotes to jump to a part.
 
@@ -15,7 +15,7 @@
    - Wallpaper drawing (title, rows, boxes) .... "const paint"
    - Saved settings (remembered in the browser)  "const S = Object.assign"
 
-   schedule.html holds the page structure; style.css (search "SCHEDULER") holds its look.
+   schedule.html holds the page structure; css/style.css (search "SCHEDULER") holds its look.
    ============================================================================ */
 
 // ===== CLASS SCHEDULER =====

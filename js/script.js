@@ -1,5 +1,5 @@
 /* ============================================================================
-   script.js  -  code shared by every page, plus the small tools
+   js/script.js  -  code shared by every page, plus the small tools
    ----------------------------------------------------------------------------
    Press Ctrl+F and search for the "=====" titles below to jump to a section.
 
@@ -18,7 +18,12 @@
    - Number converter .......................... "NUMBER CONVERTER"
    - Big button choices for dropdowns .......... "SEGMENTED CHOICES"
 
-   The Class Scheduler lives in scheduler.js, the File Converter in converter.js.
+   The Class Scheduler lives in js/scheduler.js, the File Converter in js/converter.js.
+
+   TIPS
+   - The nav bar and footer are copied into every .html page, so edit them in all of them.
+   - In css/style.css a rule lower in the file beats an earlier one.
+   - After editing, raise ?v=7 to ?v=8 in the <link>/<script> tags so browsers load the new file.
    ============================================================================ */
 
 const $ = s => document.querySelector(s);
