@@ -38,15 +38,16 @@ const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const MOON=svg('<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>')+'<span>Night</span>';
   const SUN=svg('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2m-7.07-2.93 1.41-1.41m11.32-11.32 1.41-1.41M2 12h2m16 0h2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41"/>')+'<span>Day</span>';
   // Day is the standard on every page. Night only turns on when you press the button, and it is remembered on every page.
-  const saved=()=>{try{return localStorage.getItem('theme')==='night'?'night':'day'}catch(e){return'day'}};
+  const saved=()=>window.__theme?window.__theme.get():'day';
   const show=m=>{r.dataset.theme=m;b.innerHTML=m==='night'?SUN:MOON;b.setAttribute('aria-pressed',m==='night');b.setAttribute('aria-label',m==='night'?'Switch to day mode':'Switch to night mode')};
   show(saved());
   b.onclick=()=>{
     const m=r.dataset.theme==='night'?'day':'night';
-    try{localStorage.setItem('theme',m)}catch(e){}
+    window.__theme&&window.__theme.set(m);
     r.classList.add('theming');show(m);clearTimeout(b._t);b._t=setTimeout(()=>r.classList.remove('theming'),700);
   };
   addEventListener('storage',e=>{if(e.key==='theme')show(saved())});
+  addEventListener('focus',()=>{if(saved()!==r.dataset.theme)show(saved())});
   const close=()=>{nav.classList.remove('open');bg.setAttribute('aria-expanded','false')};
   bg.onclick=()=>bg.setAttribute('aria-expanded',nav.classList.toggle('open'));
   $$('#menu a').forEach(a=>a.addEventListener('click',close));
@@ -294,7 +295,7 @@ if($('#wheel')){
   const ui=()=>{
     const c=hsv(H,Sx,V),hx=hex(c),a=H*Math.PI/180;
     $('#mk').style.left=(50+Math.cos(a)*Sx*50)+'%';$('#mk').style.top=(50+Math.sin(a)*Sx*50)+'%';
-    $('#prev').style.background=hx;$('#hex-in').value=hx;$('#val').value=Math.round(V*100);
+    $('#prev').style.background=hx;$('#prev').style.color=(c[0]*299+c[1]*587+c[2]*114)/1000>150?'#1a1209':'#fff';$('#prev-t').textContent=hx;$('#hex-sw').style.background=hx;$('#hex-in').value=hx;$('#val').value=Math.round(V*100);$('#val-o').textContent=Math.round(V*100)+'%';$('#val').style.setProperty('--hc',hex(hsv(H,Sx,1)));
     $('#c-hex').textContent=hx;$('#c-rgb').textContent='rgb('+c.join(', ')+')';const l=toHsl(c);$('#c-hsl').textContent='hsl('+l[0]+', '+l[1]+'%, '+l[2]+'%)';
   };
   const setHex=h=>{if(!/^#?[0-9a-f]{6}$/i.test(h))return;h=h.replace('#','');const c=[0,2,4].map(k=>parseInt(h.substr(k,2),16));[H,Sx,V]=toHsv(c);paint();ui()};
@@ -303,8 +304,8 @@ if($('#wheel')){
   cv.onpointerdown=e=>{drag=true;cv.setPointerCapture(e.pointerId);pick(e)};cv.onpointermove=e=>{if(drag)pick(e)};cv.onpointerup=()=>drag=false;
   $('#val').oninput=e=>{V=e.target.value/100;paint();ui()};
   $('#hex-in').onchange=e=>setHex(e.target.value);
-  $$('.cv button[data-c]').forEach(b=>b.onclick=async()=>{const ok=await copyText($('#'+b.dataset.c).textContent);$('#cp-msg').textContent=ok?'Copied '+$('#'+b.dataset.c).textContent:'Could not copy automatically. Select the code and copy it.'});
-  const drawPal=()=>{$('#pal').innerHTML=pal.map((h,k)=>'<button type="button" style="background:'+h+'" aria-label="Use '+h+'" title="'+h+'"></button>').join('');$$('#pal button').forEach((b,k)=>b.onclick=()=>setHex(pal[k]));store.set('pal3',pal)};
+  $$('.cv .cpy[data-c]').forEach(b=>b.onclick=async()=>{const ok=await copyText($('#'+b.dataset.c).textContent);$('#cp-msg').textContent=ok?'Copied '+$('#'+b.dataset.c).textContent:'Could not copy automatically. Select the code and copy it.';if(ok){const t=b.querySelector('span');t.textContent='Copied';b.classList.add('done');clearTimeout(b._t);b._t=setTimeout(()=>{t.textContent='Copy';b.classList.remove('done')},1400)}});
+  const drawPal=()=>{$('#pal').innerHTML=pal.map((h,k)=>'<button type="button" style="background:'+h+'" aria-label="Use '+h+'" title="'+h+'"></button>').join('');$$('#pal button').forEach((b,k)=>b.onclick=()=>setHex(pal[k]));store.set('pal3',pal);$('#pal-e').hidden=pal.length>0};
   $('#save-col').onclick=()=>{const h=$('#c-hex').textContent;pal=[h,...pal.filter(x=>x!==h)].slice(0,12);drawPal()};
   paint();ui();drawPal();
 }

@@ -26,7 +26,8 @@
   if(!items)items=store.get('sch4',[]);
   let bgData=store.get('sbg',null),editIdx=null,bgImg=null;
   // the look of the wallpaper
-  const S=Object.assign({lay:0,col:0,size:0,clock:true,fillOn:true,fill:'#12141f',fillOp:62,lineOn:false,line:'#f0b562',lineW:2,wf:100,px:50,py:18},store.get('sch6s',{}));
+  const DEFDC=['#e5707e','#f0a25a','#e8c35a','#5fb98c','#5b9bd5','#9b7bd1'];
+  const S=Object.assign({lay:0,col:0,size:0,clock:true,fillOn:true,fill:'#12141f',fillOp:62,pd:0,dc:['#e5707e','#f0a25a','#e8c35a','#5fb98c','#5b9bd5','#9b7bd1'],lineOn:false,line:'#f0b562',lineW:2,wf:100,px:50,py:18},store.get('sch6s',{}));
   S.lay=Math.min(Math.max(+S.lay||0,0),3);S.col=Math.min(Math.max(+S.col||0,0),COL.length-1);S.size=Math.min(Math.max(+S.size||0,0),SIZES.length-1);
 
   const t12=t=>{const[h,m]=t.split(':').map(Number);return(h%12||12)+':'+String(m).padStart(2,'0')+' '+(h>=12?'PM':'AM')};
@@ -312,6 +313,17 @@
     const hd=contrast(ac,'#ffffff')>contrast(ac,'#111111')?'#ffffff':'#111111';
     return{tc,ac,hd,panelOn};
   };
+  // per-day colours: each weekday gets its own box colour; text and accent are re-picked so they stay readable
+  const bestText=c=>contrast(c,'#ffffff')>=contrast(c,'#241d16')?'#ffffff':'#241d16';
+  const dayTheme=(d,base)=>{
+    if(!S.pd||!S.fillOn||!d)return base;
+    const p=COL[S.col],i=Math.max(0,DAYS.indexOf(d)),col=S.dc[i]||S.fill,op=Math.min(1,Math.max(0,S.fillOp/100));
+    const eff=mixHex(col,mixHex(p[6],p[7],.5),1-op<.05?0:Math.min(.6,(1-op)*.75));
+    const tc=bestText(eff);let ac=p[4];
+    if(contrast(ac,eff)<3.2)ac=tc==='#ffffff'?mixHex(ac,'#ffffff',.55):mixHex(ac,'#000000',.55);
+    const hd=contrast(ac,'#ffffff')>contrast(ac,'#111111')?'#ffffff':'#111111';
+    return{tc,ac,hd,panelOn:S.fillOp>=35};
+  };
   const rr=(g,x,y,w,h,r)=>{r=Math.min(r,w/2,h/2);g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath()};
   const wrap=(g,text,maxW,maxLines)=>{
     const words=String(text).split(/\s+/),lines=[];let cur='';
@@ -338,14 +350,16 @@
 
   // Lays out (and, when go is true, paints) the whole schedule at scale s. Returns the height used in "logical" pixels.
   const paint=(g,s,W,Lw,th,bgc,ox,oy,go)=>{
-    const{tc,ac,hd,panelOn}=th,canBlur='filter' in g;
+    let{tc,ac,hd,panelOn}=th;const canBlur='filter' in g;
+    const use=d=>{const t=dayTheme(d,th);tc=t.tc;ac=t.ac;hd=t.hd;panelOn=t.panelOn};
     const dim=a=>{g.globalAlpha=a},full=()=>{g.globalAlpha=1};
     const soft=on=>{g.shadowColor='rgba(0,0,0,.4)';g.shadowBlur=on&&!panelOn?9:0};
-    const panel=(x,y,w,h,r)=>{
+    const panel=(x,y,w,h,r,d)=>{
+      const fc=S.pd&&d?(S.dc[Math.max(0,DAYS.indexOf(d))]||S.fill):S.fill;
       if(!go)return;
       if(S.fillOn&&S.fillOp>0){
         if(S.fillOp<92&&canBlur){g.save();rr(g,x,y,w,h,r);g.clip();g.filter='blur(22px)';g.drawImage(bgc,-ox/s,-oy/s,W/s,bgc.height/s);g.filter='none';g.restore()}
-        rr(g,x,y,w,h,r);g.fillStyle=rgba(S.fill,S.fillOp/100);g.fill();
+        rr(g,x,y,w,h,r);g.fillStyle=rgba(fc,S.fillOp/100);g.fill();
       }
       if(S.lineOn){rr(g,x,y,w,h,r);g.strokeStyle=S.line;g.lineWidth=S.lineW;g.stroke()}
     };
@@ -398,10 +412,10 @@
     if(S.lay===0){
       days.forEach(d=>{
         const l=byDay(d);y+=34;
-        if(go)dayHead(d,l.length,4,y,Lw-8);
+        use(null);if(go)dayHead(d,l.length,4,y,Lw-8);
         y+=58;
         const rows=measure(l,Lw,34),total=rows.reduce((a,r)=>a+r.h,0)+28;
-        panel(0,y,Lw,total,30);
+        use(d);panel(0,y,Lw,total,30,d);
         let yy=y+14;
         rows.forEach((r,i)=>{
           if(go){drawRow(r,0,yy,Lw,34);if(i<rows.length-1)sep(34,Lw-34,yy+r.h,panelOn?.16:.35)}
@@ -414,12 +428,15 @@
     else if(S.lay===1){
       y+=10;
       const blocks=days.map(d=>({d,rows:measure(byDay(d),Lw,34)}));
-      const total=blocks.reduce((a,b)=>a+78+b.rows.reduce((t,r)=>t+r.h,0),0)+30;
-      panel(0,y,Lw,total,34);
+      const perDay=S.pd&&S.fillOn;
+      const total=perDay?blocks.reduce((a,b)=>a+78+b.rows.reduce((t,r)=>t+r.h,0)+38,0)-10:blocks.reduce((a,b)=>a+78+b.rows.reduce((t,r)=>t+r.h,0),0)+30;
+      if(!perDay)panel(0,y,Lw,total,34);
       let yy=y+14;
       blocks.forEach((b,bi)=>{
+        const bh=78+b.rows.reduce((t,r)=>t+r.h,0);
+        if(perDay){use(b.d);panel(0,yy-14,Lw,bh+28,34,b.d)}
         if(go){
-          if(bi>0)sep(34,Lw-34,yy-4,panelOn?.35:.5);
+          if(bi>0&&!perDay)sep(34,Lw-34,yy-4,panelOn?.35:.5);
           dayHead(b.d,b.rows.length,34,yy+14,Lw-68);
         }
         yy+=78;
@@ -427,7 +444,9 @@
           if(go){drawRow(r,0,yy,Lw,34);if(i<b.rows.length-1)sep(34,Lw-34,yy+r.h,panelOn?.12:.3)}
           yy+=r.h;
         });
+        if(perDay)yy+=38
       });
+      use(null);
       y+=total;
     }
     // ===== layout 3: DAY COLUMNS (weekday circles with class stacks) =====
@@ -436,18 +455,18 @@
       const n=Math.max(1,days.length),gap=14,colW=(Lw-gap*(n-1))/n,dia=Math.min(colW-10,108);
       let tall=0;
       days.forEach((d,ci)=>{
-        const x=ci*(colW+gap),l=byDay(d);
+        const x=ci*(colW+gap),l=byDay(d);use(d);
         if(go){
           const cx=x+colW/2,cy=y+dia/2;
           g.beginPath();g.arc(cx,cy,dia/2,0,Math.PI*2);
-          if(S.fillOn){g.fillStyle=rgba(S.fill,Math.max(.35,S.fillOp/100));g.fill()}else{g.fillStyle=rgba('#000000',.28);g.fill()}
+          if(S.fillOn){g.fillStyle=rgba(S.pd?(S.dc[Math.max(0,DAYS.indexOf(d))]||S.fill):S.fill,Math.max(.35,S.fillOp/100));g.fill()}else{g.fillStyle=rgba('#000000',.28);g.fill()}
           g.strokeStyle=S.lineOn?S.line:ac;g.lineWidth=S.lineOn?S.lineW:3;g.stroke();
           g.fillStyle=ac;g.font='700 '+(dia>90?40:32)+'px '+FONT;g.textAlign='center';g.fillText(DAB[d],cx,cy+14);g.textAlign='left';
         }
         let yy=y+dia+22;
         l.forEach(c=>{
           const h=190;
-          panel(x,yy,colW,h,22);
+          panel(x,yy,colW,h,22,d);
           if(go){
             const cx=x+colW/2;g.textAlign='center';
             let fs=30;g.font='700 '+fs+'px '+FONT;while(g.measureText(c.code).width>colW-16&&fs>18){fs-=2;g.font='700 '+fs+'px '+FONT}
@@ -467,6 +486,7 @@
         });
         tall=Math.max(tall,yy-y);
       });
+      use(null);
       y+=tall;
     }
     // ===== layout 4: TIMELINE (days joined by a line) =====
@@ -476,15 +496,16 @@
       days.forEach(d=>{
         const l=byDay(d);
         dots.push(y+22);
-        if(go)dayHead(d,l.length,LP,y,Lw-LP);
-        y+=62;
+        use(null);if(go)dayHead(d,l.length,LP,y,Lw-LP);
+        y+=62;use(d);
         measure(l,Lw-LP,30).forEach(r=>{
-          panel(LP,y,Lw-LP,r.h,26);
+          panel(LP,y,Lw-LP,r.h,26,d);
           if(go)drawRow(r,LP,y,Lw-LP,30);
           y+=r.h+14;
         });
         y+=12;
       });
+      use(null);
       if(go&&dots.length){
         g.strokeStyle=ac;g.globalAlpha=.8;g.lineWidth=4;g.beginPath();g.moveTo(20,dots[0]);g.lineTo(20,y-26);g.stroke();full();
         dots.forEach(dy=>{g.beginPath();g.arc(20,dy,15,0,Math.PI*2);g.fillStyle=ac;g.fill();g.beginPath();g.arc(20,dy,6,0,Math.PI*2);g.fillStyle=hd;g.fill()});
@@ -551,20 +572,27 @@
 
   // ----- container presets (they simply set the existing fill / outline controls) -----
   const PRESETS=[
-    ['Frosted glass','See-through fill',s=>{s.fillOn=true;s.fillOp=62;s.lineOn=false},s=>s.fillOn&&!s.lineOn&&s.fillOp<96&&s.fillOp>0],
-    ['Solid','Opaque fill',s=>{s.fillOn=true;s.fillOp=100;s.lineOn=false},s=>s.fillOn&&!s.lineOn&&s.fillOp>=96],
-    ['Outline','Border only',s=>{s.fillOn=false;s.lineOn=true;s.lineW=Math.max(s.lineW,3)},s=>!s.fillOn&&s.lineOn],
-    ['No container','Text without a box',s=>{s.fillOn=false;s.lineOn=false},s=>!s.fillOn&&!s.lineOn]
+    ['Frosted glass','See-through fill',s=>{s.pd=0;s.fillOn=true;s.fillOp=62;s.lineOn=false},s=>!s.pd&&s.fillOn&&!s.lineOn&&s.fillOp<96&&s.fillOp>0],
+    ['Solid','Opaque fill',s=>{s.pd=0;s.fillOn=true;s.fillOp=100;s.lineOn=false},s=>!s.pd&&s.fillOn&&!s.lineOn&&s.fillOp>=96],
+    ['Solid color','A color for each day',s=>{s.pd=1;s.fillOn=true;s.fillOp=100;s.lineOn=false},s=>s.pd&&s.fillOn&&s.fillOp>=96],
+    ['Colored glass','See-through day colors',s=>{s.pd=1;s.fillOn=true;s.fillOp=62;s.lineOn=false},s=>s.pd&&s.fillOn&&s.fillOp<96],
+    ['Outline','Border only',s=>{s.pd=0;s.fillOn=false;s.lineOn=true;s.lineW=Math.max(s.lineW,3)},s=>!s.fillOn&&s.lineOn],
+    ['No container','Text without a box',s=>{s.pd=0;s.fillOn=false;s.lineOn=false},s=>!s.fillOn&&!s.lineOn]
   ];
   const PICO=[
     ICON('<rect x="8" y="10" width="32" height="28" rx="8" stroke-dasharray="0"/><path d="M14 20h20M14 28h12" opacity=".5"/>'),
     ICON('<rect x="8" y="10" width="32" height="28" rx="8" fill="currentColor" opacity=".25"/><rect x="8" y="10" width="32" height="28" rx="8"/>'),
+    ICON('<rect x="8" y="9" width="32" height="9" rx="4" fill="currentColor" opacity=".55"/><rect x="8" y="20" width="32" height="9" rx="4" fill="currentColor" opacity=".35"/><rect x="8" y="31" width="32" height="9" rx="4" fill="currentColor" opacity=".18"/>'),
+    ICON('<rect x="8" y="9" width="32" height="9" rx="4"/><rect x="8" y="20" width="32" height="9" rx="4" stroke-dasharray="0" opacity=".7"/><rect x="8" y="31" width="32" height="9" rx="4" opacity=".4"/>'),
     ICON('<rect x="8" y="10" width="32" height="28" rx="8" stroke-dasharray="4 4"/>'),
     ICON('<circle cx="24" cy="24" r="14"/><path d="M14 34 34 14"/>')
   ];
   $('#presets').innerHTML=PRESETS.map((p,i)=>'<button type="button" class="lay-opt" aria-pressed="false"><i class="rad" aria-hidden="true"></i><span class="lay-ic">'+PICO[i]+'</span><b>'+p[0]+'</b><small>'+p[1]+'</small></button>').join('');
   $$('#presets button').forEach((b,i)=>b.onclick=()=>{PRESETS[i][2](S);draw()});
-  $('#c-reset').onclick=()=>{S.fillOn=true;S.fill=COL[S.col][8];S.fillOp=62;S.lineOn=false;S.line=COL[S.col][4];S.lineW=2;draw()};
+  const DLAB=['M','T','W','Th','F','S'];
+  $('#daycols-in').innerHTML=DAYS.map((d,i)=>'<label class="dcol"><span class="dcs" style="background:'+S.dc[i]+'"><input type="color" value="'+S.dc[i]+'" data-i="'+i+'" aria-label="Color for '+d+'"></span><b>'+DLAB[i]+'</b></label>').join('');
+  $$('#daycols-in input').forEach(inp=>inp.oninput=e=>{S.dc[+inp.dataset.i]=e.target.value;inp.parentElement.style.background=e.target.value;draw()});
+  $('#c-reset').onclick=()=>{S.pd=0;S.dc=DEFDC.slice();S.fillOn=true;S.fill=COL[S.col][8];S.fillOp=62;S.lineOn=false;S.line=COL[S.col][4];S.lineW=2;draw()};
   // ----- tabs -----
   const tabs=$$('.tabs [role=tab]');
   const showTab=t=>{
@@ -605,6 +633,7 @@
     [['fill-op','fillOp','%'],['line-w','lineW',' px'],['p-w','wf','%'],['p-x','px','%'],['p-y','py','%']].forEach(([id,k,u])=>{$('#'+id).value=S[k];$('#'+id+'-o').textContent=S[k]+u});
     $$('#presets button').forEach((b,i)=>{const on=PRESETS[i][3](S);b.classList.toggle('sel',on);b.setAttribute('aria-pressed',on)});
     {const k=$('#clk');k.hidden=!(S.clock&&items.length);k.style.color=COL[S.col][1];$('#clk-date').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})}
+    $('#daycols').hidden=!(S.pd&&S.fillOn);$$('#daycols-in input').forEach(inp=>{inp.value=S.dc[+inp.dataset.i];inp.parentElement.style.background=S.dc[+inp.dataset.i]});$('#fill-sw').closest('.crow').classList.toggle('bypd',!!(S.pd&&S.fillOn));
     $('#fill-box').classList.toggle('off',!S.fillOn);$('#line-box').classList.toggle('off',!S.lineOn);
     drawList();
     $('#sch-sum').textContent=items.length?items.length+' session'+(items.length===1?'':'s')+' · '+items.reduce((a,x)=>a+(+x.units||0),0)+' units':'Add classes to see your wallpaper';
