@@ -19,6 +19,8 @@
   const LAYOUTS=[['Stacked days','One day per row'],['Grouped list','All days in one shared panel'],['Day columns','Weekday circles and class stacks'],['Timeline','Connected days, clear rows']];
   // One wallpaper size that suits every phone (20:9). Phones scale it to cover the screen, so the content stays inside a safe area.
   const SIZES=[['Fits every phone',1080,2400]];
+  // On a phone the wallpaper takes the exact shape of that screen; anywhere else it is 20:9, which suits most phones.
+  const dims=()=>{let r=2400/1080;try{if(matchMedia('(pointer:coarse)').matches&&Math.min(screen.width,screen.height)<=900)r=Math.max(screen.width,screen.height)/Math.min(screen.width,screen.height)}catch(e){}r=Math.min(Math.max(r,1.7),2.4);return[1080,Math.round(1080*r)]};
 
   let items=store.get('sch5',null);
   if(!items)items=store.get('sch4',[]);
@@ -494,7 +496,7 @@
 
   let drawQueued=false;
   const renderWall=()=>{
-    const[,W,H]=SIZES[S.size],p=COL[S.col],th=theme();
+    const[W,H]=dims(),p=COL[S.col],th=theme();
     if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H}
     const g=cv.getContext('2d'),bgc=makeBg(W,H,p);
     g.clearRect(0,0,W,H);g.drawImage(bgc,0,0);
