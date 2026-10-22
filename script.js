@@ -241,26 +241,51 @@ if($('#lg-in')){
   const S=n=>n.v||(n.o==='¬'?'¬'+S(n.a):'('+S(n.a)+' '+n.o+' '+S(n.b)+')');
   const L=n=>n.b?S(n).slice(1,-1):S(n);
   const ev=(n,e)=>n.v?e[n.v]:n.o==='¬'?!ev(n.a,e):n.o==='∧'?ev(n.a,e)&&ev(n.b,e):n.o==='∨'?ev(n.a,e)||ev(n.b,e):n.o==='→'?!ev(n.a,e)||ev(n.b,e):ev(n.a,e)===ev(n.b,e);
-  const run=()=>{
+  const EMPTY='<p class="empty">Type an expression, for example ¬p → (q ∧ r), or tap an example.</p>';
+  const analyze=ast=>{
+    const vs=new Set(),cols=[],seen=new Set();
+    const walk=n=>{if(n.v){vs.add(n.v);return}walk(n.a);if(n.b)walk(n.b);const k=S(n);if(!seen.has(k)){seen.add(k);cols.push(n)}};
+    walk(ast);if(!cols.length)cols.push(ast);
+    const V=[...'pqrs'].filter(x=>vs.has(x)),n=V.length;let T=0;const rows=[];
+    for(let r=0;r<2**n;r++){const e={};V.forEach((v,k)=>e[v]=!((r>>(n-1-k))&1));rows.push(e);if(ev(ast,e))T++}
+    return{V,n,T,N:2**n,cols,rows};
+  };
+  const props=(T,N)=>({sat:T>0,valid:T===N,contra:T===0});
+  const mark=()=>{const v=norm(inp.value).replace(/\s+/g,'');$$('#lg-ex button').forEach(b=>{const on=!!v&&norm(b.dataset.x).replace(/\s+/g,'')===v;b.classList.toggle('sel',on);b.setAttribute('aria-pressed',on)})};
+  const run=(fresh)=>{
     const out=$('#lg-out'),src=inp.value.trim();
-    if(!src){out.innerHTML='<p class="empty">Type an expression, for example ¬p → (q ∧ r).</p>';return}
+    mark();
+    if(!src){out.innerHTML=EMPTY;return}
     try{
-      const ast=parse(src),vs=new Set(),cols=[],seen=new Set();
-      const walk=n=>{if(n.v){vs.add(n.v);return}walk(n.a);if(n.b)walk(n.b);const k=S(n);if(!seen.has(k)){seen.add(k);cols.push(n)}};
-      walk(ast);if(!cols.length)cols.push(ast);
-      const V=[...'pqrs'].filter(x=>vs.has(x)),n=V.length;let T=0,html='';
-      for(let r=0;r<2**n;r++){
-        const e={};V.forEach((v,k)=>e[v]=!((r>>(n-1-k))&1));
-        html+='<tr>'+V.map(v=>'<td class="'+(e[v]?'T':'F')+'">'+(e[v]?'T':'F')+'</td>').join('')+cols.map(c=>{const x=ev(c,e);return '<td class="'+(x?'T':'F')+'">'+(x?'T':'F')+'</td>'}).join('')+'</tr>';
-        if(ev(ast,e))T++;
-      }
-      const kind=T===2**n?'Tautology (always true)':T===0?'Contradiction (always false)':'Contingency (sometimes true)';
-      out.innerHTML='<p class="note" style="margin:0">Expression</p><p class="expr">'+esc(L(ast))+'</p><p><span class="badge">'+kind+'</span></p><div class="tw"><table class="tt"><thead><tr>'+V.map(v=>'<th>'+v+'</th>').join('')+cols.map(c=>'<th>'+esc(L(c))+'</th>').join('')+'</tr></thead><tbody>'+html+'</tbody></table></div><p class="note">'+2**n+' rows for '+n+' variable'+(n>1?'s':'')+'. The last column is the final answer.</p>';
+      const ast=parse(src),a=analyze(ast),{V,n,T,N,cols,rows}=a,p=props(T,N);
+      const html=rows.map(e=>'<tr>'+V.map(v=>'<td class="'+(e[v]?'T':'F')+'">'+(e[v]?'T':'F')+'</td>').join('')+cols.map(c=>{const x=ev(c,e);return '<td class="'+(x?'T':'F')+'">'+(x?'T':'F')+'</td>'}).join('')+'</tr>').join('');
+      const card=(k,on,name,desc)=>'<div class="prop '+(on?'on':'off')+'" role="listitem"><b>'+name+'</b><span>'+(on?'✓ Yes':'✗ No')+'</span><small>'+desc+'</small></div>';
+      const verdict=p.valid?'Valid (a tautology): true in all '+N+' rows, so it is always true.':p.contra?'Contradictory: false in all '+N+' rows, so it can never be true.':'Satisfiable but not valid (a contingency): true in '+T+' of '+N+' rows and false in the other '+(N-T)+'.';
+      out.innerHTML='<div class="lgres'+(fresh?' flash':'')+'"><p class="note" style="margin:0">Expression, grouped by the order of operations</p><p class="expr">'+esc(L(ast))+'</p>'+
+        '<div class="props" role="list" aria-label="Properties of the sentence">'+card('sat',p.sat,'Satisfiable','True in at least one row')+card('valid',p.valid,'Valid','True in every row')+card('contra',p.contra,'Contradictory','False in every row')+'</div>'+
+        '<p class="verdict">'+verdict+'</p>'+
+        '<div class="tw"><table class="tt"><thead><tr>'+V.map(v=>'<th>'+v+'</th>').join('')+cols.map(c=>'<th>'+esc(L(c))+'</th>').join('')+'</tr></thead><tbody>'+html+'</tbody></table></div><p class="note">'+N+' rows for '+n+' variable'+(n>1?'s':'')+'. Columns go left to right in the order they are worked out: ¬ first, then ∧, ∨, →, and ↔ last. The last column is the final answer.</p></div>';
     }catch(err){out.innerHTML='<p class="bad">'+esc(err.message)+'</p>'}
   };
-  $('#lg-form').onsubmit=e=>{e.preventDefault();run()};
-  $$('.symbtn button').forEach(b=>b.onclick=()=>{inp.setRangeText(b.dataset.s,inp.selectionStart,inp.selectionEnd,'end');inp.focus()});
-  $$('.ex button').forEach(b=>b.onclick=()=>{inp.value=b.textContent;run()});
+  $('#lg-form').onsubmit=e=>{e.preventDefault();run(true)};
+  inp.addEventListener('input',mark);
+  $$('.symbtn button').forEach(b=>b.onclick=()=>{inp.setRangeText(b.dataset.s,inp.selectionStart,inp.selectionEnd,'end');inp.focus();mark()});
+  // examples: every tap starts fresh (old result cleared), shows which example is active, and brings the result into view
+  $$('#lg-ex button').forEach(b=>{
+    b.dataset.x=b.textContent;
+    try{const a=analyze(parse(b.textContent)),p=props(a.T,a.N);const t=p.valid?'valid':p.contra?'contradictory':'satisfiable';b.insertAdjacentHTML('beforeend','<small class="tg '+t+'">'+t+'</small>')}catch(e){}
+    b.setAttribute('aria-pressed','false');
+    b.onclick=()=>{
+      inp.value=b.dataset.x;$('#lg-out').innerHTML='';
+      requestAnimationFrame(()=>{
+        run(true);
+        const r=$('#lg-out').getBoundingClientRect();
+        if(r.top>innerHeight*.7||r.bottom<80)$('#lg-out').scrollIntoView({behavior:still?'auto':'smooth',block:'start'});
+      });
+    };
+  });
+  $('#lg-clear').onclick=()=>{inp.value='';$('#lg-out').innerHTML=EMPTY;mark();inp.focus()};
+  window.__lgReset=()=>{inp.value='';$('#lg-out').innerHTML=EMPTY;mark()};
 }
 
 // ===== LOGIC GATES (2 to 4 inputs) AND THE TWO TRUTH TABLE TABS =====
@@ -278,7 +303,7 @@ if($('#lg-tabs')){
   $$('#lg-tabs button').forEach(b=>b.onclick=()=>{
     $$('#lg-tabs button').forEach(x=>x.classList.toggle('sel',x===b));
     const gt=b.dataset.t==='gate';$('#pane-conn').hidden=gt;$('#pane-gate').hidden=!gt;
-    if(gt)run();else $('#lg-out').innerHTML='<p class="empty">Type an expression, for example ¬p → (q ∧ r).</p>';
+    if(gt)run();else window.__lgReset&&window.__lgReset();
   });
 }
 
