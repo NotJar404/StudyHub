@@ -27,7 +27,7 @@
   let bgData=store.get('sbg',null),editIdx=null,bgImg=null;
   // the look of the wallpaper
   const DEFDC=['#e5707e','#f0a25a','#e8c35a','#5fb98c','#5b9bd5','#9b7bd1'];
-  const S=Object.assign({lay:0,col:0,size:0,clock:true,fillOn:true,fill:'#12141f',fillOp:62,pd:0,dc:['#e5707e','#f0a25a','#e8c35a','#5fb98c','#5b9bd5','#9b7bd1'],lineOn:false,line:'#f0b562',lineW:2,wf:100,px:50,py:18},store.get('sch6s',{}));
+  const S=Object.assign({lay:0,col:0,size:0,clock:true,fillOn:true,fill:'#12141f',fillOp:62,pd:0,dc:['#e5707e','#f0a25a','#e8c35a','#5fb98c','#5b9bd5','#9b7bd1'],lineOn:false,line:'#f0b562',lineW:2,wf:100,px:50,py:18,tOn:true,title:'My Weekly Schedule',tPos:'left',ff:0,fs:100,tcol:'',to:100},store.get('sch6s',{}));
   S.lay=Math.min(Math.max(+S.lay||0,0),3);S.col=Math.min(Math.max(+S.col||0,0),COL.length-1);S.size=Math.min(Math.max(+S.size||0,0),SIZES.length-1);
 
   const t12=t=>{const[h,m]=t.split(':').map(Number);return(h%12||12)+':'+String(m).padStart(2,'0')+' '+(h>=12?'PM':'AM')};
@@ -265,7 +265,18 @@
   form.onsubmit=e=>{e.preventDefault();add(false)};
   $('#add-keep').onclick=()=>add(true);
   $('#add-cancel').onclick=resetForm;
-  $('#clear-all').onclick=()=>{if(items.length&&confirm('Remove all classes from your schedule?')){snapshot=items.map(x=>({...x}));items=[];resetForm();draw()}};
+  {
+    const ca=$('#clear-all'),un=$('#clear-undo'),label=ca.textContent;let t=0,saved=null;
+    const arm=on=>{clearTimeout(t);ca.classList.toggle('danger',on);ca.textContent=on?'Tap again to clear':label;ca.dataset.armed=on?'1':'';if(on)t=setTimeout(()=>arm(false),3500)};
+    ca.onclick=()=>{
+      if(!items.length)return;
+      if(!ca.dataset.armed){arm(true);return}
+      arm(false);saved=items.map(x=>({...x}));snapshot=null;items=[];resetForm();un.hidden=false;draw();
+      const am=$('#alt-msg');am.textContent='All classes removed.';am.dataset.k='ok';$('#cor-undo').hidden=true;
+    };
+    un.onclick=()=>{if(saved){items=saved;saved=null;un.hidden=true;draw();const am=$('#alt-msg');am.textContent='Classes restored.';am.dataset.k='ok'}};
+    ca._sync=()=>{ca.disabled=!items.length;if(items.length)un.hidden=true;if(!items.length)arm(false)};
+  }
   $('#classes').addEventListener('click',e=>{
     const b=e.target.closest('button[data-a]');if(!b)return;
     const i=+b.dataset.i;
@@ -294,7 +305,10 @@
   //  WALLPAPER (drawn on a canvas, saved as a JPEG)
   // =================================================================
   const cv=$('#wall');
-  const FONT='"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif',HEAD='"Fraunces",Georgia,serif';
+  let FONT='"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif',HEAD='"Fraunces",Georgia,serif';
+  const SANS='"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif',SERIF='"Fraunces",Georgia,serif';
+  const FONTS=[['Default (mixed)',SANS,SERIF],['DM Sans',SANS,SANS],['Fraunces (serif)',SERIF,SERIF],['Georgia','Georgia,serif','Georgia,serif'],['Trebuchet MS','"Trebuchet MS",Tahoma,sans-serif','"Trebuchet MS",Tahoma,sans-serif'],['Courier New','"Courier New",monospace','"Courier New",monospace']];
+  const TCOLS=['#ffffff','#241d16','#f0b562','#f6a5b8','#7cc4f5'];
   const DAB={Monday:'M',Tuesday:'T',Wednesday:'W',Thursday:'Th',Friday:'F',Saturday:'S'};
   // colour helpers
   const hx=h=>{h=h.replace('#','');if(h.length===3)h=h.replace(/./g,'$&$&');return[0,2,4].map(i=>parseInt(h.slice(i,i+2),16))};
@@ -351,7 +365,12 @@
   // Lays out (and, when go is true, paints) the whole schedule at scale s. Returns the height used in "logical" pixels.
   const paint=(g,s,W,Lw,th,bgc,ox,oy,go)=>{
     let{tc,ac,hd,panelOn}=th;const canBlur='filter' in g;
-    const use=d=>{const t=dayTheme(d,th);tc=t.tc;ac=t.ac;hd=t.hd;panelOn=t.panelOn};
+    const tcol=h=>S.to<100&&/^#[0-9a-f]{6}$/i.test(h)?rgba(h,S.to/100):h;
+    const tpick=h=>tcol(/^#[0-9a-f]{6}$/i.test(S.tcol)?S.tcol:h);
+    tc=tpick(tc);
+    {const k=Math.min(Math.max(+S.fs||100,70),130)/100,fd=Object.getOwnPropertyDescriptor(CanvasRenderingContext2D.prototype,'font');
+     if(k===1)delete g.font;else Object.defineProperty(g,'font',{configurable:true,get(){return fd.get.call(g)},set(v){fd.set.call(g,String(v).replace(/(\d+(?:\.\d+)?)px/,(m,n)=>(+n*k).toFixed(1)+'px'))}})}
+    const use=d=>{const t=dayTheme(d,th);tc=tpick(t.tc);ac=t.ac;hd=t.hd;panelOn=t.panelOn};
     const dim=a=>{g.globalAlpha=a},full=()=>{g.globalAlpha=1};
     const soft=on=>{g.shadowColor='rgba(0,0,0,.4)';g.shadowBlur=on&&!panelOn?9:0};
     const panel=(x,y,w,h,r,d)=>{
@@ -368,10 +387,14 @@
     g.textBaseline='alphabetic';g.textAlign='left';
     let y=0;
     // title
-    if(go){g.fillStyle=tc;g.font='500 78px '+HEAD;soft(true);g.fillText('My Weekly Schedule',0,y+66);g.shadowBlur=0}
-    y+=96;
+    const ttl=(S.title||'').trim(),showT=S.tOn&&ttl,ax=S.tPos==='center'?Lw/2:S.tPos==='right'?Lw:0;
+    if(go&&showT){
+      g.fillStyle=tc;let fs=78;g.font='500 '+fs+'px '+HEAD;
+      if(g.font&&1){let n=0;while(g.measureText(ttl).width>Lw&&n++<30){fs-=3;g.font='500 '+fs+'px '+HEAD}}
+      g.textAlign=S.tPos==='center'?'center':S.tPos==='right'?'right':'left';soft(true);g.fillText(ttl,ax,y+66);g.shadowBlur=0;g.textAlign='left'}
+    y+=showT?96:14;
     const u=items.reduce((a,x)=>a+(+x.units||0),0);
-    if(go){g.font='500 30px '+FONT;g.fillStyle=tc;soft(true);dim(.8);g.fillText(items.length+' session'+(items.length===1?'':'s')+(u?'  ·  '+u+' units':''),0,y+20);full();g.shadowBlur=0}
+    if(go){g.font='500 30px '+FONT;g.fillStyle=tc;g.textAlign=S.tPos==='center'?'center':S.tPos==='right'?'right':'left';soft(true);dim(.8);g.fillText(items.length+' session'+(items.length===1?'':'s')+(u?'  ·  '+u+' units':''),ax,y+20);full();g.shadowBlur=0;g.textAlign='left'}
     y+=70;
 
     // ----- one row of a class: time | code + type | subject | room -----
@@ -517,6 +540,7 @@
 
   let drawQueued=false;
   const renderWall=()=>{
+    {const f=FONTS[S.ff]||FONTS[0];FONT=f[1];HEAD=f[2]}
     const[W,H]=dims(),p=COL[S.col],th=theme();
     if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H}
     const g=cv.getContext('2d'),bgc=makeBg(W,H,p);
@@ -593,6 +617,19 @@
   $('#daycols-in').innerHTML=DAYS.map((d,i)=>'<label class="dcol"><span class="dcs" style="background:'+S.dc[i]+'"><input type="color" value="'+S.dc[i]+'" data-i="'+i+'" aria-label="Color for '+d+'"></span><b>'+DLAB[i]+'</b></label>').join('');
   $$('#daycols-in input').forEach(inp=>inp.oninput=e=>{S.dc[+inp.dataset.i]=e.target.value;inp.parentElement.style.background=e.target.value;draw()});
   $('#c-reset').onclick=()=>{S.pd=0;S.dc=DEFDC.slice();S.fillOn=true;S.fill=COL[S.col][8];S.fillOp=62;S.lineOn=false;S.line=COL[S.col][4];S.lineW=2;draw()};
+  // ----- text controls -----
+  $('#t-font').innerHTML=FONTS.map((f,i)=>'<option value="'+i+'">'+f[0]+'</option>').join('');
+  $('#t-pos').innerHTML=[['left','Left'],['center','Center'],['right','Right']].map(p=>'<button type="button" data-p="'+p[0]+'" aria-pressed="false">'+p[1]+'</button>').join('');
+  $$('#t-pos button').forEach(b=>b.onclick=()=>{S.tPos=b.dataset.p;draw()});
+  $('#t-on').onchange=e=>{S.tOn=e.target.checked;draw()};
+  $('#t-title').oninput=e=>{S.title=e.target.value;draw()};
+  $('#t-font').onchange=e=>{S.ff=+e.target.value;draw();const f=FONTS[S.ff];if(document.fonts&&document.fonts.load)Promise.all([document.fonts.load('500 40px '+f[1]),document.fonts.load('500 40px '+f[2])]).then(()=>draw()).catch(()=>{})};
+  [['t-fs','fs','%'],['t-op','to','%']].forEach(([id,k,u])=>{$('#'+id).oninput=e=>{S[k]=+e.target.value;draw()}});
+  $('#t-sw').innerHTML=TCOLS.map(c=>'<button type="button" class="swc" data-c="'+c+'" style="background:'+c+'" aria-label="Text color '+c+'" aria-pressed="false"></button>').join('')+'<label class="swc custom" title="Pick any color"><input type="color" aria-label="Custom text color"></label>';
+  $$('#t-sw .swc[data-c]').forEach(b=>b.onclick=()=>{S.tcol=b.dataset.c;draw()});
+  $('#t-sw input').oninput=e=>{S.tcol=e.target.value;draw()};
+  $('#t-auto').onclick=()=>{S.tcol='';draw()};
+  $('#t-reset').onclick=()=>{S.tOn=true;S.title='My Weekly Schedule';S.tPos='left';S.ff=0;S.fs=100;S.tcol='';S.to=100;draw()};
   // ----- tabs -----
   const tabs=$$('.tabs [role=tab]');
   const showTab=t=>{
@@ -635,7 +672,13 @@
     {const k=$('#clk');k.hidden=!(S.clock&&items.length);k.style.color=COL[S.col][1];$('#clk-date').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})}
     $('#daycols').hidden=!(S.pd&&S.fillOn);$$('#daycols-in input').forEach(inp=>{inp.value=S.dc[+inp.dataset.i];inp.parentElement.style.background=S.dc[+inp.dataset.i]});$('#fill-sw').closest('.crow').classList.toggle('bypd',!!(S.pd&&S.fillOn));
     $('#fill-box').classList.toggle('off',!S.fillOn);$('#line-box').classList.toggle('off',!S.lineOn);
-    drawList();
+    $('#t-on').checked=S.tOn;if($('#t-title').value!==S.title)$('#t-title').value=S.title;$('#t-title').disabled=!S.tOn;
+    $$('#t-pos button').forEach(b=>{const on=b.dataset.p===S.tPos;b.classList.toggle('sel',on);b.setAttribute('aria-pressed',on)});
+    $('#t-font').value=S.ff;
+    [['t-fs','fs','%'],['t-op','to','%']].forEach(([id,k,u])=>{$('#'+id).value=S[k];$('#'+id+'-o').textContent=S[k]+u});
+    $$('#t-sw .swc[data-c]').forEach(b=>{const on=b.dataset.c.toLowerCase()===String(S.tcol).toLowerCase();b.classList.toggle('sel',on);b.setAttribute('aria-pressed',on)});
+    $('#t-auto').classList.toggle('sel',!S.tcol);{const ci=$('#t-sw input');if(/^#[0-9a-f]{6}$/i.test(S.tcol))ci.value=S.tcol}
+    drawList();$('#clear-all')._sync&&$('#clear-all')._sync();
     $('#sch-sum').textContent=items.length?items.length+' session'+(items.length===1?'':'s')+' · '+items.reduce((a,x)=>a+(+x.units||0),0)+' units':'Add classes to see your wallpaper';
     store.set('sch5',items);store.set('sch6s',S);store.set('sbg',bgData);
     if(drawQueued)return;drawQueued=true;

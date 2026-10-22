@@ -14,7 +14,7 @@
 <p class="note">Your photo is sent securely to an AI reader only to fill in your classes. It is not stored.</p>
 
 
-<div class="shead"><p class="step" style="margin:0"><b class="sn">2</b><span>Your classes</span></p><button type="button" class="ghost sm" id="clear-all">Clear all</button></div>
+<div class="shead"><p class="step" style="margin:0"><b class="sn">2</b><span>Your classes</span></p><span class="shbtns"><button type="button" class="ghost sm" id="clear-undo" hidden>Undo</button><button type="button" class="ghost sm" id="clear-all">Clear all</button></span></div>
 <div id="classes"></div>
 <a class="btn-primary jump" href="#wall-panel">See my wallpaper ↓</a>
 <details id="manual" class="boost"><summary>Add or fix a class by hand</summary><div class="bbody"><form id="sch-form"><div class="row2"><div><label class="lb" for="code">Code</label><input id="code" name="code" placeholder="CC106" required></div><div><label class="lb" for="day">Day</label><select id="day" name="day"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option></select></div></div><label class="lb" for="subj">Subject name</label><input id="subj" name="subj" placeholder="Application Development and Emerging Technologies" required><div class="row2"><div><label class="lb" for="type">Session</label><select id="type" name="type"><option value="Lec">Lecture</option><option value="Lab">Laboratory</option></select></div><div><label class="lb" for="units">Units</label><input id="units" name="units" type="number" min="0" max="6" placeholder="2"></div></div><div class="row2"><div><label class="lb" for="start">Starts</label><input id="start" type="time" name="start" required></div><div><label class="lb" for="end">Ends</label><input id="end" type="time" name="end" required></div></div><label class="lb" for="room">Room</label><input id="room" name="room" placeholder="IL504a"><button class="btn-primary" type="submit" id="add-main">Add class</button><button class="ghost wide" type="button" id="add-keep">Add, then add its Lab or Lecture session</button><button class="ghost wide" type="button" id="add-cancel" hidden>Cancel editing</button></form></div></details>
@@ -37,6 +37,7 @@
 <div class="tabs" role="tablist" aria-label="Customize wallpaper">
 <button type="button" role="tab" id="t-layout" aria-controls="p-layout" aria-selected="true" class="sel"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg><span>Layout</span></button>
 <button type="button" role="tab" id="t-container" aria-controls="p-container" aria-selected="false" tabindex="-1"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10"/></svg><span>Container</span></button>
+<button type="button" role="tab" id="t-text" aria-controls="p-text" aria-selected="false" tabindex="-1"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7V5h16v2M9 19h6M12 5v14"/></svg><span>Text</span></button>
 <button type="button" role="tab" id="t-style" aria-controls="p-style" aria-selected="false" tabindex="-1"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="8.5" cy="10" r="1.2"/><circle cx="12" cy="7.5" r="1.2"/><circle cx="15.5" cy="10" r="1.2"/><path d="M12 21a2.5 2.5 0 0 1 0-5h2a2 2 0 0 0 2-2"/></svg><span>Style</span></button>
 </div>
 <div class="tpanel" role="tabpanel" id="p-layout" aria-labelledby="t-layout">
@@ -56,6 +57,17 @@
 <div class="crow"><label class="tog"><input type="checkbox" id="line-on"><span>Outline</span></label><div class="sws" id="line-sw"></div></div>
 <div id="line-box"><div class="rng"><label for="line-w">Thickness</label><input type="range" id="line-w" min="1" max="8"><output id="line-w-o"></output></div></div>
 <button type="button" class="ghost wide" id="c-reset">Reset container to default</button>
+</div>
+<div class="tpanel" role="tabpanel" id="p-text" aria-labelledby="t-text" hidden>
+<div class="trow"><label class="tog"><input type="checkbox" id="t-on"><span>Title</span></label><input id="t-title" type="text" maxlength="40" placeholder="My Weekly Schedule" autocomplete="off" aria-label="Title text"></div>
+<p class="lb">Title position</p><div class="seg" id="t-pos" role="group" aria-label="Title position"></div>
+<label class="lb" for="t-font">Font family</label><select id="t-font"></select>
+<div class="rng"><label for="t-fs">Font size</label><input type="range" id="t-fs" min="70" max="130" step="5"><output id="t-fs-o"></output></div>
+<div class="crow"><span class="tog tl">Text color</span><div class="sws" id="t-sw"></div></div>
+<button type="button" class="ghost sm" id="t-auto">Automatic color</button>
+<div class="rng"><label for="t-op">Opacity</label><input type="range" id="t-op" min="20" max="100" step="5"><output id="t-op-o"></output></div>
+<p class="fitnote">This changes the title and the class text on your wallpaper. Names, times and rooms come from your classes. Edit a class to change them.</p>
+<button type="button" class="ghost wide" id="t-reset">Reset text to default</button>
 </div>
 <div class="tpanel" role="tabpanel" id="p-style" aria-labelledby="t-style" hidden>
 <p class="lb">Fits every phone</p><p class="fitnote">One wallpaper that adapts to any phone. On a phone it is made to the exact shape of your screen. On a computer it is 1080 × 2400, which suits most phones. Its edges stay clear, so nothing gets cut off on your lock screen or home screen.</p>
