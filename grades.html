@@ -312,5 +312,23 @@
       </div>
     </footer>
     <script src="js/script.js?v=7"></script>
-  </body>
+      <a class="gbar" href="#ring" id="g-bar" aria-label="Jump to your result">
+      <span>Final rating</span><b id="gb-v">—</b><small id="gb-p"></small>
+    </a>
+    <script>
+      (function () {
+        var r = document.getElementById('ring'),
+          v = document.getElementById('g-big'),
+          p = document.getElementById('g-pct'),
+          bv = document.getElementById('gb-v'),
+          bp = document.getElementById('gb-p');
+        function s() {
+          bv.textContent = (v.textContent || '').trim() || '—';
+          bp.textContent = (p.textContent || '').trim();
+        }
+        s();
+        new MutationObserver(s).observe(r, { childList: true, subtree: true, characterData: true });
+      })();
+    </script>
+</body>
 </html>

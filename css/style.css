@@ -4190,3 +4190,539 @@ form .fbtns .btn-primary {
     margin-left: auto;
   }
 }
+
+/* =========================================================
+   MOBILE POLISH: calmer spacing, readable text, easy taps
+   ========================================================= */
+@media (max-width: 48rem) {
+  .eyebrow,
+  .lb,
+  .cap small,
+  .pillb,
+  .ring small,
+  .ft h4,
+  .badge,
+  .tile small,
+  .cv small,
+  .dd > a,
+  .lay-opt small,
+  .role,
+  .kvs dt,
+  .seg button small,
+  .colh,
+  .cpg .ends,
+  .dcol b,
+  .plist em,
+  .zb b,
+  .cat .opt,
+  .cat .ch1 .opt,
+  .cat .ch1 .pc {
+    font-size: 0.8rem;
+  }
+  html {
+    scroll-padding-top: 5.5rem;
+  }
+  .sec {
+    padding-top: 4rem;
+  }
+  .sh {
+    margin-bottom: 2rem;
+  }
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+  }
+  .menu a,
+  .dl a {
+    padding-block: 0.8rem;
+  }
+  summary {
+    padding-block: 0.8rem;
+  }
+  button.sm,
+  .ghost.sm,
+  a.ghost.sm {
+    min-height: 2.75rem;
+  }
+  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='color']):not([type='file']),
+  select,
+  textarea {
+    font-size: 1rem;
+    min-height: 2.75rem;
+  }
+  input[type='checkbox'],
+  input[type='radio'] {
+    width: 1.4rem;
+    height: 1.4rem;
+  }
+  #bg {
+    opacity: 0.45;
+  }
+}
+
+/* =========================================================
+   MOBILE NAV: one flat bar, one clean list (same on every page)
+   ========================================================= */
+@media (max-width: 48rem) {
+  html {
+    scroll-padding-top: 4.5rem;
+  }
+  .nav {
+    top: 0;
+    width: 100%;
+    margin: 0;
+    gap: 0.25rem;
+    padding: calc(0.55rem + env(safe-area-inset-top, 0px)) 1rem 0.55rem;
+    border: 0;
+    border-bottom: 1px solid var(--border-color);
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .logo {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 0.7rem;
+  }
+  .brand {
+    gap: 0.65rem;
+  }
+  .bt b {
+    font-size: 1.2rem;
+  }
+  .bt small {
+    display: none;
+  }
+  .pill,
+  .iconbtn {
+    width: 2.75rem;
+    height: 2.75rem;
+    min-height: 2.75rem;
+  }
+  .nav.open .menu {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 0.4rem 0 0.8rem;
+    max-height: calc(100dvh - 4.5rem);
+  }
+  .menu > a,
+  .dd > a {
+    order: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 3.25rem;
+    margin: 0;
+    padding: 0 0.25rem;
+    border-radius: 0;
+    background: none;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--text-main);
+  }
+  .dd {
+    display: block;
+    order: 0;
+  }
+  .dl {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0.2rem 0 0.4rem 1rem;
+    border-radius: 0;
+    box-shadow: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .dl a,
+  .dl a:last-child:nth-child(odd) {
+    min-height: 2.75rem;
+    padding: 0 0.25rem;
+    border-radius: 0;
+    background: none;
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--muted);
+  }
+}
+
+/* =========================================================
+   GRADE CALCULATOR (phone): roomy cards, aligned fields,
+   live rating bar that stays in view while you type
+   ========================================================= */
+.gbar {
+  display: none;
+}
+@media (max-width: 48rem) {
+  body:has(#g-cats) .how {
+    display: none;
+  }
+  body:has(#g-cats) main.tool {
+    padding-bottom: 6.5rem;
+  }
+  .gbar {
+    position: fixed;
+    z-index: 40;
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    padding: 0.85rem 1.2rem;
+    border-radius: 999px;
+    background: var(--text-main);
+    color: var(--bg);
+    text-decoration: none;
+    box-shadow: 0 0.6rem 1.6rem rgba(0, 0, 0, 0.25);
+  }
+  .gbar span {
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
+  .gbar b {
+    margin-left: auto;
+    font: 600 1.5rem/1 var(--font-heading);
+  }
+  .gbar small {
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
+  .tool-card-split .panel {
+    padding: 1.25rem 1rem;
+  }
+  .tool-card-split .grp {
+    margin: 0 0 1.6rem;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+  }
+  .grp-h {
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  .grp-h h3 {
+    font-size: 1.35rem;
+  }
+  .grp-h p {
+    font-size: 0.92rem;
+    line-height: 1.6;
+  }
+  .wleg {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem 0.8rem;
+  }
+  .wleg small {
+    display: none;
+  }
+  .cat {
+    margin: 0 0 1rem;
+    padding: 1.1rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 1.2rem;
+    background: var(--bg2);
+  }
+  .cat-h {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.85rem;
+    margin: 0 0 1rem;
+  }
+  .cat-h .ch1,
+  .cat-h .ch2 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    width: 100%;
+  }
+  .cat-h .opt {
+    display: none;
+  }
+  .cat-h h3 {
+    flex: 1;
+    font-size: 1.2rem;
+  }
+  .cat .pc {
+    flex: none;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.85rem;
+  }
+  .cat .wl {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+  }
+  .cat .wl input {
+    width: 4.6rem;
+    text-align: center;
+  }
+  .cat .nog {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0 0.9rem;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    background: var(--card-bg);
+    font-size: 0.9rem;
+  }
+  .cat .colh,
+  .cat .colh:has(+ .r3),
+  .cat .rows .r3 {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 2.75rem;
+    gap: 0.6rem;
+    align-items: center;
+  }
+  .cat .colh {
+    margin: 0 0 0.5rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+  }
+  .cat .r3 {
+    margin-bottom: 0.6rem;
+  }
+  .cat .r3 input {
+    width: 100%;
+    margin: 0;
+  }
+  .cat button.x {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border-radius: 50%;
+    border: 0;
+    background: var(--card-bg);
+    color: var(--muted);
+    font-size: 1.3rem;
+  }
+  .cat .cat-f {
+    margin-top: 0.4rem;
+  }
+  .cat .cat-f .ghost {
+    width: 100%;
+    min-height: 2.75rem;
+  }
+  .cat .cs-st {
+    margin: 0.8rem 0 0;
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+  .zb {
+    padding: 0.9rem 1rem;
+    border-radius: 1rem;
+  }
+  .ring {
+    margin-inline: auto;
+  }
+  .tiles {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 48rem) {
+  .cat-h .ch2 {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.7rem;
+  }
+  .cat .wl {
+    justify-content: flex-start;
+  }
+  .cat .nog {
+    width: 100%;
+    border-radius: 0.9rem;
+    padding: 0 1rem;
+  }
+  .cat .colh span {
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+  }
+}
+
+/* =========================================================
+   CUSTOMIZE PANEL (phone): one label, one full-width control
+   ========================================================= */
+@media (max-width: 48rem) {
+  .custom .chead {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 1.1rem 1rem;
+  }
+  .custom .chead .i {
+    flex: none;
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  .custom .chead b {
+    display: block;
+    font-size: 1.1rem;
+  }
+  .custom .chead small {
+    display: block;
+    margin-top: 0.15rem;
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+  .custom .tabs button {
+    min-height: 3.25rem;
+    padding-inline: 0.25rem;
+  }
+  .tpanel:not([hidden]) {
+    display: grid;
+    gap: 0.8rem;
+    padding: 1.25rem 1rem 1.5rem;
+  }
+  .tpanel > * {
+    margin: 0;
+  }
+  .tpanel .lb {
+    margin: 0 0 -0.5rem;
+    font-size: 0.8rem;
+  }
+  .tpanel .trow {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+  }
+  .tpanel .trow input[type='text'],
+  .tpanel select {
+    width: 100%;
+  }
+  .tpanel .rng {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 0.25rem 0.75rem;
+  }
+  .tpanel .rng label {
+    grid-area: 1 / 1;
+    font-weight: 600;
+  }
+  .tpanel .rng output {
+    grid-area: 1 / 2;
+    text-align: right;
+    color: var(--muted);
+  }
+  .tpanel .rng input[type='range'] {
+    grid-area: 2 / 1 / 3 / 3;
+    width: 100%;
+    margin: 0;
+  }
+  .tpanel .crow {
+    margin: 0;
+  }
+  .tpanel .crow .tl {
+    font-weight: 600;
+  }
+  .tpanel .ghost,
+  .tpanel .ghost.sm {
+    width: 100%;
+    min-height: 2.75rem;
+  }
+  .tpanel .fitnote {
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+}
+
+@media (max-width: 48rem) {
+  .save .btn-primary {
+    justify-content: center;
+    gap: 0.6rem;
+    padding-inline: 0.75rem;
+    text-align: center;
+    white-space: nowrap;
+  }
+}
+
+/* ===== Scheduler action buttons + grade result (phone) ===== */
+@media (max-width: 48rem) {
+  .btn-primary.jump {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3rem;
+    font-size: 1rem;
+  }
+  a.ghost.sm.up,
+  #clear-all {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.75rem;
+    padding: 0 1.1rem;
+    font-size: 0.95rem;
+  }
+  a.ghost.sm.up {
+    width: 100%;
+    margin-bottom: 0.25rem;
+  }
+  .gbar {
+    color: var(--card-bg);
+  }
+  .tool-card-split .ring {
+    width: min(11.5rem, 62%);
+    margin-block: 0.75rem;
+  }
+  .tiles {
+    align-items: stretch;
+  }
+  .tile {
+    padding: 0.85rem;
+  }
+  .tile small {
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+  .tile b {
+    font-size: 1.15rem;
+  }
+}
+
+/* even spacing inside the container and style tabs (phone) */
+@media (max-width: 48rem) {
+  #fill-box,
+  #line-box {
+    display: grid;
+    gap: 1.1rem;
+    margin: 0;
+  }
+  #fill-box > *,
+  #line-box > *,
+  .tpanel .rng,
+  .tpanel .tog,
+  .tpanel .crow {
+    margin: 0;
+  }
+}
+
+@media (max-width: 48rem) {
+  .tpanel .seg {
+    gap: 0.5rem;
+  }
+  .tpanel .rng {
+    gap: 0.1rem 0.75rem;
+  }
+  #fill-box,
+  #line-box {
+    gap: 0.8rem;
+  }
+}

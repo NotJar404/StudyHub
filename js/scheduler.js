@@ -636,7 +636,15 @@
     ['Fraunces (serif)', SERIF, SERIF],
     ['Georgia', 'Georgia,serif', 'Georgia,serif'],
     ['Trebuchet MS', '"Trebuchet MS",Tahoma,sans-serif', '"Trebuchet MS",Tahoma,sans-serif'],
-    ['Courier New', '"Courier New",monospace', '"Courier New",monospace']
+    ['Courier New', '"Courier New",monospace', '"Courier New",monospace'],
+    ['Poppins (clean)', '"Poppins",system-ui,sans-serif', '"Poppins",system-ui,sans-serif'],
+    ['Nunito (rounded)', '"Nunito",system-ui,sans-serif', '"Nunito",system-ui,sans-serif'],
+    ['Quicksand (soft)', '"Quicksand",system-ui,sans-serif', '"Quicksand",system-ui,sans-serif'],
+    ['Montserrat (modern)', '"Montserrat",system-ui,sans-serif', '"Montserrat",system-ui,sans-serif'],
+    ['Space Grotesk (techy)', '"Space Grotesk",system-ui,sans-serif', '"Space Grotesk",system-ui,sans-serif'],
+    ['Lora (book serif)', '"Lora",Georgia,serif', '"Lora",Georgia,serif'],
+    ['Playfair + Nunito (elegant)', '"Nunito",system-ui,sans-serif', '"Playfair Display",Georgia,serif'],
+    ['Handwritten + Nunito', '"Nunito",system-ui,sans-serif', '"Caveat","Segoe Script",cursive']
   ];
   const TCOLS = ['#ffffff', '#241d16', '#f0b562', '#f6a5b8', '#7cc4f5'];
   const DAB = {
@@ -1523,10 +1531,9 @@
     draw();
     const f = FONTS[S.ff];
     if (document.fonts && document.fonts.load)
-      Promise.all([
-        document.fonts.load('500 40px ' + f[1]),
-        document.fonts.load('500 40px ' + f[2])
-      ])
+      Promise.all(
+        [f[1], f[2]].flatMap(fam => [400, 500, 600, 700].map(w => document.fonts.load(w + ' 30px ' + fam)))
+      )
         .then(() => draw())
         .catch(() => {});
   };
