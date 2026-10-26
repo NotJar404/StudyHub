@@ -4245,7 +4245,9 @@ form .fbtns .btn-primary {
   a.ghost.sm {
     min-height: 2.75rem;
   }
-  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='color']):not([type='file']),
+  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='color']):not(
+      [type='file']
+    ),
   select,
   textarea {
     font-size: 1rem;
@@ -4724,5 +4726,685 @@ form .fbtns .btn-primary {
   #fill-box,
   #line-box {
     gap: 0.8rem;
+  }
+}
+
+/* =========================================================
+   HOME 2.0: stats, colour-coded tool tiles, steps, FAQ, team header
+   ========================================================= */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 2.5rem 0 0;
+  text-align: center;
+}
+.stats b {
+  display: block;
+  font: 500 clamp(1.8rem, 6vw, 2.8rem) / 1.1 var(--font-heading);
+  color: var(--accent-color);
+}
+.stats span {
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+.sh .lead {
+  max-width: 34rem;
+  margin: 0.8rem auto 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.tgrp {
+  margin-top: 2.4rem;
+}
+.tgrp h3 {
+  margin: 0 0 0.3rem;
+  font-size: 1.4rem;
+}
+.tgrp > p {
+  margin: 0 0 1.1rem;
+  color: var(--muted);
+}
+.tgrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+.tgrid .tl:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+.tl {
+  --c: #c9772b;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.15rem 1rem 1rem;
+  border: 1px solid var(--border-color);
+  border-top: 4px solid var(--c);
+  border-radius: 1.3rem;
+  background: var(--card-bg);
+  color: var(--text-main);
+  text-decoration: none;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.tl:hover,
+.tl:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: 0 0.8rem 1.6rem rgba(0, 0, 0, 0.12);
+}
+.tl .ti {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.95rem;
+  background: color-mix(in srgb, var(--c) 18%, transparent);
+  color: var(--c);
+}
+.tl .ti svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.tl b {
+  font: 500 1.2rem / 1.2 var(--font-heading);
+}
+.tl p {
+  margin: 0;
+  font-size: 0.93rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.tl small {
+  margin-top: auto;
+  padding-top: 0.2rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--c);
+}
+.steps {
+  display: grid;
+  gap: 0.85rem;
+}
+.st {
+  padding: 1.3rem 1.2rem;
+  border: 1px solid var(--border-color);
+  border-radius: 1.3rem;
+  background: var(--card-bg);
+  text-align: center;
+}
+.st span {
+  display: inline-grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  margin-bottom: 0.6rem;
+  border-radius: 50%;
+  background: var(--accent-color);
+  color: #fff;
+  font-weight: 700;
+}
+.st h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1.2rem;
+}
+.st p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.faq {
+  max-width: 46rem;
+  margin-inline: auto;
+}
+.faq details {
+  border-bottom: 1px solid var(--border-color);
+}
+.faq summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 3.6rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  list-style: none;
+  cursor: pointer;
+}
+.faq summary::-webkit-details-marker {
+  display: none;
+}
+.faq summary::after {
+  content: '+';
+  flex: none;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--accent-color);
+}
+.faq details[open] summary::after {
+  content: '\2013';
+}
+.faq p {
+  margin: 0 0 1.2rem;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.cta .btn-ghost {
+  margin: 0.4rem 0 0 0.4rem;
+}
+@media (min-width: 48rem) {
+  .tgrid.g3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .tgrid.g4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .tgrid .tl:last-child:nth-child(odd) {
+    grid-column: auto;
+  }
+  .steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .tgrp {
+    margin-top: 3rem;
+  }
+  .tl {
+    padding: 1.4rem 1.3rem 1.2rem;
+  }
+}
+
+.faq summary {
+  color: var(--text-main);
+}
+@media (max-width: 48rem) {
+  .cta .btn-primary,
+  .cta .btn-ghost {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 3rem;
+    margin: 0.6rem 0 0;
+  }
+}
+
+/* =========================================================
+   HERO SCREENS (phones in the style of the references)
+   ========================================================= */
+.art {
+  background: linear-gradient(160deg, #f7ecda, #e6cfae);
+}
+:root[data-theme='night'] .art {
+  background: linear-gradient(160deg, #2c2218, #15100b);
+}
+.art img {
+  opacity: 0.28;
+}
+.phones {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 1.4rem 0.8rem 1.6rem;
+}
+.pp {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+  color: #3b2a1a;
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: transform 0.25s ease;
+}
+:root[data-theme='night'] .pp {
+  color: #f1e4cf;
+}
+.pp.mid {
+  --pw: clamp(8rem, 34vw, 11rem);
+  z-index: 2;
+}
+.pp.side {
+  --pw: clamp(6.2rem, 26vw, 8.6rem);
+  margin-inline: -0.7rem;
+}
+.pp.l .ph {
+  transform: rotate(-5deg) translateY(0.7rem);
+}
+.pp.r .ph {
+  transform: rotate(5deg) translateY(0.7rem);
+}
+.pp:hover {
+  transform: translateY(-6px);
+}
+.ph {
+  position: relative;
+  container-type: inline-size;
+  width: var(--pw);
+  aspect-ratio: 9 / 18.5;
+  border: 0.28rem solid #1d1814;
+  border-radius: 1.3rem;
+  box-shadow:
+    inset 0 0 0 1px #6f655b,
+    0 1.1rem 1.8rem -0.2rem rgba(60, 40, 20, 0.4);
+  overflow: hidden;
+  font-weight: 600;
+}
+.ph::before {
+  content: '';
+  position: absolute;
+  top: 3cqw;
+  left: 50%;
+  width: 28cqw;
+  height: 5cqw;
+  border-radius: 99px;
+  background: #1d1814;
+  transform: translateX(-50%);
+}
+.ph > * {
+  margin-inline: 6cqw;
+}
+.ph > :first-child {
+  margin-top: 13cqw;
+}
+.ph.s {
+  background:
+    radial-gradient(circle at 18% 92%, rgba(240, 190, 110, 0.55) 0 13cqw, transparent 13.5cqw),
+    radial-gradient(circle at 74% 84%, rgba(201, 119, 43, 0.5) 0 17cqw, transparent 17.5cqw),
+    radial-gradient(circle at 46% 104%, rgba(250, 215, 140, 0.5) 0 24cqw, transparent 24.5cqw),
+    linear-gradient(180deg, #c48a4c, #4f3319);
+  color: #fff;
+}
+.ph.s h4 {
+  margin-block: 13cqw 0;
+  font: 500 14cqw / 1.1 var(--font-heading);
+}
+.ph.s small {
+  display: block;
+  margin-bottom: 7cqw;
+  font-size: 5cqw;
+  opacity: 0.8;
+}
+.ph.s .days {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2cqw;
+  margin-bottom: 3cqw;
+}
+.ph.s .days em {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border: 0.5cqw solid #e8a653;
+  border-radius: 50%;
+  background: rgba(40, 28, 18, 0.55);
+  color: #e8a653;
+  font: 700 5.5cqw / 1 sans-serif;
+}
+.ph.s .grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2cqw;
+}
+.ph.s .grid p {
+  display: grid;
+  justify-items: center;
+  gap: 1cqw;
+  margin: 0;
+  padding: 2.4cqw 0.5cqw;
+  border-radius: 2.5cqw;
+  background: rgba(40, 28, 18, 0.5);
+  text-align: center;
+}
+.ph.s .grid b {
+  font: 700 4.6cqw / 1 var(--font-heading);
+}
+.ph.s .grid i {
+  padding: 0.5cqw 2cqw;
+  border-radius: 99px;
+  background: #e8a653;
+  color: #3b2410;
+  font: 700 3cqw / 1.2 sans-serif;
+}
+.ph.s .grid span {
+  font-size: 3.6cqw;
+}
+.ph.g {
+  background: #fbf3e6;
+  color: #2b2118;
+}
+.ph b {
+  display: block;
+  margin-bottom: 5cqw;
+  font: 600 9.5cqw / 1.2 var(--font-heading);
+  text-align: center;
+}
+.ring2 {
+  display: grid;
+  place-items: center;
+  width: 62cqw;
+  aspect-ratio: 1;
+  margin: 4cqw auto 8cqw;
+  border-radius: 50%;
+  background: conic-gradient(#a85d1f 0 82%, #eadcc7 0);
+}
+.ring2 i {
+  display: grid;
+  place-items: center;
+  width: 78%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #fbf3e6;
+  font: 600 15cqw / 1 var(--font-heading);
+  font-style: normal;
+}
+.ph.d {
+  background: #eef4fb;
+  color: #1f2f44;
+}
+.ph.d small {
+  display: block;
+  margin-bottom: 5cqw;
+  font-size: 5cqw;
+  text-align: center;
+  color: #4b8fd6;
+}
+.ph.d .card {
+  display: grid;
+  place-items: center;
+  height: 52cqw;
+  padding: 5cqw;
+  border-radius: 6cqw;
+  background: #fff;
+  box-shadow: 0 2cqw 5cqw rgba(31, 47, 68, 0.15);
+  font: 600 7.4cqw / 1.25 var(--font-heading);
+  text-align: center;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+.ph.d .ans {
+  margin-top: 6cqw;
+  padding: 3.5cqw;
+  border-radius: 99px;
+  background: #4b8fd6;
+  color: #fff;
+  font-size: 6.5cqw;
+  text-align: center;
+}
+@media (max-width: 47.99rem) {
+  .art {
+    min-height: 23rem;
+  }
+}
+
+/* =========================================================
+   HOW IT WORKS: three pictures, no boxes (SchedSnap style)
+   ========================================================= */
+.steps {
+  gap: 3rem;
+}
+.st {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+.art-svg {
+  display: block;
+  width: min(20rem, 100%);
+  margin: 0 auto 1rem;
+}
+.st h3 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  margin: 0 0 0.4rem;
+  font-size: 1.35rem;
+}
+.st h3 span {
+  display: inline-grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  margin: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  background: none;
+  color: var(--text-main);
+  font: 600 1rem sans-serif;
+}
+.st p {
+  max-width: 21rem;
+  margin-inline: auto;
+}
+@media (min-width: 48rem) {
+  .steps {
+    gap: 2rem;
+  }
+}
+
+/* =========================================================
+   FAQ: plain lines with a chevron (SchedSnap style)
+   ========================================================= */
+.faq {
+  border-top: 1px solid var(--border-color);
+}
+.faq summary {
+  padding-block: 1.2rem;
+  font-size: 1.1rem;
+}
+.faq summary::after,
+.faq details[open] summary::after {
+  content: '';
+  width: 0.6rem;
+  height: 0.6rem;
+  margin-right: 0.3rem;
+  border-right: 2px solid var(--text-main);
+  border-bottom: 2px solid var(--text-main);
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
+}
+.faq details[open] summary::after {
+  transform: rotate(-135deg);
+}
+
+/* =========================================================
+   Calmer tool cards, richer hero screens, Team page header
+   ========================================================= */
+.tl {
+  border-top: 1px solid var(--border-color);
+}
+.tl:hover,
+.tl:focus-visible {
+  border-color: var(--c);
+}
+.art {
+  background:
+    linear-gradient(115deg, transparent 28%, rgba(255, 255, 255, 0.3) 44%, transparent 60%),
+    radial-gradient(120% 90% at 85% 0%, #fbf0dc, transparent 62%),
+    linear-gradient(160deg, #f1dfc2, #d9bb92);
+}
+:root[data-theme='night'] .art {
+  background:
+    linear-gradient(115deg, transparent 28%, rgba(255, 220, 170, 0.08) 44%, transparent 60%),
+    radial-gradient(120% 90% at 85% 0%, rgba(150, 105, 55, 0.5), transparent 62%),
+    linear-gradient(160deg, #2a2016, #120d09);
+}
+.art img {
+  opacity: 0;
+}
+.phones {
+  align-items: flex-end;
+  padding-bottom: 1.2rem;
+}
+.pp {
+  justify-content: flex-end;
+}
+.pp > span {
+  padding: 0.35rem 0.95rem;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.75);
+  box-shadow: 0 0.2rem 0.6rem rgba(60, 40, 20, 0.15);
+}
+:root[data-theme='night'] .pp > span {
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: none;
+}
+.pp.l .ph {
+  transform: rotate(-5deg);
+}
+.pp.r .ph {
+  transform: rotate(5deg);
+}
+.ph.g {
+  background: linear-gradient(180deg, #fdf6ea, #f3e4cb);
+}
+.kv {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3cqw 0;
+  border-top: 0.4cqw solid #e5d3b8;
+  font-size: 5.2cqw;
+}
+.kv em {
+  font-style: normal;
+  font-weight: 700;
+  color: #a85d1f;
+}
+.pass {
+  margin-top: 4cqw;
+  padding: 3cqw;
+  border-radius: 99px;
+  background: #7a8f4b;
+  color: #fff;
+  font-size: 5.6cqw;
+  text-align: center;
+}
+.ph.d {
+  background: linear-gradient(180deg, #f8f1e1, #eadfc4);
+  color: #3b2a1a;
+}
+.ph.d small {
+  color: #a85d1f;
+}
+.ph.d .card {
+  border-top: 1.4cqw solid #7a8f4b;
+}
+.ph.d .dots {
+  display: flex;
+  justify-content: center;
+  gap: 2cqw;
+  margin-top: 5cqw;
+}
+.ph.d .dots u {
+  width: 3cqw;
+  height: 3cqw;
+  border-radius: 50%;
+  background: #d8c7a6;
+}
+.ph.d .dots u:first-child {
+  background: #a85d1f;
+}
+.ph.d .ans {
+  margin-top: 4cqw;
+  background: #b5513a;
+}
+.phead {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 3rem 0 0.5rem;
+  text-align: center;
+}
+.phead h1 {
+  margin: 0.4rem 0 0.8rem;
+  font-size: clamp(2.2rem, 7vw, 3.4rem);
+}
+.phead p {
+  margin: 0 auto;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.pp.mid {
+  --pw: clamp(7.4rem, 31vw, 10.4rem);
+}
+.pp.side {
+  --pw: clamp(5.6rem, 23vw, 7.8rem);
+  margin-inline: -0.5rem;
+}
+@media (max-width: 47.99rem) {
+  .pp > span {
+    padding: 0.28rem 0.7rem;
+    font-size: 0.72rem;
+  }
+}
+
+/* =========================================================
+   HERO: your photo as the background, frosted panel (references)
+   ========================================================= */
+.art {
+  background: none;
+}
+.art img {
+  opacity: 1;
+  object-position: 72% 50%;
+}
+@media (min-width: 48rem) {
+  .hero2 {
+    position: relative;
+  }
+  .art {
+    position: static;
+    min-height: 0;
+  }
+  .art img {
+    inset: auto;
+    top: 0;
+    right: -8%;
+    left: auto;
+    width: 108%;
+    height: 100%;
+    object-position: right 39%;
+  }
+  .hl {
+    z-index: 2;
+    background: rgba(24, 16, 10, 0.5);
+    -webkit-backdrop-filter: blur(18px) saturate(1.15);
+    backdrop-filter: blur(18px) saturate(1.15);
+    border-right: 1px solid rgba(255, 255, 255, 0.16);
+  }
+  .hl:after {
+    display: none;
+  }
+  .phones {
+    left: 52%;
+    top: auto;
+    bottom: 1rem;
+    height: auto;
+    padding: 0 1rem;
+  }
+  .pp.mid {
+    --pw: clamp(6.4rem, 11vw, 8.6rem);
+  }
+  .pp.side {
+    --pw: clamp(4.9rem, 8.4vw, 6.6rem);
+  }
+}
+@media (max-width: 47.99rem) {
+  .pp.mid {
+    --pw: clamp(6rem, 26vw, 7.6rem);
+  }
+  .pp.side {
+    --pw: clamp(4.6rem, 20vw, 5.8rem);
+  }
+  .phones {
+    padding-bottom: 0.8rem;
   }
 }

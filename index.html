@@ -64,7 +64,7 @@
       rel="stylesheet"
     />
     <link rel="icon" href="images/logo.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="css/style.css?v=7" />
+    <link rel="stylesheet" href="css/style.css?v=8" />
   </head>
   <body>
     <div id="aura"></div>
@@ -76,9 +76,9 @@
         ></a
       >
       <div class="menu" id="menu">
-        <a href="index.html">Home</a><a href="#about">About</a>
+        <a href="index.html">Home</a>
         <div class="dd">
-          <a href="#tools">Tools</a>
+          <a href="index.html#tools">Tools</a>
           <div class="dl">
             <a href="schedule.html">Class Scheduler</a><a href="grades.html">Grade Calculator</a
             ><a href="deck.html">Reviewer Deck</a><a href="logic.html">Truth Tables</a
@@ -86,7 +86,7 @@
             ><a href="files.html">File Converter</a>
           </div>
         </div>
-        <a href="#team">Team</a><a href="#contact">Contact</a>
+        <a href="index.html#team">Team</a><a href="index.html#contact">Contact</a>
       </div>
       <button
         class="pill"
@@ -120,14 +120,14 @@
       <header class="hero2">
         <div class="hl">
           <span class="eyebrow">QCU · BS Information Technology</span>
-          <h1>Study better.<i>Grow together.</i></h1>
+          <h1>Free study tools<i>for your school day.</i></h1>
           <p>
-            A calm digital corner made by SBIT-1F students for planning classes, tracking grades,
-            meeting our team, and making college feel a little lighter.
+            Study Hub is a set of simple tools made by SBIT-1F students. Plan your classes, check
+            your grade, make flashcards and more. Open one and use it right away.
           </p>
           <div class="btns">
-            <a class="btn-primary" href="schedule.html"
-              >Plan my week<svg
+            <a class="btn-primary" href="#tools"
+              >Explore tools<svg
                 class="i"
                 viewBox="0 0 24 24"
                 fill="none"
@@ -138,7 +138,7 @@
                 aria-hidden="true"
               >
                 <path d="M5 12h14m-7-7 7 7-7 7" /></svg></a
-            ><a class="btn-ghost" href="#about">Our story</a>
+            ><a class="btn-ghost" href="index.html#team">Meet the team</a>
           </div>
           <p class="note-ok">
             <svg
@@ -159,315 +159,485 @@
           <img
             class="wd"
             src="images/willow-day.svg"
-            alt="A golden weeping willow tree in autumn"
-          /><img
-            class="wn"
-            src="images/willow-night.svg"
-            alt="A golden weeping willow tree under the night sky"
-          /><img src="images/willow.jpg" alt="" onerror="this.remove()" />
+            alt="A golden willow beside a waterfall and wooden bridge in a Japanese autumn valley"
+          /><img class="wn" src="images/willow-night.svg" alt="The same autumn valley at night" />
           <div id="canopy"></div>
-          <div class="cap">
-            <small>STUDY UNDER THE WILLOW</small>
-            <p>A place to pause, plan, and progress.</p>
+          <div class="phones">
+            <a class="pp side l" href="grades.html"
+              ><div class="ph g">
+                <b>Final rating</b>
+                <div class="ring2"><i>1.75</i></div>
+                <div class="kv"><span>Class standing</span><em>88%</em></div>
+                <div class="kv"><span>Exam</span><em>85%</em></div>
+                <div class="pass">Passed</div>
+              </div>
+              <span>Check grade</span></a
+            >
+            <a class="pp mid" href="schedule.html"
+              ><div class="ph s">
+                <h4>1st Semester</h4>
+                <small>11 sessions · 21 units</small>
+                <div class="days"><em>M</em><em>T</em><em>W</em><em>TH</em></div>
+                <div class="grid">
+                  <p><b>AR101</b><i>LEC</i><span>7:30 AM</span></p>
+                  <p><b>IPT102</b><i>LAB</i><span>7:00 AM</span></p>
+                  <p><b>SIA101</b><i>LEC</i><span>9:00 AM</span></p>
+                  <p><b>MS101</b><i>LEC</i><span>1:00 PM</span></p>
+                  <p><b>AR101</b><i>LAB</i><span>12:00 PM</span></p>
+                  <p><b>IPT102</b><i>LEC</i><span>11:30 AM</span></p>
+                  <p><b>SIA101</b><i>LAB</i><span>10:30 AM</span></p>
+                  <p><b>SPI101</b><i>LEC</i><span>2:00 PM</span></p>
+                </div>
+              </div>
+              <span>Plan classes</span></a
+            >
+            <a class="pp side r" href="deck.html"
+              ><div class="ph d">
+                <small>Card 3 of 10</small>
+                <div class="card">What does CPU stand for?</div>
+                <div class="dots"><u></u><u></u><u></u></div>
+                <div class="ans">Show answer</div>
+              </div>
+              <span>Flashcards</span></a
+            >
           </div>
         </div>
       </header>
-      <section id="about" class="sec rv">
-        <div class="about">
-          <div>
-            <span class="eyebrow">Our final project · 2026</span>
-            <h2>Built around real student days.</h2>
+      <div class="stats rv">
+        <div><b>7</b><span>Free tools</span></div>
+        <div><b>0</b><span>Sign-ups</span></div>
+        <div><b>3</b><span>Easy steps</span></div>
+      </div>
+      <section id="tools" class="sec rv">
+        <div class="sh">
+          <span class="eyebrow">Your toolkit</span>
+          <h2>Pick what you need</h2>
+          <p class="lead">Each tool opens on its own page and does one job.</p>
+        </div>
+        <div class="tgrp">
+          <h3>For school life</h3>
+          <p>Plan, track and review.</p>
+          <div class="tgrid g3">
+            <a class="tl" style="--c: #c9772b" href="schedule.html"
+              ><span class="ti"
+                ><svg
+                  class="i"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect width="18" height="18" x="3" y="4" rx="2" />
+                  <path d="M16 2v4M8 2v4M3 10h18" /></svg></span
+              ><b>Plan my classes</b>
+              <p>Upload a photo of your COR and get a wallpaper of your week.</p>
+              <small>Class Scheduler</small></a
+            ><a class="tl" style="--c: #7a8f4b" href="grades.html"
+              ><span class="ti"
+                ><svg
+                  class="i"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M3 3v18h18" />
+                  <path d="m7 15 4-4 3 3 5-6" /></svg></span
+              ><b>Check my grade</b>
+              <p>Type your scores and see your final rating.</p>
+              <small>Grade Calculator</small></a
+            ><a class="tl" style="--c: #b5513a" href="deck.html"
+              ><span class="ti"
+                ><svg
+                  class="i"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect x="3" y="7" width="14" height="14" rx="2" />
+                  <path d="M7 3h12a2 2 0 0 1 2 2v12" /></svg></span
+              ><b>Make flashcards</b>
+              <p>Turn your reviewer file into flashcards and a quiz.</p>
+              <small>Reviewer Deck</small></a
+            >
           </div>
-          <div>
-            <p>
-              Between commutes, classes, group work, and deadlines, student life gets crowded fast.
-              Study Hub gives our QCU community one uncluttered place to sort it out.
-            </p>
-            <p>
-              Every tool works instantly and privately in your browser, so you can focus on the
-              work, not another account.
-            </p>
-            <a class="more" href="#team"
-              >Meet the students behind it
-              <svg
-                class="i"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M5 12h14m-7-7 7 7-7 7" /></svg
-            ></a>
+        </div>
+        <div class="tgrp">
+          <h3>Tech tools</h3>
+          <p>Small helpers for IT students.</p>
+          <div class="tgrid g4">
+            <a class="tl" style="--c: #8b5a6b" href="logic.html"
+              ><span class="ti"
+                ><svg
+                  class="i"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <circle cx="6" cy="6" r="3" />
+                  <circle cx="18" cy="18" r="3" />
+                  <path d="M6 9v3a3 3 0 0 0 3 3h6" /></svg></span
+              ><b>Solve logic</b>
+              <p>Truth tables for up to 4 variables.</p>
+              <small>Truth Tables</small></a
+            ><a class="tl" style="--c: #b8962e" href="colors.html"
+              ><span class="ti"
+                ><svg
+                  class="i"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <circle cx="13.5" cy="6.5" r="1" />
+                  <circle cx="17.5" cy="10.5" r="1" />
+                  <circle cx="8.5" cy="7.5" r="1" />
+                  <circle cx="6.5" cy="12.5" r="1" />
+                  <path
+                    d="M12 22a10 10 0 1 1 10-10c0 2.5-2 3-4 3h-2a2 2 0 0 0-1 3.7c.5.8 0 3.3-3 3.3z"
+                  /></svg></span
+              ><b>Pick colors</b>
+              <p>Find a color and copy its code.</p>
+              <small>Color Picker</small></a
+            ><a class="tl" style="--c: #5f8a7a" href="convert.html"
+              ><span class="ti"
+                ><svg
+                  class="i"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M4 7h12m-3-3 3 3-3 3M20 17H8m3-3-3 3 3 3" /></svg></span
+              ><b>Convert numbers</b>
+              <p>Binary, octal, decimal and hexadecimal.</p>
+              <small>Number Converter</small></a
+            ><a class="tl" style="--c: #7a6a58" href="files.html"
+              ><span class="ti"
+                ><svg
+                  class="i"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <path d="M14 2v6h6" /></svg></span
+              ><b>Convert files</b>
+              <p>Switch a file to another format, like PDF to Word.</p>
+              <small>File Converter</small></a
+            >
           </div>
         </div>
       </section>
-      <section id="tools" class="sec rv">
+      <section class="sec rv">
         <div class="sh">
-          <span class="eyebrow">Your academic toolkit</span>
-          <h2>Everything you need to stay on track</h2>
-          <div class="orn">
-            <svg
-              class="i"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
+          <span class="eyebrow">How it works</span>
+          <h2>Three easy steps</h2>
+        </div>
+        <div class="steps">
+          <div class="st">
+            <svg class="art-svg" viewBox="0 0 320 240" role="img" aria-hidden="true">
+              <defs>
+                <filter id="a1" x="-20%" y="-20%" width="140%" height="150%">
+                  <feDropShadow
+                    dx="0"
+                    dy="6"
+                    stdDeviation="6"
+                    flood-color="#3b2a1a"
+                    flood-opacity=".22"
+                  />
+                </filter>
+                <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#f6cf8e" />
+                  <stop offset="1" stop-color="#e08f35" />
+                </linearGradient>
+                <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#a9d8b6" />
+                  <stop offset="1" stop-color="#4f9d69" />
+                </linearGradient>
+                <linearGradient id="g3" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#4a3a2c" />
+                  <stop offset="1" stop-color="#241a12" />
+                </linearGradient>
+              </defs>
+              <ellipse cx="160" cy="218" rx="120" ry="9" fill="#3b2a1a" opacity=".12" />
+              <g filter="url(#a1)">
+                <g transform="rotate(-14 110 120)">
+                  <rect x="48" y="48" width="118" height="146" rx="18" fill="url(#g1)" />
+                  <g stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none">
+                    <rect x="76" y="86" width="62" height="56" rx="8" />
+                    <path d="M76 104h62M92 80v12M122 80v12" />
+                  </g>
+                </g>
+                <g transform="rotate(-4 155 120)">
+                  <rect x="95" y="40" width="120" height="152" rx="18" fill="url(#g2)" />
+                  <g
+                    stroke="#fff"
+                    stroke-width="5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    fill="none"
+                  >
+                    <path d="M122 84v62h62" />
+                    <path d="m132 130 16-18 14 12 22-26" />
+                  </g>
+                </g>
+                <g transform="rotate(7 215 120)">
+                  <rect x="150" y="30" width="124" height="160" rx="20" fill="url(#g3)" />
+                  <g fill="#f3e6d0">
+                    <rect x="172" y="60" width="62" height="9" rx="4.5" />
+                    <rect x="172" y="80" width="80" height="7" rx="3.5" opacity=".6" />
+                    <rect x="172" y="96" width="70" height="7" rx="3.5" opacity=".6" />
+                  </g>
+                  <rect x="172" y="122" width="80" height="44" rx="10" fill="#e8a653" />
+                  <path
+                    d="M196 144l8 8 16-18"
+                    stroke="#fff"
+                    stroke-width="5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    fill="none"
+                  />
+                </g>
+              </g>
+              <circle cx="262" cy="64" r="22" fill="#2f8a55" stroke="#fff" stroke-width="4" />
               <path
-                d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"
+                d="m252 64 7 7 12-14"
+                stroke="#fff"
+                stroke-width="5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                fill="none"
               />
-              <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
             </svg>
+            <h3><span>1</span>Pick a tool</h3>
+            <p>Choose the one that matches what you need today.</p>
+          </div>
+          <div class="st">
+            <svg class="art-svg" viewBox="0 0 320 240" role="img" aria-hidden="true">
+              <defs>
+                <filter id="a2" x="-20%" y="-20%" width="140%" height="150%">
+                  <feDropShadow
+                    dx="0"
+                    dy="6"
+                    stdDeviation="6"
+                    flood-color="#3b2a1a"
+                    flood-opacity=".22"
+                  />
+                </filter>
+                <linearGradient id="b1" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#9cc4ee" />
+                  <stop offset="1" stop-color="#4b8fd6" />
+                </linearGradient>
+              </defs>
+              <ellipse cx="160" cy="218" rx="125" ry="9" fill="#3b2a1a" opacity=".12" />
+              <g filter="url(#a2)">
+                <rect
+                  x="196"
+                  y="62"
+                  width="100"
+                  height="100"
+                  rx="22"
+                  fill="url(#b1)"
+                  transform="rotate(8 246 112)"
+                />
+                <g
+                  transform="rotate(8 246 112)"
+                  fill="none"
+                  stroke="#fff"
+                  stroke-width="5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect
+                    x="214"
+                    y="80"
+                    width="64"
+                    height="64"
+                    rx="10"
+                    stroke-dasharray="9 8"
+                    stroke-width="4"
+                  />
+                  <path d="M246 128V98m0 0-11 11m11-11 11 11" />
+                </g>
+                <g transform="rotate(-6 120 125)">
+                  <rect
+                    x="52"
+                    y="34"
+                    width="150"
+                    height="176"
+                    rx="14"
+                    fill="#fffaf0"
+                    stroke="#e3d3b8"
+                    stroke-width="2"
+                  />
+                  <rect x="68" y="50" width="70" height="11" rx="5" fill="#d9822b" />
+                  <rect x="68" y="68" width="40" height="6" rx="3" fill="#e5d8c2" />
+                  <g stroke="#eadfcb" stroke-width="2">
+                    <path d="M68 96h118M68 126h118M68 156h118M68 186h118M104 86v110M144 86v110" />
+                  </g>
+                  <rect x="72" y="100" width="28" height="22" rx="5" fill="#f2c27a" />
+                  <rect x="108" y="130" width="32" height="22" rx="5" fill="#a9d8b6" />
+                  <rect x="148" y="100" width="32" height="22" rx="5" fill="#9cc4ee" />
+                  <rect x="72" y="160" width="28" height="22" rx="5" fill="#f2c27a" />
+                  <rect x="148" y="160" width="32" height="22" rx="5" fill="#a9d8b6" />
+                </g>
+              </g>
+              <g transform="rotate(-24 70 200)">
+                <rect x="22" y="192" width="92" height="15" rx="3" fill="#35506e" />
+                <path d="M114 192l24 7.5-24 7.5z" fill="#f0d9b0" />
+                <path d="M130 196l8 3.500-8 3.500z" fill="#2b2118" />
+                <rect x="14" y="192" width="12" height="15" rx="3" fill="#d9822b" />
+              </g>
+            </svg>
+            <h3><span>2</span>Add your info</h3>
+            <p>Upload a photo or file, or just type it in.</p>
+          </div>
+          <div class="st">
+            <svg class="art-svg" viewBox="0 0 320 240" role="img" aria-hidden="true">
+              <defs>
+                <filter id="a3" x="-20%" y="-20%" width="140%" height="150%">
+                  <feDropShadow
+                    dx="0"
+                    dy="6"
+                    stdDeviation="6"
+                    flood-color="#3b2a1a"
+                    flood-opacity=".22"
+                  />
+                </filter>
+                <linearGradient id="c1" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#d49a58" />
+                  <stop offset="1" stop-color="#5b3716" />
+                </linearGradient>
+              </defs>
+              <ellipse cx="160" cy="220" rx="115" ry="9" fill="#3b2a1a" opacity=".12" />
+              <g filter="url(#a3)">
+                <rect x="108" y="12" width="104" height="204" rx="22" fill="#241a12" />
+                <rect x="115" y="19" width="90" height="190" rx="16" fill="url(#c1)" />
+                <rect x="144" y="23" width="32" height="7" rx="3.500" fill="#241a12" />
+                <text
+                  x="160"
+                  y="56"
+                  text-anchor="middle"
+                  font-family="Georgia,serif"
+                  font-size="10"
+                  fill="#fff"
+                >
+                  My Schedule
+                </text>
+                <rect x="124" y="68" width="72" height="24" rx="12" fill="#fff" opacity=".24" />
+                <circle cx="138" cy="80" r="8" fill="#fff" opacity=".9" />
+                <rect x="152" y="74" width="30" height="5" rx="2.500" fill="#fff" />
+                <rect x="152" y="82" width="22" height="4" rx="2" fill="#fff" opacity=".7" />
+                <rect x="124" y="98" width="72" height="24" rx="12" fill="#fff" opacity=".24" />
+                <circle cx="138" cy="110" r="8" fill="#fff" opacity=".9" />
+                <rect x="152" y="104" width="30" height="5" rx="2.500" fill="#fff" />
+                <rect x="152" y="112" width="22" height="4" rx="2" fill="#fff" opacity=".7" />
+                <rect x="124" y="128" width="72" height="24" rx="12" fill="#fff" opacity=".24" />
+                <circle cx="138" cy="140" r="8" fill="#fff" opacity=".9" />
+                <rect x="152" y="134" width="30" height="5" rx="2.500" fill="#fff" />
+                <rect x="152" y="142" width="22" height="4" rx="2" fill="#fff" opacity=".7" />
+                <rect x="124" y="158" width="72" height="24" rx="12" fill="#fff" opacity=".24" />
+                <circle cx="138" cy="170" r="8" fill="#fff" opacity=".9" />
+                <rect x="152" y="164" width="30" height="5" rx="2.500" fill="#fff" />
+                <rect x="152" y="172" width="22" height="4" rx="2" fill="#fff" opacity=".7" />
+              </g>
+              <g filter="url(#a3)">
+                <rect x="34" y="86" width="76" height="76" rx="18" fill="#fff7ea" />
+                <circle cx="54" cy="108" r="8" fill="#d9822b" />
+                <circle cx="74" cy="108" r="8" fill="#4f9d69" />
+                <circle cx="94" cy="108" r="8" fill="#4b8fd6" />
+                <rect x="48" y="128" width="50" height="5" rx="2.500" fill="#e3d3b8" />
+                <circle cx="66" cy="130.500" r="6" fill="#a85d1f" />
+                <rect x="48" y="144" width="50" height="5" rx="2.500" fill="#e3d3b8" />
+                <circle cx="84" cy="146.500" r="6" fill="#a85d1f" />
+              </g>
+              <g filter="url(#a3)">
+                <circle cx="236" cy="186" r="32" fill="#4f9d69" />
+                <g
+                  stroke="#fff"
+                  stroke-width="6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  fill="none"
+                >
+                  <path d="M236 170v24m0 0-10-10m10 10 10-10" />
+                  <path d="M222 204h28" />
+                </g>
+              </g>
+            </svg>
+            <h3><span>3</span>Get your result</h3>
+            <p>See it right away, then save or copy it.</p>
           </div>
         </div>
-        <div class="cards">
-          <a class="card" href="schedule.html"
-            ><span class="num">01</span
-            ><span class="ic"
-              ><svg
-                class="i"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <rect width="18" height="18" x="3" y="4" rx="2" />
-                <path d="M16 2v4M8 2v4M3 10h18" /></svg></span
-            ><span class="pillb">MOST USED</span>
-            <h3>Class Scheduler</h3>
-            <p>Upload your Certificate of Registration and get a JPEG wallpaper of your week.</p>
-            <span class="go"
-              >Open tool<svg
-                class="i"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M5 12h14m-7-7 7 7-7 7" /></svg></span></a
-          ><a class="card" href="grades.html"
-            ><span class="num">02</span
-            ><span class="ic"
-              ><svg
-                class="i"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path
-                  d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"
-                /></svg></span
-            ><span class="pillb">ACCURATE</span>
-            <h3>Grade Calculator</h3>
-            <p>Estimate your standing using the 60/40 grading rule.</p>
-            <span class="go"
-              >Open tool<svg
-                class="i"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M5 12h14m-7-7 7 7-7 7" /></svg></span></a
-          ><a class="card" href="deck.html"
-            ><span class="num">03</span
-            ><span class="ic"
-              ><svg
-                class="i"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="m12 2 10 5-10 5L2 7z" />
-                <path d="m2 17 10 5 10-5M2 12l10 5 10-5" /></svg></span
-            ><span class="pillb">NEW</span>
-            <h3>Reviewer Deck</h3>
-            <p>Upload a .txt reviewer and get flashcards and a quiz instantly.</p>
-            <span class="go"
-              >Open tool<svg
-                class="i"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M5 12h14m-7-7 7 7-7 7" /></svg></span></a
-          ><a class="card" href="logic.html"
-            ><span class="num">04</span
-            ><span class="ic"
-              ><svg
-                class="i"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <rect width="7" height="7" x="3" y="3" rx="1" />
-                <rect width="7" height="7" x="14" y="3" rx="1" />
-                <rect width="7" height="7" x="14" y="14" rx="1" />
-                <rect width="7" height="7" x="3" y="14" rx="1" /></svg></span
-            ><span class="pillb">DISCRETE MATH</span>
-            <h3>Truth Tables</h3>
-            <p>Type expressions with ¬ ∧ ∨ → ↔ and get the full table.</p>
-            <span class="go"
-              >Open tool<svg
-                class="i"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M5 12h14m-7-7 7 7-7 7" /></svg></span></a
-          ><a class="card" href="colors.html"
-            ><span class="num">05</span
-            ><span class="ic"
-              ><svg
-                class="i"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <circle cx="13.5" cy="6.5" r=".5" />
-                <circle cx="17.5" cy="10.5" r=".5" />
-                <circle cx="8.5" cy="7.5" r=".5" />
-                <circle cx="6.5" cy="12.5" r=".5" />
-                <path
-                  d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.93 0 1.65-.75 1.65-1.69 0-.44-.18-.84-.44-1.13-.29-.29-.44-.65-.44-1.13a1.64 1.64 0 0 1 1.67-1.67h2c3.05 0 5.55-2.5 5.55-5.55C21.97 6.01 17.46 2 12 2z"
-                /></svg></span
-            ><span class="pillb">DESIGN</span>
-            <h3>Color Picker</h3>
-            <p>Pick from a color wheel and copy HEX, RGB, or HSL codes.</p>
-            <span class="go"
-              >Open tool<svg
-                class="i"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M5 12h14m-7-7 7 7-7 7" /></svg></span></a
-          ><a class="card" href="convert.html"
-            ><span class="num">06</span
-            ><span class="ic"
-              ><svg
-                class="i"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M4 9h16M4 15h16M10 3 8 21M16 3l-2 18" /></svg></span
-            ><span class="pillb">FOR IT STUDENTS</span>
-            <h3>Number Converter</h3>
-            <p>Convert and calculate in binary, octal, decimal, and hex.</p>
-            <span class="go"
-              >Open tool<svg
-                class="i"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M5 12h14m-7-7 7 7-7 7" /></svg></span></a
-          ><a class="card" href="files.html"
-            ><span class="num">07</span
-            ><span class="ic"
-              ><svg
-                class="i"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <path d="M14 2v6h6M9 15l2 2 4-4" /></svg></span
-            ><span class="pillb">NEW</span>
-            <h3>File Converter</h3>
-            <p>Turn PDF into Word, slides into text, or photos into a PDF.</p>
-            <span class="go"
-              >Open tool<svg
-                class="i"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M5 12h14m-7-7 7 7-7 7" /></svg></span
-          ></a>
+      </section>
+      <section class="sec rv">
+        <div class="sh">
+          <span class="eyebrow">FAQ</span>
+          <h2>Quick answers</h2>
+        </div>
+        <div class="faq">
+          <details>
+            <summary>Do I need an account?</summary>
+            <p>No. There is nothing to sign up for. Open a tool and use it.</p>
+          </details>
+          <details>
+            <summary>Is it really free?</summary>
+            <p>Yes. All 7 tools are free to use.</p>
+          </details>
+          <details>
+            <summary>Is my information saved or uploaded?</summary>
+            <p>
+              Most tools work inside your own browser, so your data stays on your device. The Class
+              Scheduler sends your photo to an AI reader only to read your classes. It is not
+              stored.
+            </p>
+          </details>
+          <details>
+            <summary>Which devices does it work on?</summary>
+            <p>Phones, tablets and laptops. The pages adjust to your screen size.</p>
+          </details>
+          <details>
+            <summary>Who made Study Hub?</summary>
+            <p>
+              A group of BS Information Technology students (SBIT-1F) at QCU San Bartolome Campus,
+              as a Web Systems final project. You can meet everyone on the Team page.
+            </p>
+          </details>
         </div>
       </section>
       <section id="team" class="sec rv">
         <div class="sh">
-          <span class="eyebrow">Meet SBIT—1F</span>
-          <h2>The students behind Study Hub</h2>
-          <div class="orn">
-            <svg
-              class="i"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path
-                d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"
-              />
-              <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
-            </svg>
-          </div>
+          <span class="eyebrow">Meet SBIT-1F</span>
+          <h2>The team behind Study Hub</h2>
+          <p class="lead">
+            We are BS Information Technology students at QCU San Bartolome Campus. Tap a card to
+            learn more about each of us.
+          </p>
         </div>
         <div class="team">
           <article class="tm">
@@ -784,7 +954,7 @@
           </div>
           <div class="col">
             <h4>Explore</h4>
-            <a href="index.html#about">About</a><a href="index.html#team">Team</a
+            <a href="index.html">Home</a><a href="index.html#team">Team</a
             ><a href="index.html#contact">Contact</a>
           </div>
           <div class="col">
@@ -806,6 +976,6 @@
         </div>
       </div>
     </footer>
-    <script src="js/script.js?v=7"></script>
+    <script src="js/script.js?v=8"></script>
   </body>
 </html>
