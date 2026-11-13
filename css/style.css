@@ -1658,11 +1658,18 @@ to{transform:scaleX(1)}
 .fall i:nth-child(4n + 3) { background: #c98a2c; }
 .fall i:nth-child(4n) { background: #b8731f; }
 :root[data-theme='night'] .fall i { background: #a7823a; opacity: 0.6; }
+/* literal values only: a var() inside keyframes makes the browser recompute styles on every frame */
 @keyframes leaf-fall {
-  to {
-    transform: translate3d(var(--dx), 112vh, 0) rotate(640deg);
-  }
+  to { transform: translate3d(-7vw, 112vh, 0) rotate(640deg); }
 }
+@keyframes leaf-fall-b {
+  to { transform: translate3d(8vw, 112vh, 0) rotate(-560deg); }
+}
+@keyframes leaf-fall-c {
+  to { transform: translate3d(-2vw, 112vh, 0) rotate(520deg); }
+}
+.fall i:nth-child(3n + 2) { animation-name: leaf-fall-b; }
+.fall i:nth-child(3n) { animation-name: leaf-fall-c; }
 @media (prefers-reduced-motion: reduce) {
   .fall { display: none; }
 }
@@ -2227,3 +2234,60 @@ body.landing .sec > .sh h2::after {
 
 /* team photos: keep faces in frame */
 .pf-ph img{object-position:50% 22%}
+
+/* ===== landing scroll: the leaf photo gets its own GPU layer so fading it never repaints the page ===== */
+.scene-clip{contain:strict}
+.scene{will-change:opacity}
+.scene img{will-change:transform}
+@media (hover: none), (pointer: coarse), (max-width: 760px) {
+  .scene img{will-change:auto}
+}
+
+/* ===== new look: bright desk photo for the day theme, lamp-lit desk for night; transparent logo ===== */
+.scene img.sc-night { display: none; }
+:root[data-theme='night'] .scene img.sc-night { display: block; }
+:root[data-theme='night'] .scene img.sc-day { display: none; }
+:root[data-theme='day'] .scene img { filter: none; }
+:root[data-theme='day'] .scene { --scene-max: 0.5; }
+:root[data-theme='night'] .scene { --scene-max: 0.8; }
+.logo,
+.ft .logo {
+  width: auto;
+  height: 2.7rem;
+  max-width: 4.2rem;
+  border-radius: 0;
+  object-fit: contain;
+  background: none;
+  box-shadow: none;
+}
+@media (max-width: 47.99rem) {
+  .logo,
+  .ft .logo { height: 2.3rem; }
+}
+
+/* anchors land clear of the sticky header on phones and tablets */
+@media (max-width: 64rem) {
+  html { scroll-padding-top: 5.6rem; }
+  section[id] { scroll-margin-top: 0.4rem; }
+}
+
+/* ===== clearer hero photo: stronger photo, lighter veil, soft glow only behind the text ===== */
+:root[data-theme='day'] .scene { --scene-max: 1; }
+:root[data-theme='night'] .scene { --scene-max: 1; }
+:root[data-theme='day'] .scene img.sc-day { filter: saturate(1.08) contrast(1.04); }
+.scene {
+  -webkit-mask-image: radial-gradient(ellipse 100% 100% at 55% 40%, #000 0, #000 62%, rgba(0, 0, 0, 0.55) 84%, transparent 100%);
+  mask-image: radial-gradient(ellipse 100% 100% at 55% 40%, #000 0, #000 62%, rgba(0, 0, 0, 0.55) 84%, transparent 100%);
+}
+.hero::before {
+  inset: 14% 4%;
+  background: radial-gradient(ellipse 46% 50% at center, color-mix(in srgb, var(--bg-color) 62%, transparent) 0, color-mix(in srgb, var(--bg-color) 40%, transparent) 55%, transparent 100%);
+}
+:root[data-theme='day'] .hero h1,
+:root[data-theme='day'] .hero .lead,
+:root[data-theme='day'] .hero p { text-shadow: 0 0 0.9rem rgba(255, 248, 232, 0.9), 0 0 0.3rem rgba(255, 248, 232, 0.8); }
+:root[data-theme='night'] .hero h1,
+:root[data-theme='night'] .hero p { text-shadow: 0 0.1rem 0.9rem rgba(0, 0, 0, 0.75); }
+
+/* hero "See how it works" stays readable over the photo */
+.hero .btn-ghost { background: color-mix(in srgb, var(--bg-color) 78%, transparent); }

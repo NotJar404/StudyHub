@@ -1691,11 +1691,17 @@ $$('select.seg').forEach(sel => {
 (() => {
   const sc = $('.scene');
   if (!sc) return;
-  let busy = false;
+  const clip = sc.parentElement;
+  let busy = false,
+    last = -1;
   const fade = () => {
     busy = false;
-    const k = Math.min(scrollY / (innerHeight * 0.8), 1);
-    sc.style.setProperty('--scene-o', (1 - k * k * (3 - 2 * k)).toFixed(3));
+    const k = Math.min(scrollY / (innerHeight * 0.8), 1),
+      o = (1 - k * k * (3 - 2 * k)).toFixed(2);
+    if (o === last) return; // nothing changed, so no style work at all
+    last = o;
+    sc.style.setProperty('--scene-o', o);
+    clip.style.visibility = k >= 1 ? 'hidden' : ''; // once it is gone, the browser skips painting it
   };
   addEventListener(
     'scroll',
