@@ -1810,3 +1810,248 @@ to{transform:scaleX(1)}
     margin-top: 2rem;
   }
 }
+
+/* tablets: keep the roomy feel of the phone layout (more air between blocks) */
+@media (min-width: 48rem) and (max-width: 64rem) {
+  .sec {
+    padding-top: 5.2rem;
+  }
+  .sb-steps {
+    gap: 4.6rem;
+    margin-top: 2.8rem;
+  }
+  .sb-step:not(:last-child)::after {
+    right: -3.8rem;
+  }
+  .sb-cards {
+    gap: 1.6rem;
+  }
+  .sb-cards + .sb-cards,
+  .sb-cards + .sh,
+  .sh + .sb-cards {
+    margin-top: 1.6rem;
+  }
+  main > .sb-tear,
+  .sb-tear {
+    margin-block: 1.6rem;
+  }
+}
+
+/* ===== Phone menu: hovering (a mouse in a narrow window, a stylus) must never move the list ===== */
+@media (max-width: 48rem) {
+  .nav .dd:hover .dl,
+  .nav .dd:focus-within .dl,
+  .nav .dl {
+    position: static;
+    transform: none;
+    opacity: 1;
+    visibility: visible;
+    left: auto;
+    right: auto;
+    min-width: 0;
+  }
+  .nav .dd:after {
+    display: none;
+  }
+}
+
+/* ===== Team carousel: depth (the stack leans toward the pointer) and controls that always fit ===== */
+.pf-flow {
+  --rx: 0deg;
+  --ry: 0deg;
+  --px: 0px;
+  --py: 0px;
+}
+.pf-fc {
+  overflow: hidden;
+  transform: translateX(calc(var(--d, 0) * var(--sx))) translateZ(calc(var(--ad, 0) * -9rem)) rotateY(calc(var(--d, 0) * -30deg + var(--ry))) rotateX(var(--rx)) scale(calc(1 - var(--ad, 0) * 0.08));
+}
+.pf-fc .pf-ph img,
+.pf-fc .pf-ph b {
+  transform: translate3d(var(--px), var(--py), 0) scale(1.1);
+}
+.pf-fc.on::after {
+  /* a soft shine that slides across the front card as it leans */
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at calc(50% + var(--ry) * 4) calc(45% - var(--rx) * 4), rgba(255, 255, 255, 0.32), transparent 55%);
+  pointer-events: none;
+}
+.pf-dots {
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+.pf-dotbox {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 16rem;
+}
+.pf-pp {
+  margin-left: auto;
+}
+@media (max-width: 35.99rem) {
+  .pf-dotbox {
+    max-width: none;
+  }
+  .pf-dot {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0.7rem;
+  }
+  .pf-dot.on {
+    flex: 2.4 1 0;
+    width: auto;
+  }
+  .pf-pp {
+    margin-left: 0;
+    display: grid;
+  }
+}
+@media (hover: none) {
+  .pf-fc.on::after {
+    display: none;
+  }
+}
+
+/* the touch-size rule must not turn the timer bars into big circles */
+.pf .pf-dotbox .pf-dot.pf-dot {
+  min-width: 0 !important;
+  min-height: 0 !important;
+  height: 0.5rem !important;
+}
+@media (max-width: 35.99rem) {
+  .pf .pf-dotbox .pf-dot.pf-dot {
+    width: auto !important;
+  }
+}
+
+/* ===== Team carousel: cards on an arc, further ones sit higher, smaller, darker and behind ===== */
+.pf-flow {
+  --rise: 4rem;
+  height: 28.5rem;
+  perspective: 1400px;
+  perspective-origin: 50% 30%;
+}
+.pf-fc {
+  top: 5.4rem;
+  transform: translate3d(var(--tx, 0), var(--ty, 0), var(--tz, 0)) rotateY(calc(var(--rot, 0deg) + var(--ry))) rotateX(var(--rx)) scale(var(--sc, 1));
+}
+.pf-fc::before {
+  /* darkens the cards that are further back */
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  background: #1c1008;
+  opacity: var(--dim, 0);
+  pointer-events: none;
+}
+@media (min-width: 36rem) and (max-width: 63.99rem) {
+  .pf-flow { --rise: 3.6rem; height: 26.5rem; }
+  .pf-fc { top: 4.8rem; }
+}
+@media (max-width: 35.99rem) {
+  .pf-flow { --rise: 3rem; height: 22rem; }
+  .pf-fc { top: 4rem; }
+}
+
+/* ===== About card: the writing sits ON the ruled lines, and school / course / hometown are highlighted ===== */
+.pf-about {
+  --ln: 1.9rem;
+  --pl: 3.2rem;
+  --pr: 1.3rem;
+  --rule: color-mix(in srgb, #5b8fb9 42%, transparent);
+  padding: 1.1rem var(--pr) 1.2rem var(--pl);
+  /* only the red margin line and the paper; the blue lines belong to the text blocks below */
+  background:
+    linear-gradient(90deg, transparent calc(var(--pl) - 0.8rem), rgba(200, 70, 50, 0.55) calc(var(--pl) - 0.8rem) calc(var(--pl) - 0.7rem), transparent calc(var(--pl) - 0.7rem)),
+    var(--grain),
+    var(--paper);
+}
+.pf-about header {
+  margin-bottom: 0.6rem;
+}
+.pf-p,
+.pf-list {
+  /* full-width lines, drawn so the bottom of every text row is a blue line */
+  margin: 0 calc(var(--pr) * -1) 0 calc(var(--pl) * -1);
+  padding: 0 var(--pr) 0 var(--pl);
+  line-height: var(--ln);
+  background: repeating-linear-gradient(180deg, transparent 0, transparent calc(var(--ln) - 1.5px), var(--rule) calc(var(--ln) - 1.5px), var(--rule) var(--ln));
+}
+.pf-p {
+  font: 700 1.38rem/var(--ln) 'Caveat', cursive;
+  margin-top: 0;
+}
+.pf-list {
+  display: block;
+  padding-right: calc(var(--pr) + 4.2rem);
+  font-size: 1rem;
+}
+.pf-list li {
+  display: block;
+  min-height: var(--ln);
+  line-height: var(--ln);
+}
+.pf-list li b {
+  display: inline-block;
+  min-width: 0;
+  margin-right: 0.55rem;
+  padding: 0 0.6rem;
+  border-radius: 0.5rem;
+  background: var(--accent-color);
+  color: var(--btn-text);
+  font-size: 0.7rem;
+  line-height: 1.35rem;
+  letter-spacing: 0.1em;
+  vertical-align: 0.12rem;
+}
+.pf-list li {
+  font-weight: 700;
+  color: var(--text-main);
+}
+.pf-list li > span,
+.pf-list li {
+  background-image: none;
+}
+.pf-list li::after {
+  content: none;
+}
+.pf-list li {
+  --hl: color-mix(in srgb, #f6d869 70%, transparent);
+}
+.pf-list li:not(:has(b)) {
+  display: none;
+}
+@media (max-width: 35.99rem) {
+  .pf-about {
+    --pl: 2.8rem;
+    --pr: 1rem;
+  }
+  .pf-p {
+    font-size: 1.3rem;
+  }
+  .pf-list {
+    padding-right: var(--pr);
+  }
+}
+.pf-v {
+  padding: 0 0.2rem;
+  background: linear-gradient(transparent 52%, color-mix(in srgb, #f6d869 85%, transparent) 52% 92%, transparent 92%);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+/* pause / play: a clearer button that does not blend into the glow behind it */
+.pf-pp {
+  background: rgba(251, 238, 211, 0.25);
+  border-color: #fbeed3;
+}
+.pf-pp svg {
+  width: 1.35rem;
+  height: 1.35rem;
+  stroke-width: 2.6;
+  color: #fff6e0;
+}

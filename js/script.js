@@ -1810,17 +1810,35 @@ $$('select.seg').forEach(sel => {
   let raf = 0,
     last = 0,
     drag = null;
+  // the cards sit on an arc seen slightly from above: the ones further round are smaller, higher up, darker and tucked behind
+  const geo = { sx: 184, rise: 64 };
+  const measure = () => {
+    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16,
+      cs = getComputedStyle(flow);
+    geo.sx = (parseFloat(cs.getPropertyValue('--sx')) || 11.5) * rem;
+    geo.rise = (parseFloat(cs.getPropertyValue('--rise')) || 4) * rem;
+  };
+  measure();
+  addEventListener('resize', measure);
   const paint = () => {
     const half = N / 2;
     cards.forEach((c, k) => {
       let d = (((k - pos) % N) + N) % N;
       if (d > half) d -= N;
-      const ad = Math.abs(d);
-      c.style.setProperty('--d', d.toFixed(3));
-      c.style.setProperty('--ad', ad.toFixed(3));
-      c.style.opacity = Math.max(0, Math.min(1, 1 - (ad - 1.8) / 0.7)).toFixed(2);
-      c.style.zIndex = Math.round(20 - ad * 4);
-      c.style.pointerEvents = ad > 2.4 ? 'none' : '';
+      const ad = Math.abs(d),
+        th = Math.max(-1.56, Math.min(1.56, d * 0.62)),
+        back = 1 - Math.cos(th),
+        st = c.style;
+      st.setProperty('--d', d.toFixed(3));
+      st.setProperty('--tx', (Math.sin(th) * geo.sx * 1.75).toFixed(1) + 'px');
+      st.setProperty('--ty', (-back * geo.rise).toFixed(1) + 'px');
+      st.setProperty('--tz', (-back * geo.sx * 1.7).toFixed(1) + 'px');
+      st.setProperty('--rot', (-th * 31.5).toFixed(1) + 'deg');
+      st.setProperty('--sc', (1 - back * 0.2).toFixed(3));
+      st.setProperty('--dim', Math.min(0.7, back * 0.8).toFixed(2));
+      st.opacity = Math.max(0, Math.min(1, 1 - (ad - 2.05) / 0.4)).toFixed(2);
+      st.zIndex = Math.round(20 - ad * 4);
+      st.pointerEvents = ad > 2.3 ? 'none' : '';
       const front = ad < 0.5;
       if (c.classList.contains('on') !== front) c.classList.toggle('on', front), (c.tabIndex = front ? -1 : 0);
     });
@@ -1875,6 +1893,37 @@ $$('select.seg').forEach(sel => {
   addEventListener('pointercancel', release);
   // a drag must not count as a click on the card under the finger
   flow.addEventListener('click', e => flow._moved && (e.stopPropagation(), e.preventDefault()), true);
+  // depth: the stack leans toward the pointer (mouse hover, or a finger held on the cards); eased, transform-only
+  if (!still) {
+    let tx = 0,
+      ty = 0,
+      cx = 0,
+      cy = 0,
+      traf = 0;
+    const lean = () => {
+      cx += (tx - cx) * 0.12;
+      cy += (ty - cy) * 0.12;
+      flow.style.setProperty('--rx', (cy * -9).toFixed(2) + 'deg');
+      flow.style.setProperty('--ry', (cx * 12).toFixed(2) + 'deg');
+      flow.style.setProperty('--px', (cx * -12).toFixed(1) + 'px');
+      flow.style.setProperty('--py', (cy * -9).toFixed(1) + 'px');
+      traf = Math.abs(tx - cx) + Math.abs(ty - cy) > 0.003 ? requestAnimationFrame(lean) : 0;
+    };
+    const aim = (x, y) => {
+      const r = flow.getBoundingClientRect();
+      tx = Math.max(-1, Math.min(1, ((x - r.left) / r.width) * 2 - 1));
+      ty = Math.max(-1, Math.min(1, ((y - r.top) / r.height) * 2 - 1));
+      traf = traf || requestAnimationFrame(lean);
+    };
+    const rest = () => {
+      tx = ty = 0;
+      traf = traf || requestAnimationFrame(lean);
+    };
+    flow.addEventListener('pointermove', e => (e.pointerType === 'mouse' || e.buttons) && aim(e.clientX, e.clientY));
+    flow.addEventListener('pointerleave', rest);
+    addEventListener('pointerup', rest);
+    addEventListener('pointercancel', rest);
+  }
   // hero controls: back, dots (they fill up like a timer), next, pause
   const prev = el('button', 'pf-arw', svg('<path d="m15 18-6-6 6-6"/>')),
     next = el('button', 'pf-arw', svg('<path d="m9 18 6-6-6-6"/>')),
@@ -1976,7 +2025,8 @@ $$('select.seg').forEach(sel => {
   };
   root.addEventListener('pointerenter', e => e.pointerType === 'mouse' && holdOn(true)());
   root.addEventListener('pointerleave', e => e.pointerType === 'mouse' && holdOn(false)());
-  root.addEventListener('focusin', holdOn(true));
+  // only keyboard focus pauses it; tapping a button with a finger must never leave it paused
+  root.addEventListener('focusin', e => e.target.matches && e.target.matches(':focus-visible') && holdOn(true)());
   root.addEventListener('focusout', holdOn(false));
   document.addEventListener('visibilitychange', arm);
   // swipe on touch screens
