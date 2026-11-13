@@ -2162,23 +2162,8 @@ to{transform:scaleX(1)}
 }
 .faq details[open]::before{width:4px}
 @media (prefers-reduced-motion:reduce){.faq details,.faq details::before,.faq summary{transition:none!important}}
-/* ===== tablet (768px to 1023px): "How it works" stacks like the phone, so the numbers stay visible ===== */
-@media (min-width: 48rem) and (max-width: 63.99rem){
-  .sb-steps{grid-template-columns:1fr;gap:2.6rem;max-width:36rem;margin-left:auto;margin-right:auto;margin-top:1.8rem}
-  .sb-sc{display:grid;grid-template-columns:12.5rem minmax(0, 1fr);align-items:center;gap:1.4rem}
-  .sb-n{top:-0.9rem;left:-0.8rem;width:2.7rem;height:2.7rem;font-size:1.2rem}
-  .sb-stx{padding:0;text-align:left}
-  .sb-stx h3{font-size:1.4rem}
-  .sb-stx p{font-size:1rem}
-  .sb-step:not(:last-child)::after{content:'↓';top:auto;right:auto;bottom:-2.6rem;left:5.8rem;width:2.6rem;height:2.6rem;font-size:1.2rem;transform:none}
-}
-
-/* ===== tablet (768px to 1023px): the numbers sit at the end of the Home page, after the FAQ ===== */
-.tab-facts{display:none}
-@media (min-width: 48rem) and (max-width: 63.99rem){
-  .top-facts{display:none}
-  .tab-facts{display:block;margin-top:3rem}
-}
+/* ===== tablet (768px to 1023px): the numbers sit right under the hero and "How it works" stays in three columns ===== */
+.tab-facts{display:none !important}
 
 /* ===== Landing on tablets: the first screen is only the hero; the numbers and "How it works" appear when you scroll ===== */
 @media (min-width: 30.01rem) and (max-width: 64rem) {
@@ -2239,3 +2224,6 @@ body.landing .sec > .sh h2::after {
     flex: 2.4 1 0;
   }
 }
+
+/* team photos: keep faces in frame */
+.pf-ph img{object-position:50% 22%}

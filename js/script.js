@@ -1781,7 +1781,7 @@ $$('select.seg').forEach(sel => {
     pos = 0,
     tgt = 0,
     timer = 0,
-    playing = !still,
+    playing = true,
     hold = false;
   // the dock: one avatar per person
   M.forEach((m, i) => {
@@ -2018,17 +2018,10 @@ $$('select.seg').forEach(sel => {
     show((i + M.length) % M.length);
     arm();
   };
-  // pause while someone is reading: hover, focus inside, or finger down
-  const holdOn = v => () => {
-    hold = v;
-    arm();
-  };
-  root.addEventListener('pointerenter', e => e.pointerType === 'mouse' && holdOn(true)());
-  root.addEventListener('pointerleave', e => e.pointerType === 'mouse' && holdOn(false)());
-  // only keyboard focus pauses it; tapping a button with a finger must never leave it paused
-  root.addEventListener('focusin', e => e.target.matches && e.target.matches(':focus-visible') && holdOn(true)());
-  root.addEventListener('focusout', holdOn(false));
+  // it plays by itself from the moment the page opens and only stops when the Pause button is pressed
+  // (hovering, focusing, tapping, dragging and switching tabs never leave it stopped)
   document.addEventListener('visibilitychange', arm);
+  addEventListener('pageshow', arm);
   // swipe on touch screens
   let sx = 0,
     sy = 0;
@@ -2098,5 +2091,19 @@ $$('select.seg').forEach(sel => {
       el.classList.remove('play'); void el.offsetWidth; el.classList.add('play');
       clearTimeout(el._t); el._t = setTimeout(function () { el.classList.remove('play'); }, 1600);
     });
+  });
+})();
+
+/* ---- email links: phones open the mail app; computers open a Gmail draft so the link always works ---- */
+(function () {
+  if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href^="mailto:"]');
+    if (!a) return;
+    var u = new URL(a.getAttribute('href'));
+    var q = new URLSearchParams(u.search);
+    var url = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(u.pathname) + (q.get('subject') ? '&su=' + encodeURIComponent(q.get('subject')) : '');
+    e.preventDefault();
+    window.open(url, '_blank', 'noopener');
   });
 })();
