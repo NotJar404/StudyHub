@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7a4426" />
+      <stop offset="1" stop-color="#2e150a" />
+    </linearGradient>
+    <linearGradient id="lf" x1="0.2" y1="0" x2="0.8" y2="1">
+      <stop offset="0" stop-color="#ffd166" />
+      <stop offset="0.5" stop-color="#f08a2c" />
+      <stop offset="1" stop-color="#c8361b" />
+    </linearGradient>
+    <radialGradient id="gl" cx="0.5" cy="0.4" r="0.55">
+      <stop offset="0" stop-color="#ffb347" stop-opacity=".5" />
+      <stop offset="1" stop-color="#ffb347" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="url(#bg)" />
+  <circle cx="32" cy="26" r="27" fill="url(#gl)" />
+  <rect x="2.500" y="2.500" width="59" height="59" rx="13.500" fill="none" stroke="#ffe2a8" stroke-opacity=".28" stroke-width="1" />
+  <!-- open book: leather cover, two cream pages, page-edge stack -->
+  <path d="M6 41q13-5 26 1.500q13-6.500 26-1.500v14q-13-5-26 1.500q-13-6.500-26-1.500z" fill="#a8541f" />
+  <path d="M8.500 39q11.500-3.800 23.500 2.200v13.300q-12-5.300-23.500-1.800z" fill="#fff6e2" />
+  <path d="M55.500 39q-11.500-3.800-23.500 2.200v13.300q12-5.300 23.500-1.800z" fill="#efd9ae" />
+  <path d="M32 41.200v13.300" stroke="#a97a3c" stroke-width="1.400" stroke-linecap="round" />
+  <path d="M12.500 44.500q5.500-1.500 14 1M12.500 48.500q5.500-1.500 14 1M51.500 44.500q-5.500-1.500-14 1M51.500 48.500q-5.500-1.500-14 1" fill="none" stroke="#c9ab6e" stroke-width="1.200" stroke-linecap="round" />
+  <!-- big maple leaf growing out of the gutter -->
+  <g transform="translate(32 23) rotate(-6) scale(1.45)">
+    <path d="M0-12 2.600-6.500 6.500-7.500 5.200-2.200 11.500-3.500 8.200 1.800 10.500 4.200 3.400 5.200 3.200 9.500.8 8V13.500H-.8V8L-3.200 9.500-3.400 5.200-10.500 4.200-8.200 1.800-11.500-3.500-5.200-2.200-6.500-7.500-2.600-6.500z" fill="url(#lf)" stroke="#fff1d0" stroke-width=".8" stroke-linejoin="round" />
+    <path d="M0 13V-7M0 3-6 -.2M0 3 6 -.2M0-2-3.600-5M0-2 3.600-5" fill="none" stroke="#8f2f14" stroke-width=".7" stroke-linecap="round" opacity=".6" />
+  </g>
+  <!-- a small leaf drifting down -->
+  <g transform="translate(52 13) rotate(32) scale(.42)">
+    <path d="M0-12 2.600-6.500 6.500-7.500 5.200-2.200 11.500-3.500 8.200 1.800 10.500 4.200 3.400 5.200 3.200 9.500.8 8V13.500H-.8V8L-3.200 9.500-3.400 5.200-10.500 4.200-8.200 1.800-11.500-3.500-5.200-2.200-6.500-7.500-2.600-6.500z" fill="#e8b45a" />
+  </g>
+</svg>

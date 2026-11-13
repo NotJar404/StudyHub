@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <title>Team | Student Study Hub</title>
+    <script>
+      document.documentElement.classList.add('js');
+      (function () {
+        var K = 'theme',
+          R = document.documentElement;
+        function rd() {
+          var c = [];
+          try {
+            c.push(localStorage.getItem(K));
+          } catch (e) {}
+          try {
+            c.push(sessionStorage.getItem(K));
+          } catch (e) {}
+          try {
+            var m = /(?:^|;)sh-theme=([^;]*)/.exec(window.name);
+            if (m) c.push(m[1]);
+          } catch (e) {}
+          try {
+            var k = /(?:^|; )sh-theme=([^;]*)/.exec(document.cookie);
+            if (k) c.push(k[1]);
+          } catch (e) {}
+          var best = 'day',
+            t = 0;
+          c.forEach(function (v) {
+            if (!v) return;
+            var p = String(v).split('|'),
+              ts = +p[1] || 1;
+            if ((p[0] === 'night' || p[0] === 'day') && ts >= t) {
+              t = ts;
+              best = p[0];
+            }
+          });
+          return best;
+        }
+        function wr(m) {
+          var v = m + '|' + Date.now();
+          try {
+            localStorage.setItem(K, v);
+          } catch (e) {}
+          try {
+            sessionStorage.setItem(K, v);
+          } catch (e) {}
+          try {
+            window.name =
+              String(window.name || '').replace(/(?:^|;)sh-theme=[^;]*/g, '') + ';sh-theme=' + v;
+          } catch (e) {}
+          try {
+            document.cookie = 'sh-theme=' + v + ';path=/;max-age=31536000;SameSite=Lax';
+          } catch (e) {}
+        }
+        window.__theme = { get: rd, set: wr };
+        R.dataset.theme = rd();
+      })();
+    </script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=DM+Sans:wght@400;500;700&family=Caveat:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" href="images/logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="css/style.css?v=69" />
+  
+
+</head>
+<body>
+<div id="aura"></div>
+
+<canvas id="bg"></canvas><canvas id="tr"></canvas>
+<nav class="nav" id="nav">
+      <a class="brand" href="index.html"
+        ><img class="logo" src="images/logo.svg" alt="" /><span class="bt"
+          ><b>Study Hub</b></span
+        ></a
+      >
+      <div class="menu" id="menu"><a href="index.html">Home</a><div class="dd"><a href="index.html#tools">Tools</a><div class="dl"><a href="schedule.html">Class Scheduler</a><a href="grades.html">Grade Calculator</a><a href="deck.html">Reviewer Deck</a><a href="logic.html">Truth Tables</a><a href="colors.html">Color Picker</a><a href="convert.html">Number Converter</a><a href="files.html">File Converter</a></div></div><a href="team.html">Team</a><a href="index.html#contact">Contact</a></div><button
+        class="pill"
+        id="theme"
+        type="button"
+        aria-label="Switch between day and night mode"
+      ></button
+      ><button
+        class="iconbtn burger"
+        id="burger"
+        type="button"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="menu"
+      >
+        <svg
+          class="i"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M3 12h18M3 6h18M3 18h18" />
+        </svg>
+      </button>
+    </nav>
+<main class="wrap"><header class="phead"><span class="eyebrow">Meet SBIT-1F</span><h1>The team behind Study Hub</h1><p>We are BS Information Technology students at QCU San Bartolome Campus. Pick a person below to read their profile. </p></header><section id="team" class="sec rv">
+        <div class="pf" id="pf" aria-live="polite">
+          <div class="pf-bg" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="pf-flow" data-f="flow" role="group" aria-label="Team members"></div>
+          <p class="pf-flowcap"><b data-f="fname"></b><span data-f="frole"></span><small data-f="fcount"></small></p>
+          <div class="pf-grid">
+            <section class="pf-card pf-hero" aria-label="Introduction">
+              <div class="pf-hero-txt">
+                <span class="pf-kick" data-f="role"></span>
+                <h2 class="pf-hi" data-f="hi"></h2>
+                <p class="pf-lead" data-f="bio"></p>
+                <div class="pf-dots" data-f="dots"></div>
+              </div>
+              <div class="pf-hero-art"><span class="pf-ph" data-f="ph"></span></div>
+            </section>
+            <section class="pf-card pf-about" aria-label="About">
+              <header><h3>About me</h3><span class="pf-tag">BSIT-1F</span></header>
+              <p class="pf-p" data-f="about"></p>
+              <ul class="pf-list">
+                <li><b>School</b>QCU San Bartolome Campus</li>
+                <li><b>Course</b>BS Information Technology</li>
+                <li><b>Hometown</b><span data-f="town"></span></li>
+              </ul>
+              <svg class="pf-doodle" viewBox="0 0 120 110" aria-hidden="true"><rect x="14" y="40" width="70" height="52" rx="6" fill="#f4e6c6" stroke="#6b4423" stroke-width="3"/><path d="M49 40v52" stroke="#6b4423" stroke-width="3"/><path d="M24 56h16M24 66h16M58 56h16M58 66h16" stroke="#b9843f" stroke-width="3" stroke-linecap="round"/><path d="M84 20c14 2 24 12 24 26-12 0-22-8-24-26z" fill="#c9772b"/><path d="M84 20c6 8 14 16 24 26" stroke="#7a3a12" stroke-width="2" fill="none"/><rect x="88" y="62" width="9" height="40" rx="2" fill="#6f8a4a" transform="rotate(12 92 82)"/></svg>
+            </section>
+            <section class="pf-card pf-tile pf-role" aria-label="Role"><span class="pf-ph" data-f="ph"></span><span class="pf-cap" data-f="role"></span></section>
+            <section class="pf-card pf-motto" data-need="motto" aria-label="Motto"><span class="pf-quo" aria-hidden="true">&ldquo;</span><p data-f="motto"></p></section>
+            <section class="pf-card pf-skills" data-need="skills" aria-label="Core skills"><h3>Core skills</h3><ul class="pf-chips" data-f="skills"></ul></section>
+            <section class="pf-card pf-made" data-need="made" aria-label="What I made in Study Hub"><h3>What I did in Study Hub</h3><ol class="pf-steps" data-f="made"></ol></section>
+            <section class="pf-card pf-kit" data-need="tools,hobbies" aria-label="Tools and hobbies">
+              <div data-need="tools"><h3>Tools &amp; stack</h3><ul class="pf-chips pf-chips-s" data-f="tools"></ul></div>
+              <div data-need="hobbies"><h3>Hobbies</h3><ul class="pf-chips pf-chips-s" data-f="hobbies"></ul></div>
+            </section>
+            <section class="pf-card pf-study" data-need="subject,tip" aria-label="Study habits"><h3>Study habits</h3><p class="pf-fav" data-need="subject"><small>Favorite subject</small><b data-f="subject"></b></p><p class="pf-tip" data-need="tip"><small>Study tip</small><span data-f="tip"></span></p></section>
+            <section class="pf-card pf-fun" data-need="fun" aria-label="Fun fact"><h3>Fun fact</h3><p data-f="fun"></p></section>
+            <section class="pf-card pf-dream" data-need="dream" aria-label="Dream job"><small>Dream job</small><b data-f="dream"></b></section>
+            <section class="pf-card pf-tile pf-town" aria-label="Hometown">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <small>From</small><b data-f="town"></b>
+            </section>
+            <section class="pf-card pf-bday" aria-label="Birthday">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v3M8 5v2M16 5v2"/><rect x="4" y="10" width="16" height="4" rx="1"/><path d="M5 14v6h14v-6"/></svg>
+              <b class="pf-day" data-f="day"></b><span data-f="month"></span><small data-f="age"></small>
+            </section>
+            <section class="pf-card pf-clock" aria-label="Local time"><b class="pf-time">--:--</b><span class="pf-date"></span><small>Your local time</small></section>
+            <a class="pf-card pf-more" data-f="hi-link" href="#"><b>SAY HI</b><span class="pf-go" aria-hidden="true">&rsaquo;</span></a>
+          </div>
+          <nav class="pf-dock" aria-label="Team members">
+            <div class="pf-av" data-f="avs"></div>
+            <div class="pf-links" data-f="links"></div>
+          </nav>
+          <script type="application/json" id="pf-data">[{"id": "jarield", "name": "Jarield Lumapas", "role": "Project Manager", "bio": "Turns rough ideas into clear roadmaps and keeps the team on time.", "bday": "August 27, 2006", "town": "Quezon City", "img": "images/member1.jpg", "ini": "JL", "c": "#1f1f1f", "links": [{"k": "mail", "u": "mailto:lumapasjarield@gmail.com"}, {"k": "facebook", "u": "https://www.facebook.com/Jarudos/"}, {"k": "github", "u": "https://github.com/NotJar404"}], "intro": "I turn rough ideas into clear roadmaps that keep cross-functional teams aligned, focused, and executing on time. Beyond orchestrating timelines for projects like the autumn-themed launch of Study Hub, I directly architected the site’s end-to-end user experience, guiding the team from conceptual purpose to a polished interface. I like it when a team looks at the roadmap and knows right away what to do next.", "motto": "Whatever you lose, you’ll find it again. But what you throw away you’ll never get back.", "skills": ["Technical Project Management & Workflow Orchestration", "UI/UX Design & Visual Direction", "Basic Programming", "Basic Networking", "Basic Database Management"], "made": [["Product Vision & Architecture", "Defined the core purpose, functionality, and overall strategic direction of the platform."], ["Design & User Experience Direction", "Directed the visual identity and structural layout of the entire site to ensure seamless user navigation."], ["Team Leadership", "Guided the team through execution, translating abstract concepts into clear, actionable development tasks."]], "tools": ["Figma", "Claude", "VS Code"], "hobbies": ["Anime", "Gaming", "Sleeping"], "subject": "Math", "tip": "Watch a video tutorial first, then practice solving problems entirely on your own.", "fun": "I completely lose spatial awareness of my surroundings when I get deeply focused on a task.", "dream": "Game Developer or Software Engineer"}, {"id": "hannah", "name": "Hannah Lee Jazz Gliane", "role": "UI Designer", "bio": "Shapes how Study Hub looks, from colors to layout.", "bday": "May 14, 2008", "town": "Quezon City", "img": "images/member2.jpg", "ini": "HG", "c": "#f19a9a", "links": [{"k": "mail", "u": "mailto:hannahleejazz1@gmail.com"}, {"k": "facebook", "u": "https://www.facebook.com/share/14pFSVu78Qr/"}]}, {"id": "mark", "name": "Mark David Gideon M. Dando", "role": "UX Designer", "bio": "Makes every tool easy to understand and quick to use.", "bday": "December 28, 2007", "town": "Rodriguez, Rizal", "img": "images/member3.jpg", "ini": "MD", "c": "#9bcbef", "links": [{"k": "mail", "u": "mailto:dando.markdavidgideon.mendoza@gmail.com"}, {"k": "facebook", "u": "https://www.facebook.com/share/14tKQWBkTkT/"}]}, {"id": "carelyn", "name": "Carelyn Ann A. Arcenal", "role": "Researcher", "bio": "Finds out what students need and checks that it works.", "bday": "July 30, 2006", "town": "Quezon City", "img": "images/member4.jpg", "ini": "CA", "c": "#f3d34f", "links": [{"k": "mail", "u": "mailto:arcenal.carelynann.araneta@gmail.com"}, {"k": "facebook", "u": "https://www.facebook.com/share/1FjkF41rWy/"}]}, {"id": "khian", "name": "Khian Corpuz", "role": "Backend Developer", "bio": "Builds the behind-the-scenes logic that keeps Study Hub running.", "bday": "April 25, 2008", "town": "Quezon City", "img": "images/member5.jpg", "ini": "KC", "c": "#8f73c9", "links": [{"k": "mail", "u": "mailto:khiancorpuz6@gmail.com"}, {"k": "facebook", "u": "https://www.facebook.com/khian.corpuz.92"}]}]</script>
+          <noscript><p class="pf-ns">Turn on JavaScript to read the team profiles.</p></noscript>
+        </div>
+      </section>
+      </main>
+<footer>
+      <div class="wrap">
+        <div class="ft">
+          <div>
+            <a class="brand" href="index.html"
+              ><img class="logo" src="images/logo.svg" alt="" /><span class="bt"
+                ><b>Study Hub</b></span
+              ></a
+            >
+            <p>A calm study space made by students, for students.</p>
+          </div>
+          <div class="col">
+            <h4>Tools</h4>
+            <a href="schedule.html">Class Scheduler</a><a href="grades.html">Grade Calculator</a
+            ><a href="deck.html">Reviewer Deck</a><a href="logic.html">Truth Tables</a
+            ><a href="colors.html">Color Picker</a><a href="convert.html">Number Converter</a
+            ><a href="files.html">File Converter</a>
+          </div>
+          <div class="col">
+            <h4>Explore</h4><a href="index.html">Home</a><a href="team.html">Team</a><a href="index.html#contact">Contact</a></div>
+          <div class="col">
+            <h4>The project</h4>
+            <span>Web Systems final project</span><span>BS Information Technology</span
+            ><span>QCU San Bartolome Campus</span>
+          </div>
+        </div>
+        <div class="fbar">
+          <span>© 2026 Study Hub. Made with care by SBIT-1F.</span
+          ><a
+            href="#"
+            onclick="
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+              return false;
+            "
+            >Back to top</a
+          >
+        </div>
+      </div>
+    </footer>
+<script src="js/script.js?v=26"></script>
+</body>
+</html>
