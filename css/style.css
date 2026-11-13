@@ -1803,9 +1803,6 @@ to{transform:scaleX(1)}
   .sec {
     padding-top: 3.2rem;
   }
-  .hero {
-    min-height: max(26rem, min(calc(100svh - 5.2rem), 38rem));
-  }
   .sb-steps {
     margin-top: 2rem;
   }
@@ -2181,4 +2178,64 @@ to{transform:scaleX(1)}
 @media (min-width: 48rem) and (max-width: 63.99rem){
   .top-facts{display:none}
   .tab-facts{display:block;margin-top:3rem}
+}
+
+/* ===== Landing on tablets: the first screen is only the hero; the numbers and "How it works" appear when you scroll ===== */
+@media (min-width: 30.01rem) and (max-width: 64rem) {
+  .hero {
+    min-height: max(30rem, calc(100vh - 5.2rem));
+    min-height: max(30rem, calc(100svh - 5.2rem));
+    padding-bottom: 4rem;
+  }
+  .sb-tear {
+    margin-top: 0;
+  }
+}
+/* the little bar under section titles stays gold on every background */
+body.landing .sec > .sh h2::after {
+  background: linear-gradient(90deg, #e8b04a, #d9a93a);
+}
+
+/* controls stay together: back, dots, next, pause; the stamp moves to the top corner so it never covers them */
+.pf-pp {
+  margin-left: 0 !important;
+}
+.pf-dots {
+  justify-content: flex-start;
+  gap: 0.6rem;
+}
+.pf-dotbox {
+  flex: 0 1 auto;
+  max-width: 14rem;
+}
+.pf-dotbox .pf-dot {
+  flex: 0 0 auto;
+}
+.pf-hero::after {
+  top: 1rem;
+  bottom: auto;
+  left: auto;
+  right: 1.6rem;
+}
+@media (min-width: 64rem) {
+  .pf-hero::after {
+    left: auto;
+  }
+}
+.pf-pp,
+.pf-arw {
+  position: relative;
+  z-index: 4;
+}
+@media (max-width: 35.99rem) {
+  .pf-dotbox {
+    flex: 1 1 auto;
+    max-width: none;
+  }
+  .pf-dotbox .pf-dot {
+    flex: 1 1 0;
+  }
+  .pf-dotbox .pf-dot.on {
+    flex: 2.4 1 0;
+  }
 }
