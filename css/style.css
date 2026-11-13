@@ -2055,3 +2055,123 @@ to{transform:scaleX(1)}
   stroke-width: 2.6;
   color: #fff6e0;
 }
+
+/* ===== tool cards: no card hover; the illustration transforms on hover (or tap on phones) ===== */
+.sb-card:hover,.sb-card:focus-visible{transform:none !important;box-shadow:inherit !important}
+.sb-card::after{display:none !important}
+.sb-card .sb-ill{transform:none}
+.sb-card:hover .sb-ill{transform:none !important}
+.sb-card .sb-arr{transition:none}
+.sb-card:hover .sb-arr{transform:none}
+.sb-ill .ink,.sb-ill .bar,.sb-ill .fr,.sb-ill .bk,.sb-ill .stamp,.sb-ill .row,.sb-ill .pen,.sb-ill .drop,.sb-ill .chip,.sb-ill .hex,.sb-ill .hexout,.sb-ill .bin,.sb-ill .arw,.sb-ill .pdfp,.sb-ill .docp{transform-box:fill-box;transform-origin:center}
+.anim-plan .ink{transform:scale(0)} .anim-plan .pen{transform:translate(0,0)}
+.anim-grade .bar{transform:scaleY(0);transform-origin:bottom} .anim-grade .stamp{opacity:0;transform:scale(0)}
+.anim-deck .bk{opacity:0;transform:scaleX(0)}
+.anim-logic .row{opacity:.25}
+.anim-colors .chip{fill:#efe0c3} .anim-colors .hex{opacity:0} .anim-colors .drop{transform:translate(0,0)}
+.anim-conv .res{opacity:0}
+.anim-files .docp{transform:scaleX(0)}
+@keyframes penWrite{0%{transform:translate(0,0)}24%{transform:translate(96px,0)}25%{transform:translate(0,25px)}49%{transform:translate(96px,25px)}50%{transform:translate(0,50px)}74%{transform:translate(96px,50px)}75%{transform:translate(0,75px)}99%,100%{transform:translate(96px,75px)}}
+@keyframes ink{from{transform:scale(0)}to{transform:scale(1)}}
+@keyframes barGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes stampPop{0%{transform:scale(0) rotate(-25deg);opacity:0}60%{transform:scale(1.18) rotate(-10deg);opacity:1}100%{transform:scale(1) rotate(-8deg);opacity:1}}
+@keyframes flipOut{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+@keyframes flipIn{from{transform:scaleX(0);opacity:1}to{transform:scaleX(1);opacity:1}}
+@keyframes rowIn{from{opacity:.25;transform:translateX(-10px)}to{opacity:1;transform:none}}
+@keyframes spinGate{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+@keyframes dropper{0%{transform:translate(0,0)}55%{transform:translate(-132px,30px)}75%{transform:translate(-132px,30px)}100%{transform:translate(-132px,30px)}}
+@keyframes chipFill{from{fill:#efe0c3}to{fill:#c9772b}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes binOut{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(-10px)}}
+@keyframes hexIn{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:none}}
+@keyframes arrowPulse{0%{transform:translateX(0)}50%{transform:translateX(6px)}100%{transform:translateX(0)}}
+@keyframes pageOut{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+@keyframes pageIn{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.sb-card.play .anim-plan .pen,.sb-card.play .anim-plan .ink,.sb-card.play .anim-grade .bar,.sb-card.play .anim-grade .stamp,.sb-card.play .anim-deck .fr,.sb-card.play .anim-deck .bk,.sb-card.play .anim-logic .row,.sb-card.play .anim-logic .gate,.sb-card.play .anim-colors .drop,.sb-card.play .anim-colors .chip,.sb-card.play .anim-colors .hex,.sb-card.play .anim-conv .bin,.sb-card.play .anim-conv .hexout,.sb-card.play .anim-conv .arw,.sb-card.play .anim-files .pdfp,.sb-card.play .anim-files .docp{animation-fill-mode:both}
+.sb-card.play .anim-plan .pen{animation:penWrite 2.4s linear both}
+.sb-card.play .anim-plan .ink{animation:ink .22s ease both;animation-delay:var(--d)}
+.sb-card.play .anim-grade .bar{animation:barGrow .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--d)}
+.sb-card.play .anim-grade .stamp{animation:stampPop .6s cubic-bezier(.3,1.4,.5,1) both;animation-delay:1.3s}
+.sb-card.play .anim-deck .fr{animation:flipOut .5s ease both .2s}
+.sb-card.play .anim-deck .bk{animation:flipIn .5s ease both .7s}
+.sb-card.play .anim-logic .row{animation:rowIn .5s ease both;animation-delay:var(--d)}
+.sb-card.play .anim-logic .gate{animation:spinGate 1.2s ease both .2s}
+.sb-card.play .anim-colors .drop{animation:dropper 1.5s ease-in-out both}
+.sb-card.play .anim-colors .chip{animation:chipFill .4s ease both 1.4s}
+.sb-card.play .anim-colors .hex{animation:fadeIn .4s ease both 1.8s}
+.sb-card.play .anim-conv .q{animation:binOut .4s ease both .3s}
+.sb-card.play .anim-conv .res{animation:hexIn .6s ease both .6s}
+.sb-card.play .anim-conv .arw{animation:arrowPulse .6s ease both .5s}
+.sb-card.play .anim-files .pdfp{animation:pageOut .6s ease both .1s}
+.sb-card.play .anim-files .docp{animation:pageIn .6s ease both .7s}
+@media (hover:hover) and (pointer:fine){
+.sb-card:hover .anim-plan .pen,.sb-card:hover .anim-plan .ink{animation-fill-mode:both}
+.sb-card:hover .anim-plan .pen{animation:penWrite 2.4s linear both}
+.sb-card:hover .anim-plan .ink{animation:ink .22s ease both;animation-delay:var(--d)}
+.sb-card:hover .anim-grade .bar{animation:barGrow .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--d)}
+.sb-card:hover .anim-grade .stamp{animation:stampPop .6s cubic-bezier(.3,1.4,.5,1) both;animation-delay:1.3s}
+.sb-card:hover .anim-deck .fr{animation:flipOut .5s ease both .2s}
+.sb-card:hover .anim-deck .bk{animation:flipIn .5s ease both .7s}
+.sb-card:hover .anim-logic .row{animation:rowIn .5s ease both;animation-delay:var(--d)}
+.sb-card:hover .anim-logic .gate{animation:spinGate 1.2s ease both .2s}
+.sb-card:hover .anim-colors .drop{animation:dropper 1.5s ease-in-out both}
+.sb-card:hover .anim-colors .chip{animation:chipFill .4s ease both 1.4s}
+.sb-card:hover .anim-colors .hex{animation:fadeIn .4s ease both 1.8s}
+.sb-card:hover .anim-conv .q{animation:binOut .4s ease both .3s}
+.sb-card:hover .anim-conv .res{animation:hexIn .6s ease both .6s}
+.sb-card:hover .anim-conv .arw{animation:arrowPulse .6s ease both .5s}
+.sb-card:hover .anim-files .pdfp{animation:pageOut .6s ease both .1s}
+.sb-card:hover .anim-files .docp{animation:pageIn .6s ease both .7s}
+}
+@media (prefers-reduced-motion:reduce){.sb-card *{animation:none !important}}
+
+/* ===== stats and "How it works": hover (or tap on phones) ===== */
+.facts>div{position:relative;transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+.facts>div b{display:inline-block;transition:transform .5s cubic-bezier(.3,1.5,.5,1)}
+.facts>div::after{content:'';position:absolute;left:50%;bottom:.3rem;width:0;height:3px;border-radius:99px;background:var(--accent-color);transform:translateX(-50%);transition:width .45s cubic-bezier(.2,.8,.2,1)}
+@media (hover:hover) and (pointer:fine){
+  .facts>div:hover{transform:translateY(-4px)}
+  .facts>div:hover b{transform:translateY(-6px) scale(1.1)}
+  .facts>div:hover::after{width:46%}
+}
+.facts>div.play b{transform:translateY(-6px) scale(1.1)}
+.facts>div.play::after{width:46%}
+.sb-step .sb-ill{transform-origin:50% 60%}
+@keyframes sxWiggle{0%{transform:rotate(0)}25%{transform:rotate(-4deg) scale(1.04)}55%{transform:rotate(3deg) scale(1.06)}100%{transform:rotate(0) scale(1)}}
+@keyframes sxLift{0%{transform:translateY(0)}40%{transform:translateY(-10px) scale(1.04)}100%{transform:translateY(0) scale(1)}}
+@keyframes sxStamp{0%{transform:scale(1)}30%{transform:scale(1.14) rotate(-3deg)}60%{transform:scale(.96) rotate(1deg)}100%{transform:scale(1) rotate(0)}}
+@media (hover:hover) and (pointer:fine){
+  .sb-step:hover .sx1{animation:sxWiggle .8s ease both}
+  .sb-step:hover .sx2{animation:sxLift .7s ease both}
+  .sb-step:hover .sx3{animation:sxStamp .7s ease both}
+}
+.sb-step.play .sx1{animation:sxWiggle .8s ease both}
+.sb-step.play .sx2{animation:sxLift .7s ease both}
+.sb-step.play .sx3{animation:sxStamp .7s ease both}
+@media (prefers-reduced-motion:reduce){.facts>div,.facts>div b,.facts>div::after,.sb-step .sb-ill{transition:none!important;animation:none!important}}
+/* ===== Team page: justified paragraphs, with hyphens so the lines stay even ===== */
+.pf-p,.pf-lead,.pf-tip,.pf-fav,.pf-ns,.pf-motto p,.pf-fun p{text-align:justify;text-justify:inter-word;hyphens:auto;-webkit-hyphens:auto;overflow-wrap:break-word}
+
+/* ===== FAQ: hover (desktop) ===== */
+.faq details{position:relative;transition:background .3s ease}
+.faq details::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:var(--accent-color);border-radius:0 3px 3px 0;transition:width .3s ease}
+.faq summary{transition:color .25s ease,transform .3s cubic-bezier(.2,.8,.2,1)}
+@media (hover:hover) and (pointer:fine){
+  .faq details:hover{background:color-mix(in srgb,var(--accent-color) 7%,transparent)}
+  .faq details:hover::before{width:4px}
+  .faq summary:hover{color:var(--accent-color);transform:translateX(6px)}
+  .faq summary:hover::after{transform:rotate(45deg)}
+  .faq details[open]:hover summary::after{transform:rotate(45deg)}
+}
+.faq details[open]::before{width:4px}
+@media (prefers-reduced-motion:reduce){.faq details,.faq details::before,.faq summary{transition:none!important}}
+/* ===== tablet (768px to 1023px): "How it works" stacks like the phone, so the numbers stay visible ===== */
+@media (min-width: 48rem) and (max-width: 63.99rem){
+  .sb-steps{grid-template-columns:1fr;gap:2.6rem;max-width:36rem;margin-left:auto;margin-right:auto;margin-top:1.8rem}
+  .sb-sc{display:grid;grid-template-columns:12.5rem minmax(0, 1fr);align-items:center;gap:1.4rem}
+  .sb-n{top:-0.9rem;left:-0.8rem;width:2.7rem;height:2.7rem;font-size:1.2rem}
+  .sb-stx{padding:0;text-align:left}
+  .sb-stx h3{font-size:1.4rem}
+  .sb-stx p{font-size:1rem}
+  .sb-step:not(:last-child)::after{content:'↓';top:auto;right:auto;bottom:-2.6rem;left:5.8rem;width:2.6rem;height:2.6rem;font-size:1.2rem;transform:none}
+}

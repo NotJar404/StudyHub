@@ -2076,3 +2076,27 @@ $$('select.seg').forEach(sel => {
   addEventListener('keydown', e => e.key === 'Escape' && nav.classList.contains('open') && (close(), bg.focus()));
   addEventListener('resize', () => innerWidth > 768 && close());
 })();
+
+/* ---- tool cards: the illustration transforms on hover, and on a tap on phones ---- */
+(function () {
+  var cards = [].slice.call(document.querySelectorAll('.sb-card'));
+  cards.forEach(function (c) {
+    c.addEventListener('pointerup', function (e) {
+      if (e.pointerType !== 'touch') return;
+      c.classList.remove('play'); void c.offsetWidth; c.classList.add('play');
+      clearTimeout(c._t); c._t = setTimeout(function () { c.classList.remove('play'); }, 3200);
+    });
+  });
+})();
+
+/* ---- stats and steps: react on a tap on phones ---- */
+(function () {
+  var items = [].slice.call(document.querySelectorAll('.facts > div, .sb-step'));
+  items.forEach(function (el) {
+    el.addEventListener('pointerup', function (e) {
+      if (e.pointerType !== 'touch') return;
+      el.classList.remove('play'); void el.offsetWidth; el.classList.add('play');
+      clearTimeout(el._t); el._t = setTimeout(function () { el.classList.remove('play'); }, 1600);
+    });
+  });
+})();
