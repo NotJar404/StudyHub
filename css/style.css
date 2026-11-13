@@ -1580,3 +1580,55 @@ to{transform:scaleX(1)}
 .m-dock a:active,.m-dock a:focus-visible{background:rgba(201, 119, 43, 0.16);color:var(--accent-color, #a85d1f)}
 .m-dock svg{width:1.3rem;height:1.3rem}
 }
+
+/* ===== Phones and tablets: lighter painting so scrolling stays smooth ===== */
+@media (hover: none), (pointer: coarse), (max-width: 760px) {
+  html body,
+  body.landing {
+    background-attachment: scroll; /* a fixed background is repainted on every scroll frame */
+  }
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  a,
+  button,
+  summary,
+  label,
+  input,
+  select,
+  [role='button'] {
+    touch-action: manipulation; /* no double-tap-zoom wait, taps feel instant */
+  }
+  .nav,
+  .hero .eyebrow,
+  .hero .note-ok,
+  .m-dock {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none; /* blurring what is behind is the slowest effect on a phone */
+  }
+  .nav {
+    background: color-mix(in srgb, var(--card-bg) 96%, transparent);
+  }
+  #tr {
+    display: none; /* the cursor leaf trail is for mouse pointers only */
+  }
+  .scene img,
+  .pf::before,
+  .pf::after {
+    animation: none; /* endless animations keep the GPU busy even when nothing changes */
+  }
+  .pf-bg i {
+    filter: none;
+    opacity: 0.18;
+    background: radial-gradient(circle, var(--c) 0, transparent 68%);
+  }
+  .pf-bg i:nth-child(2) {
+    background: radial-gradient(circle, var(--accent-color) 0, transparent 68%);
+  }
+  .pf-fc {
+    filter: none; /* a filter that changes every frame repaints every card */
+  }
+  .pf-card {
+    box-shadow: 0 0.5rem 0.8rem -0.6rem rgba(60, 35, 10, 0.5);
+  }
+}

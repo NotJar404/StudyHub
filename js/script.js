@@ -81,7 +81,8 @@ const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
   };
   addEventListener('resize', size);
   size();
-  const leaves = Array.from({ length: 18 }, () => {
+  const touch = matchMedia('(hover: none), (pointer: coarse)').matches;
+  const leaves = Array.from({ length: touch ? 9 : 18 }, () => {
     const l = {
       s: Math.random() * 4 + 6,
       v: Math.random() * 0.4 + 0.25,
@@ -92,7 +93,10 @@ const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
     spawn(l, true);
     return l;
   });
+  let lastDraw = 0;
   const draw = n => {
+    if (touch && !still && n - lastDraw < 30) return requestAnimationFrame(draw);
+    lastDraw = n;
     const th = night(),
       P = th ? GN : GL;
     c.clearRect(0, 0, W, H);
@@ -123,7 +127,7 @@ const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
   // ----- smooth leaf trail behind the cursor -----
   // Leaves are placed along the path (not only where the mouse events land), move by real time, and ease in and out,
   // so the trail is even at any speed and any screen refresh rate.
-  if (!still) {
+  if (!still && !touch) {
     const DPR = Math.min(devicePixelRatio || 1, 2),
       GAP = 22,
       MAX = 70,
