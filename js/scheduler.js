@@ -115,6 +115,8 @@
     const [h, m] = t.split(':').map(Number);
     return (h % 12 || 12) + ':' + String(m).padStart(2, '0') + ' ' + (h >= 12 ? 'PM' : 'AM');
   };
+  // which days are open in the class list (they start closed, so the list stays short)
+  const OPEN = new Set();
   const keyOf = x => [x.code, x.day, x.start, x.end].join('|');
 
   // =================================================================
@@ -481,6 +483,7 @@
     if (!form.reportValidity()) return;
     if (form.start.value >= form.end.value) return alert('End time must be after start time.');
     const it = read();
+    OPEN.add(it.day);
     if (editIdx != null) {
       items[editIdx] = it;
       resetForm();
@@ -546,6 +549,34 @@
       if (!items.length) arm(false);
     };
   }
+  // open or close one day, or all of them
+  $('#classes').addEventListener('click', e => {
+    const h = e.target.closest('.dgh'),
+      all = e.target.closest('.dgall'),
+      box = $('#classes');
+    if (h) {
+      const g = h.parentElement,
+        on = g.classList.toggle('open');
+      h.setAttribute('aria-expanded', on);
+      on ? OPEN.add(g.dataset.d) : OPEN.delete(g.dataset.d);
+    }
+    if (h || all) {
+      const gs = [...box.querySelectorAll('.dg')];
+      if (all) {
+        const open = !gs.every(g => g.classList.contains('open'));
+        gs.forEach(g => {
+          g.classList.toggle('open', open);
+          g.querySelector('.dgh').setAttribute('aria-expanded', open);
+          open ? OPEN.add(g.dataset.d) : OPEN.delete(g.dataset.d);
+        });
+      }
+      const every = gs.every(g => g.classList.contains('open')),
+        btn = box.querySelector('.dgall');
+      btn.textContent = every ? 'Collapse all' : 'Expand all';
+      btn.setAttribute('aria-pressed', every);
+      return;
+    }
+  });
   $('#classes').addEventListener('click', e => {
     const b = e.target.closest('button[data-a]');
     if (!b) return;
@@ -582,13 +613,19 @@
       return;
     }
     const u = items.reduce((a, x) => a + (+x.units || 0), 0);
-    let hdr =
-      '<div class="class-summary">' +
+    const days = DAYS.filter(d => items.some(x => x.day === d)),
+      allOpen = days.every(d => OPEN.has(d));
+    const hdr =
+      '<div class="class-summary"><span>' +
       items.length +
       ' session' +
       (items.length === 1 ? '' : 's') +
       (u ? ' · ' + u + ' units' : '') +
-      '</div>';
+      '</span><button type="button" class="dgall" aria-pressed="' +
+      allOpen +
+      '">' +
+      (allOpen ? 'Collapse all' : 'Expand all') +
+      '</button></div>';
     el.innerHTML =
       hdr +
       DAYS.map(d => {
@@ -598,13 +635,19 @@
           .sort((a, b) => a.start.localeCompare(b.start));
         if (!l.length) return '';
         return (
-          '<div class="dg"><div class="dgh"><b>' +
+          '<div class="dg' +
+          (OPEN.has(d) ? ' open' : '') +
+          '" data-d="' +
+          d +
+          '"><button type="button" class="dgh" aria-expanded="' +
+          OPEN.has(d) +
+          '"><b>' +
           d +
           '</b><small>' +
           l.length +
           ' session' +
           (l.length === 1 ? '' : 's') +
-          '</small></div>' +
+          '</small><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div class="dgb"><div class="dgi">' +
           l
             .map(
               x =>
@@ -635,7 +678,7 @@
                 '"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2m-9 0 1 14h8l1-14"/></svg><span>Remove</span></button></div></div>'
             )
             .join('') +
-          '</div>'
+          '</div></div></div>'
         );
       }).join('');
   };

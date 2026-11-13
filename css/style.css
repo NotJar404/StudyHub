@@ -1632,3 +1632,181 @@ to{transform:scaleX(1)}
     box-shadow: 0 0.5rem 0.8rem -0.6rem rgba(60, 35, 10, 0.5);
   }
 }
+
+/* ===== Phones: falling leaves are pure CSS (compositor only), the canvas version is for desktops ===== */
+.fall {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+}
+.fall i {
+  position: absolute;
+  top: -4vh;
+  left: var(--x);
+  width: var(--s);
+  height: calc(var(--s) * 0.34);
+  border-radius: 50%;
+  background: #d9a43a;
+  opacity: 0.85;
+  will-change: transform;
+  animation: leaf-fall var(--d) linear var(--dl) infinite;
+}
+.fall i:nth-child(4n + 2) { background: #e8b84a; }
+.fall i:nth-child(4n + 3) { background: #c98a2c; }
+.fall i:nth-child(4n) { background: #b8731f; }
+:root[data-theme='night'] .fall i { background: #a7823a; opacity: 0.6; }
+@keyframes leaf-fall {
+  to {
+    transform: translate3d(var(--dx), 112vh, 0) rotate(640deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fall { display: none; }
+}
+
+/* ===== Header: always sticky on top; the phone menu is a solid panel under it; no bottom dock ===== */
+.m-dock {
+  display: none !important;
+}
+.nav.is-hidden {
+  transform: none;
+  opacity: 1;
+  pointer-events: auto;
+}
+@media (max-width: 48rem) {
+  .nav {
+    position: sticky;
+    top: 0;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: var(--card-bg);
+  }
+  .nav.open .menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 5;
+    max-height: calc(100vh - 4.4rem);
+    max-height: calc(100dvh - 4.4rem);
+    margin: 0;
+    padding: 0.4rem 1rem 1rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 1.2rem 1.6rem -1rem rgba(60, 35, 10, 0.5);
+  }
+}
+/* ===== Scheduler: day groups open and close; the buttons always fit the card ===== */
+#classes .class-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+#classes .dgall {
+  min-height: 2.25rem;
+  padding: 0 0.9rem;
+  border: 1.5px solid var(--accent-color);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--accent-color);
+  font: 700 0.82rem var(--font-body, 'DM Sans', system-ui, sans-serif);
+  cursor: pointer;
+}
+#classes .dgall:hover {
+  background: var(--accent-color);
+  color: var(--btn-text);
+}
+#classes .dg {
+  margin-bottom: 0.7rem;
+}
+#classes .dgh {
+  width: 100%;
+  min-height: 3.2rem;
+  gap: 0.6rem;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  transition: background 0.2s;
+}
+#classes .dgh b {
+  flex: 1;
+}
+#classes .dgh:hover {
+  background: color-mix(in srgb, var(--text-main) 88%, var(--accent-color));
+}
+#classes .dgh:focus-visible {
+  outline: 3px solid var(--accent-color);
+  outline-offset: -3px;
+}
+#classes .dgh .chev {
+  flex: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0.2rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--card-bg) 18%, transparent);
+  transition: transform 0.3s;
+}
+#classes .dg.open .chev {
+  transform: rotate(180deg);
+}
+#classes .dgb {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease;
+}
+#classes .dg.open .dgb {
+  grid-template-rows: 1fr;
+}
+#classes .dgi {
+  min-height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  transition: visibility 0.3s;
+}
+#classes .dg.open .dgi {
+  visibility: visible;
+}
+#classes .ca {
+  grid-column: 1 / -1;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+#classes .ca .ib.ibt {
+  flex: 1 1 5.5rem;
+  justify-content: center;
+  min-width: 0;
+}
+#classes .cm {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+@media (prefers-reduced-motion: reduce) {
+  #classes .dgb,
+  #classes .dgh .chev {
+    transition: none;
+  }
+}
+
+/* ===== Tablets: no screen-tall empty gaps ===== */
+@media (min-width: 30.01rem) and (max-width: 64rem) {
+  #how {
+    min-height: 0;
+  }
+  .sec {
+    padding-top: 3.2rem;
+  }
+  .hero {
+    min-height: max(26rem, min(calc(100svh - 5.2rem), 38rem));
+  }
+  .sb-steps {
+    margin-top: 2rem;
+  }
+}

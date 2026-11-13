@@ -82,7 +82,7 @@ const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
   addEventListener('resize', size);
   size();
   const touch = matchMedia('(hover: none), (pointer: coarse)').matches;
-  const leaves = Array.from({ length: touch ? 9 : 18 }, () => {
+  const leaves = Array.from({ length: touch ? 0 : 18 }, () => {
     const l = {
       s: Math.random() * 4 + 6,
       v: Math.random() * 0.4 + 0.25,
@@ -95,7 +95,7 @@ const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
   });
   let lastDraw = 0;
   const draw = n => {
-    if (touch && !still && n - lastDraw < 30) return requestAnimationFrame(draw);
+
     lastDraw = n;
     const th = night(),
       P = th ? GN : GL;
@@ -119,9 +119,24 @@ const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
     });
     if (!still) requestAnimationFrame(draw);
   };
-  requestAnimationFrame(draw);
+  // Phones: no canvas loop. A handful of CSS-animated leaves fall instead; they run on the GPU and cost the page nothing.
+  if (touch) {
+    cv.style.display = 'none';
+    if (!still) {
+      const box = document.createElement('div');
+      box.className = 'fall';
+      box.setAttribute('aria-hidden', 'true');
+      for (let k = 0; k < 8; k++) {
+        const i = document.createElement('i');
+        i.style.cssText =
+          '--x:' + ((k * 13 + Math.random() * 9) % 96).toFixed(1) + '%;--s:' + (0.5 + Math.random() * 0.4).toFixed(2) + 'rem;--d:' + (14 + Math.random() * 12).toFixed(1) + 's;--dl:-' + (Math.random() * 22).toFixed(1) + 's;--dx:' + (Math.random() * 26 - 13).toFixed(0) + 'vw;--c:' + (k % 4);
+        box.appendChild(i);
+      }
+      document.body.appendChild(box);
+    }
+  } else requestAnimationFrame(draw);
   new MutationObserver(() => {
-    if (still) requestAnimationFrame(draw);
+    if (still && !touch) requestAnimationFrame(draw);
   }).observe(document.documentElement, { attributes: true });
 
   // ----- smooth leaf trail behind the cursor -----
@@ -1994,39 +2009,20 @@ $$('select.seg').forEach(sel => {
   arm();
 })();
 
-/* ---- phone: the top bar hides while you scroll down, and a small dock appears once you have scrolled ---- */
-(function () {
-  var mq = window.matchMedia('(max-width: 760px)');
-  var nav = document.getElementById('nav');
-  var dock = document.createElement('nav');
-  dock.className = 'm-dock';
-  dock.setAttribute('aria-label', 'Quick links');
-  dock.innerHTML =
-    '<a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span>Home</span></a>' +
-    '<a href="index.html#tools"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Tools</span></a>' +
-    '<a href="team.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2 21a7 7 0 0 1 14 0"/><circle cx="17" cy="9" r="2.5"/><path d="M18 14a5 5 0 0 1 4 5"/></svg><span>Team</span></a>' +
-    '<a href="index.html#contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 6-10 7L2 6"/></svg><span>Contact</span></a>';
-  document.body.appendChild(dock);
-  var lastY = window.scrollY || 0, ticking = false;
-  function update() {
-    ticking = false;
-    var y = window.scrollY || 0;
-    if (mq.matches) {
-      if (nav) {
-        if (y < 120) nav.classList.remove('is-hidden');
-        else if (y > lastY + 4) nav.classList.add('is-hidden');
-        else if (y < lastY - 4) nav.classList.remove('is-hidden');
-      }
-      dock.classList.toggle('show', y > 260);
-    } else {
-      if (nav) nav.classList.remove('is-hidden');
-      dock.classList.remove('show');
-    }
-    if (Math.abs(y - lastY) > 4) lastY = y;
-  }
-  window.addEventListener('scroll', function () {
-    if (!ticking) { ticking = true; requestAnimationFrame(update); }
-  }, { passive: true });
-  if (mq.addEventListener) mq.addEventListener('change', update);
-  update();
+// Phone menu: lock the page behind it, close it when a link is chosen, the page is tapped or Esc is pressed.
+(() => {
+  const nav = document.getElementById('nav'),
+    bg = document.getElementById('burger');
+  if (!nav || !bg) return;
+  const root = document.documentElement,
+    sync = () => root.classList.toggle('menu-open', nav.classList.contains('open'));
+  new MutationObserver(sync).observe(nav, { attributes: true, attributeFilter: ['class'] });
+  const close = () => {
+    nav.classList.remove('open');
+    bg.setAttribute('aria-expanded', 'false');
+  };
+  nav.addEventListener('click', e => e.target.closest('.menu a') && close());
+  document.addEventListener('click', e => nav.classList.contains('open') && !nav.contains(e.target) && close());
+  addEventListener('keydown', e => e.key === 'Escape' && nav.classList.contains('open') && (close(), bg.focus()));
+  addEventListener('resize', () => innerWidth > 768 && close());
 })();
