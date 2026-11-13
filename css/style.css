@@ -2175,3 +2175,10 @@ to{transform:scaleX(1)}
   .sb-stx p{font-size:1rem}
   .sb-step:not(:last-child)::after{content:'↓';top:auto;right:auto;bottom:-2.6rem;left:5.8rem;width:2.6rem;height:2.6rem;font-size:1.2rem;transform:none}
 }
+
+/* ===== tablet (768px to 1023px): the numbers sit at the end of the Home page, after the FAQ ===== */
+.tab-facts{display:none}
+@media (min-width: 48rem) and (max-width: 63.99rem){
+  .top-facts{display:none}
+  .tab-facts{display:block;margin-top:3rem}
+}
